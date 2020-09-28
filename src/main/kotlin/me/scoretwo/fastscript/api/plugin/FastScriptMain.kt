@@ -11,14 +11,13 @@ interface FastScriptMain {
 
     fun getPluginClassLoader(): ClassLoader
 
-    fun saveDefaultResource(target: File, inputStream: InputStream) {
-        if (target.exists()) {
-            saveResource(target, inputStream)
-        }
-    }
+    fun setPlaceholder(player: Any, string: String): String
 
-    fun saveResource(target: File, inputStream: InputStream) {
-        FileUtils.save(target, inputStream)
-    }
+    fun onReload()
+
+    fun sendConsoleMessage(message: String)
+
+    fun sendMessage(sender: Any, string: String)
+
 
 }
