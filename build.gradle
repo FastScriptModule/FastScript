@@ -13,16 +13,25 @@ repositories {
     maven {url 'https://hub.spigotmc.org/nexus/content/repositories/snapshots/'}
     maven {url 'https://oss.sonatype.org/content/repositories/snapshots'}
     maven {url 'https://repo.md-5.net/repository/public'}
-
     maven {url 'https://repo.extendedclip.com/content/repositories/placeholderapi/'}
+    maven {url 'http://maven.aliyun.com/nexus/content/groups/public'}
 }
 
 dependencies {
     compile 'commons-io:commons-io:2.7'
-    implementation "org.jetbrains.kotlin:kotlin-stdlib"
+    compile 'com.alibaba:fastjson:1.2.9'
+    compile "org.jetbrains.kotlin:kotlin-stdlib"
+    implementation 'org.yaml:snakeyaml:1.27'
+    implementation 'org.apache.commons:commons-lang3:3.10'
     implementation 'org.spigotmc:spigot-api:1.16.3-R0.1-SNAPSHOT'
     implementation 'net.md-5:bungeecord-api:1.16-R0.3'
     implementation 'me.clip:placeholderapi:2.10.9'
+}
+
+jar {
+    from {
+        configurations.compile.collect { it.isDirectory() ? it : zipTree(it) }
+    }
 }
 
 processResources {

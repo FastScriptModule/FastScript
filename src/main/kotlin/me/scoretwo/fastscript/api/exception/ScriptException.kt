@@ -1,4 +1,3 @@
 package me.scoretwo.fastscript.api.exception
 
-class ScriptException: Exception() {
-}
+open class ScriptException(msg: String): Exception(msg)

@@ -1,0 +1,8 @@
+
+Options:
+  Debug: false
+  Language: zh_CN
+  Auto-Reload-Files: true
+
+Load-Script-Files:
+  - 'plugins/CustomScriptFolder'

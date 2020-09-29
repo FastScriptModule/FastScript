@@ -1,0 +1,30 @@
+# 脚本引擎
+engine: nashorn
+
+# 导入自定义 object 作为变量
+import:
+#  a: 'static|org.bukkit.Bukkit#getServer|args1|args2...'
+
+#  b: 'object|org.bukkit.util.Vector|1|2...'
+
+  c:
+    init:
+      class: 'org.bukkit.util.Vector'
+      args:
+        - 1
+        - 100
+        - 1
+  d:
+    object:
+      class: 'org.bukkit.util.Vector'
+      args: []
+    method:
+      name: 'length'
+      args: []
+
+  e:
+    static:
+      class: 'org.bukkit.Bukkit'
+    method:
+      name: 'getServer'
+      args: []
