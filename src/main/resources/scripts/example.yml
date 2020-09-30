@@ -1,6 +1,10 @@
 # 脚本引擎
 engine: nashorn
 
+# 从脚本指定方法开始
+# 如果不填写, 那么根据传统的方式开始.
+main: 'main'
+
 # 导入自定义 object 作为变量
 import:
 #  a: 'static|org.bukkit.Bukkit#getServer|args1|args2...'

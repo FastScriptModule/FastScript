@@ -6,3 +6,8 @@ Options:
 
 Load-Script-Files:
   - 'plugins/CustomScriptFolder'
+
+Default-Script-Options:
+  Engine: nashorn
+
+  Import:

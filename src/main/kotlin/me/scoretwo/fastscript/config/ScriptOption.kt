@@ -5,7 +5,9 @@ class ScriptOption {
 
     companion object {
 
-        class Object(clazz: String, args: Array<Any?>)
+        interface HasMethod
+
+        class Object(clazz: String, args: Array<Any?>): HasMethod
         class Static(clazz: String)
         class Method(name: String, args: Array<Any?>)
 
