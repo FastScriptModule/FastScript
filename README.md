@@ -1,4 +1,4 @@
-![](https://github.com/Score2/FastScript/blob/master/images/animate_logo.gif?raw=true)
+![](http://mc3.roselle.vip:602/FastScript/animate_logo.gif)
 ***
 # About
 FastScript is a Spigot plugin, which can run JavaScript-based scripts more efficiently.
