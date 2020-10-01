@@ -7,18 +7,18 @@ main: 'main'
 
 # 导入自定义 object 作为变量
 import:
-#  a: 'static|org.bukkit.Bukkit#getServer|args1|args2...'
+#  demo1 'static|org.bukkit.Bukkit#getServer|args1|args2...'
 
-#  b: 'object|org.bukkit.util.Vector|1|2...'
+#  demo2: 'object|org.bukkit.util.Vector|1|2...'
 
-  c:
+  vector:
     init:
       class: 'org.bukkit.util.Vector'
       args:
         - 1
         - 100
         - 1
-  d:
+  vector_length:
     object:
       class: 'org.bukkit.util.Vector'
       args: []
@@ -26,7 +26,7 @@ import:
       name: 'length'
       args: []
 
-  e:
+  server:
     static:
       class: 'org.bukkit.Bukkit'
     method:

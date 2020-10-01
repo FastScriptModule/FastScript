@@ -14,7 +14,7 @@ class BungeeSection: Plugin(), FastScriptMain {
     }
 
     override fun onEnable() {
-        FastScript.instance?.onReload()
+        FastScript.instance.onReload()
     }
 
     override fun getPluginClassLoader(): ClassLoader {

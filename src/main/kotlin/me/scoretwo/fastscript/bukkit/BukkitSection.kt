@@ -19,7 +19,7 @@ class BukkitSection: JavaPlugin(), FastScriptMain {
     }
 
     override fun onEnable() {
-        FastScript.instance?.onReload()
+        FastScript.instance.onReload()
 
         commandMap.register(description.name, object : Command(description.name, "", "/" + description.name, listOf("script","bukkitScript")) {
             override fun execute(sender: CommandSender, label: String, args: Array<out String>): Boolean {
