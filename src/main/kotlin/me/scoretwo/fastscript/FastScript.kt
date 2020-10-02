@@ -3,6 +3,7 @@ package me.scoretwo.fastscript
 import com.andreapivetta.kolor.*
 import me.scoretwo.fastscript.api.plugin.FastScriptMain
 import me.scoretwo.fastscript.api.script.ScriptManager
+import me.scoretwo.fastscript.commands.CommandManager
 import java.io.File
 
 class FastScript(main: FastScriptMain) {
@@ -10,16 +11,24 @@ class FastScript(main: FastScriptMain) {
     private val main: FastScriptMain = main
 
     val scriptManager = ScriptManager()
+    val commandManager = CommandManager()
 
     val dataFolder = main.getDataFolder()
     val classLoader = main.getPluginClassLoader()
+
+
     fun setPlaceholder(player: Any, string: String) = main.setPlaceholder(player, string)
     fun sendMessage(sender: Any, string: String, colorIndex: Boolean) = main.sendMessage(sender, string, colorIndex)
+    fun sendMessage(sender: Any, strings: Array<String>, colorIndex: Boolean) = strings.forEach { main.sendMessage(sender, it, colorIndex) }
 
     init {
         CONSOLE = main.CONSOLE
     }
 
+   /**
+    * 初始化内置脚本
+    * 暂时弃坑
+    */
     fun initInternalScripts() {
 
     }
@@ -27,15 +36,16 @@ class FastScript(main: FastScriptMain) {
     fun onReload() {
         main.onReload()
         initInternalScripts()
+        scriptManager.loadScripts()
     }
 
    /**
-    * 用于随机点亮 FastScript 的 Logo
+    * 用于随机点亮 FastScript 的 Logo.
     * 该创意来源于 TrMenu
     * @author Arasple
     */
 
-    fun printLogo() = mutableListOf(
+    fun printLogo() = arrayOf(
             "___________                __   _________            .__        __   ",
             "\\_   _____/____    _______/  |_/   _____/ ___________|__|______/  |_ ",
             " |    __) \\__  \\  /  ___/\\   __\\_____  \\_/ ___\\_  __ \\  \\____ \\   __\\",
@@ -55,13 +65,13 @@ class FastScript(main: FastScriptMain) {
                 it[index] = String(line).replaceFirst(replace, "§${arrayOf('9', 'b', '3').random()}$replace§8")
             }
         }
-        printColors(it)
+        sendMessage(CONSOLE, it, false)
     }
 
     companion object {
         lateinit var instance: FastScript
         var CONSOLE = Any()
-
+/*
         @JvmStatic
         fun main(args: Array<out String>) {
 
@@ -124,9 +134,13 @@ class FastScript(main: FastScriptMain) {
             }
             println()
         }
+*/
 
         fun sendMessage(sender: Any, string: String, colorIndex: Boolean = false) {
             instance.sendMessage(sender, string, colorIndex)
+        }
+        fun sendMessage(sender: Any, strings: Array<String>, colorIndex: Boolean = false) {
+            instance.sendMessage(sender, strings, colorIndex)
         }
 
         fun setBootstrap(main: FastScriptMain) {

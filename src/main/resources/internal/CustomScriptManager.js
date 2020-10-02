@@ -1,5 +1,5 @@
 /**
- * 
+ * 暂时弃坑
 */
 class CustomScriptManager {
 

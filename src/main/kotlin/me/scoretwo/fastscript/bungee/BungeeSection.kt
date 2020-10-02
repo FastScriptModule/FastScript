@@ -5,7 +5,9 @@ import me.scoretwo.fastscript.api.plugin.FastScriptMain
 import net.md_5.bungee.api.ChatColor
 import net.md_5.bungee.api.CommandSender
 import net.md_5.bungee.api.ProxyServer
+import net.md_5.bungee.api.plugin.Command
 import net.md_5.bungee.api.plugin.Plugin
+import net.md_5.bungee.api.plugin.TabExecutor
 
 class BungeeSection: Plugin(), FastScriptMain {
 
@@ -15,6 +17,16 @@ class BungeeSection: Plugin(), FastScriptMain {
 
     override fun onEnable() {
         FastScript.instance.onReload()
+
+        ProxyServer.getInstance().pluginManager.registerCommand(this, object : Command("FastScript", null, "script"), TabExecutor {
+            override fun execute(sender: CommandSender, args: Array<String>) {
+                FastScript.instance.commandManager.execute(sender, args)
+            }
+
+            override fun onTabComplete(sender: CommandSender, args: Array<String>): MutableIterable<String> {
+                return FastScript.instance.commandManager.tabComplete(sender, args)
+            }
+        })
     }
 
     override val CONSOLE: Any = ProxyServer.getInstance().console

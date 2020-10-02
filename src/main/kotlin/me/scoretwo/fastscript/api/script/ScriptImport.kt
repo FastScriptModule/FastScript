@@ -1,8 +1,9 @@
 package me.scoretwo.fastscript.api.script
 
-import me.scoretwo.fastscript.config.YAMLObject
+import com.alibaba.fastjson.JSONObject
+import me.scoretwo.fastscript.api.yaml.YAMLObject
 
-class ScriptImport(val name: String, val TYPE: TYPE, val obj: Object?, val met: Method?) {
+class ScriptImport(val name: String, val type: TYPE, val obj: Object?, val met: Method?) {
 
 
 
@@ -10,6 +11,11 @@ class ScriptImport(val name: String, val TYPE: TYPE, val obj: Object?, val met: 
         enum class TYPE { INIT, OBJECT, STATIC, IMPORT, ERROR }
         class Object(val clazz: String, val args: Array<Any?> = arrayOf())
         class Method(val name: String, val args: Array<Any?> = arrayOf())
+
+
+        fun fromConfigSection(name: String, jsonObject: JSONObject): ScriptImport {
+            return fromConfigSection(name, jsonObject)
+        }
 
         fun fromConfigSection(name: String, yamlObject: YAMLObject): ScriptImport {
             val obj: Object?

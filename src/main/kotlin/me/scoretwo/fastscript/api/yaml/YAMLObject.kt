@@ -1,7 +1,6 @@
-package me.scoretwo.fastscript.config
+package me.scoretwo.fastscript.api.yaml
 
 import com.alibaba.fastjson.JSON
-import com.alibaba.fastjson.JSONArray
 import com.alibaba.fastjson.JSONObject
 import me.scoretwo.fastscript.utils.FileUtils
 import org.yaml.snakeyaml.Yaml
@@ -9,7 +8,7 @@ import java.io.File
 import java.io.FileInputStream
 import java.io.InputStream
 
-class YAMLObject: JSONObject {
+open class YAMLObject: JSONObject {
 
     val yaml = Yaml()
 
@@ -26,84 +25,78 @@ class YAMLObject: JSONObject {
 
     constructor(): super()
 
-    fun load(inputStream: InputStream) {
+    fun setMap(mutableMap: JSONObject) {
         mapField.isAccessible = true
-        mapField.set(this, JSON.toJSON(yaml.load(inputStream)))
+        mapField.set(this, mutableMap)
+    }
+
+    fun getMap(): JSONObject {
+        mapField.isAccessible = true
+        return mapField.get(this) as JSONObject
+    }
+
+    open fun load(inputStream: InputStream) {
+        setMap(JSON.toJSON(yaml.load(inputStream)) as JSONObject)
     }
 
     fun save(file: File = this.file) {
-        mapField.isAccessible = true
         FileUtils.save(file, toString())
     }
 
     override fun toString(): String {
-        return yaml.dumpAsMap(mapField.get(this))
+        return yaml.dumpAsMap(getMap())
     }
 
-    fun getLowerCase(key: String): Any? {
+    fun getLowerCaseKeyName(key: String): String? {
         for (key0 in keys) {
             if (key0 == null) {
                 continue
             }
             if (key.toLowerCase() == key0.toLowerCase()) {
-                return get(key0)
+                return key0
             }
         }
         return null
     }
 
+    fun getLowerCase(key: String): Any? {
+        return get(getLowerCaseKeyName(key))
+    }
+
     fun getLowerCaseString(key: String): String? {
-        return when (val any = getLowerCase(key)) {
-            is String -> {
-                any
-            }
-            else -> null
-        }
+        return getString(getLowerCaseKeyName(key))
     }
 
     fun getLowerCaseBoolean(key: String): Boolean {
-        return when (val any = getLowerCase(key)) {
-            is Boolean -> {
-                any
-            }
-            else -> false
-        }
+        return getBoolean(getLowerCaseKeyName(key))
+    }
+
+    fun getLowerCaseInt(key: String): Int {
+        return getInteger(getLowerCaseKeyName(key))
+    }
+
+    fun getLowerCaseDouble(key: String): Double {
+        return getDouble(getLowerCaseKeyName(key))
+    }
+
+    fun getLowerCaseFloat(key: String): Float {
+        return getFloat(getLowerCaseKeyName(key))
+    }
+
+    fun getLowerCaseShort(key: String): Short {
+        return getShort(getLowerCaseKeyName(key))
     }
 
     fun getLowerCaseYAMLObject(key: String): YAMLObject {
-        return when (val any = getLowerCase(key)) {
-            is YAMLObject -> {
-                any
-            }
-            is JSONObject -> {
-                YAMLObject(any)
-            }
-            else -> YAMLObject()
-        }
+        return YAMLObject(getJSONObject(getLowerCaseKeyName(key)))
     }
 
     fun getLowerCaseYAMLArray(key: String): YAMLArray {
-        return when (val any = getLowerCase(key)) {
-            is YAMLArray -> {
-                any
-            }
-            is JSONArray -> {
-                YAMLArray(any)
-            }
-            else -> YAMLArray()
-        }
+        return YAMLArray(getJSONArray(getLowerCaseKeyName(key)))
     }
 
     fun containsLowerCaseKey(key: String): Boolean {
-        for (key0 in keys) {
-            if (key0 == null) {
-                continue
-            }
-            if (key.toLowerCase() == key0.toLowerCase()) {
-                return true
-            }
-        }
-        return false
+        return getLowerCaseKeyName(key) != null
     }
 
 

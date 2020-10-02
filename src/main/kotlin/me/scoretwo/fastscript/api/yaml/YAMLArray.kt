@@ -1,8 +1,8 @@
-package me.scoretwo.fastscript.config
+package me.scoretwo.fastscript.api.yaml
 
 import com.alibaba.fastjson.JSONArray
 
-class YAMLArray: JSONArray {
+open class YAMLArray: JSONArray {
 
     constructor(jsonArray: JSONArray): super(jsonArray)
 

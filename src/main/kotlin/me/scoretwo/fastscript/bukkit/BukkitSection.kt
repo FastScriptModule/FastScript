@@ -6,6 +6,7 @@ import me.scoretwo.fastscript.bukkit.hooks.PlaceholderAPIHook
 import net.md_5.bungee.api.ChatColor
 import net.md_5.bungee.api.ChatMessageType
 import net.md_5.bungee.api.chat.TextComponent
+import org.bstats.bukkit.Metrics
 import org.bukkit.Bukkit
 import org.bukkit.command.Command
 import org.bukkit.command.CommandMap
@@ -23,9 +24,17 @@ class BukkitSection: JavaPlugin(), FastScriptMain {
     override fun onEnable() {
         FastScript.instance.onReload()
 
+        // 暂无计划
+        val metrics = Metrics(this, 9014)
+
         commandMap.register(description.name, object : Command(description.name, "", "/" + description.name, listOf("script","bukkitScript")) {
-            override fun execute(sender: CommandSender, label: String, args: Array<out String>): Boolean {
+            override fun execute(sender: CommandSender, label: String, args: Array<String>): Boolean {
+                FastScript.instance.commandManager.execute(sender, args)
                 return true
+            }
+
+            override fun tabComplete(sender: CommandSender, alias: String, args: Array<String>): MutableList<String> {
+                return FastScript.instance.commandManager.tabComplete(sender, args)
             }
         })
     }

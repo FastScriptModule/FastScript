@@ -11,3 +11,16 @@ Default-Script-Options:
   Engine: nashorn
 
   Import:
+    server:
+      static:
+        class: 'org.bukkit.Bukkit'
+      method:
+        name: 'getServer'
+        args: []
+
+    utils:
+      static:
+        class: 'me.scoretwo.fastscript.utils.Assist'
+      method:
+        name: 'instance'
+        args: []

@@ -1,4 +1,9 @@
 package me.scoretwo.fastscript.api.script
 
-class CustomScript {
+import java.io.File
+
+class CustomScript(file: File): Script(file) {
+
+
+
 }

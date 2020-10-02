@@ -1,15 +1,15 @@
 ![](http://mc3.roselle.vip:602/FastScript/big_logo.gif)
-<font color=#8E8E8E size=3>The idea of the LOGO comes from @Arasple's TrMenu.</font>
+>The idea of the LOGO comes from @Arasple's TrMenu.
 ***
 ### About
 FastScript is a Spigot plugin, which can run JavaScript-based scripts more efficiently.
 
-> At present, the project is still unfinished and cannot be used.
+>At present, the project is still unfinished and cannot be used.
 ***
 ### Build
 In the project root directory:
 ```
-./gradle jar
+./gradle shadowJar
 ```
 ***
 ### Links
