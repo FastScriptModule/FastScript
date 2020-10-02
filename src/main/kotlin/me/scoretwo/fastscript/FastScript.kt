@@ -5,19 +5,32 @@ import me.scoretwo.fastscript.api.plugin.FastScriptMain
 import me.scoretwo.fastscript.api.script.ScriptManager
 import java.io.File
 
-class FastScript(val dataFolder: File, private val classLoader: ClassLoader) {
+class FastScript(main: FastScriptMain) {
+
+    private val main: FastScriptMain = main
 
     val scriptManager = ScriptManager()
+
+    val dataFolder = main.getDataFolder()
+    val classLoader = main.getPluginClassLoader()
+    fun setPlaceholder(player: Any, string: String) = main.setPlaceholder(player, string)
+    fun sendMessage(sender: Any, string: String, colorIndex: Boolean) = main.sendMessage(sender, string, colorIndex)
+
+    init {
+        CONSOLE = main.CONSOLE
+    }
 
     fun initInternalScripts() {
 
     }
 
     fun onReload() {
+        main.onReload()
         initInternalScripts()
     }
 
    /**
+    * 用于随机点亮 FastScript 的 Logo
     * 该创意来源于 TrMenu
     * @author Arasple
     */
@@ -47,12 +60,14 @@ class FastScript(val dataFolder: File, private val classLoader: ClassLoader) {
 
     companion object {
         lateinit var instance: FastScript
-        lateinit var main: FastScriptMain
+        var CONSOLE = Any()
 
         @JvmStatic
         fun main(args: Array<out String>) {
 
-            main = object : FastScriptMain {
+            val main = object : FastScriptMain {
+                override val CONSOLE: Any = this
+
                 override fun getDataFolder(): File {
                     return File("FastScript")
                 }
@@ -67,16 +82,12 @@ class FastScript(val dataFolder: File, private val classLoader: ClassLoader) {
 
                 override fun onReload() {}
 
-                override fun sendConsoleMessage(message: String) {
-                    println(message.yellow())
-                }
-
-                override fun sendMessage(sender: Any, string: String) {
-                    println(string.yellow())
+                override fun sendMessage(sender: Any, string: String, colorIndex: Boolean) {
+                    printColors(if (colorIndex) string.replace("§", "&") else string)
                 }
             }
 
-            instance = FastScript(main.getDataFolder(), main.getPluginClassLoader())
+            instance = FastScript(main)
 
             instance.printLogo()
         }
@@ -114,13 +125,16 @@ class FastScript(val dataFolder: File, private val classLoader: ClassLoader) {
             println()
         }
 
+        fun sendMessage(sender: Any, string: String, colorIndex: Boolean = false) {
+            instance.sendMessage(sender, string, colorIndex)
+        }
+
         fun setBootstrap(main: FastScriptMain) {
             if (instance != null) {
                 throw UnsupportedOperationException("Cannot redefine instance")
             }
 
-            this.main = main
-            instance = FastScript(main.getDataFolder(), main.getPluginClassLoader())
+            instance = FastScript(main)
         }
 
 

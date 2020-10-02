@@ -1,4 +1,5 @@
 ![](http://mc3.roselle.vip:602/FastScript/big_logo.gif)
+<font color=#8E8E8E size=3>The idea of the LOGO comes from @Arasple's TrMenu.</font>
 ***
 ### About
 FastScript is a Spigot plugin, which can run JavaScript-based scripts more efficiently.

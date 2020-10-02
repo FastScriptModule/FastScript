@@ -8,6 +8,6 @@ class Assist {
         val instance = Assist()
     }
 
-    fun sendMessage(sender: Any, string: String) = FastScript.main.sendMessage(sender, string)
+    fun sendMessage(sender: Any, string: String, colorIndex: Boolean = true) = FastScript.sendMessage(sender, string, colorIndex)
 
 }

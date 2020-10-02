@@ -19,7 +19,7 @@ object Utils {
             Class.forName(target)
         } catch (e: ClassNotFoundException) {
             e.printStackTrace()
-            FastScript.main.sendConsoleMessage("&7[&2Fast&aScript&7] &cERROR &8| &c脚本 &4${script.name} 没有找到类 ${target}, 依赖于该类的方法将不会起作用!")
+            FastScript.sendMessage(FastScript.CONSOLE,"&7[&2Fast&aScript&7] &cERROR &8| &c脚本 &4${script.name} 没有找到类 ${target}, 依赖于该类的方法将不会起作用!")
             null
         }
     }
@@ -67,13 +67,13 @@ object Utils {
             return method.invoke(obj, args)
         } catch (e: IllegalAccessException) {
             e.printStackTrace()
-            FastScript.main.sendConsoleMessage("&7[&2Fast&aScript&7] &cERROR &8| &c脚本 &4${script.name} 访问方法 ${method.name} 时发生错误, 原因: 非法访问 private 或 protected 方法!")
+            FastScript.sendMessage(FastScript.CONSOLE,"&7[&2Fast&aScript&7] &cERROR &8| &c脚本 &4${script.name} 访问方法 ${method.name} 时发生错误, 原因: 非法访问 private 或 protected 方法!")
         } catch (e: IllegalArgumentException) {
             e.printStackTrace()
-            FastScript.main.sendConsoleMessage("&7[&2Fast&aScript&7] &cERROR &8| &c脚本 &4${script.name} 访问方法 ${method.name} 时发生错误, 原因: 某个参数不正确!")
+            FastScript.sendMessage(FastScript.CONSOLE,"&7[&2Fast&aScript&7] &cERROR &8| &c脚本 &4${script.name} 访问方法 ${method.name} 时发生错误, 原因: 某个参数不正确!")
         } catch (e: InvocationTargetException) {
             e.printStackTrace()
-            FastScript.main.sendConsoleMessage("&7[&2Fast&aScript&7] &cERROR &8| &c脚本 &4${script.name} 访问方法 ${method.name} 时发生错误, 原因: 调用方法时发生内部错误!")
+            FastScript.sendMessage(FastScript.CONSOLE,"&7[&2Fast&aScript&7] &cERROR &8| &c脚本 &4${script.name} 访问方法 ${method.name} 时发生错误, 原因: 调用方法时发生内部错误!")
         }
         return null
     }

@@ -17,6 +17,8 @@ class BungeeSection: Plugin(), FastScriptMain {
         FastScript.instance.onReload()
     }
 
+    override val CONSOLE: Any = ProxyServer.getInstance().console
+
     override fun getPluginClassLoader(): ClassLoader {
         return javaClass.classLoader
     }
@@ -25,12 +27,8 @@ class BungeeSection: Plugin(), FastScriptMain {
         return string
     }
 
-    override fun sendConsoleMessage(message: String) {
-        ProxyServer.getInstance().console.sendMessage(ChatColor.translateAlternateColorCodes('&', message))
-    }
-
-    override fun sendMessage(sender: Any, string: String) {
-        (sender as? CommandSender)?.sendMessage(string)
+    override fun sendMessage(sender: Any, string: String, colorIndex: Boolean) {
+        (sender as? org.bukkit.command.CommandSender)?.sendMessage(if (colorIndex) ChatColor.translateAlternateColorCodes('&', string) else string)
     }
 
     override fun onReload() {

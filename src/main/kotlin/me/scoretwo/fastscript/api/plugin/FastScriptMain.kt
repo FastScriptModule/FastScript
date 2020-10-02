@@ -7,6 +7,8 @@ import java.io.InputStream
 
 interface FastScriptMain {
 
+    val CONSOLE: Any
+
     fun getDataFolder(): File
 
     fun getPluginClassLoader(): ClassLoader
@@ -15,9 +17,7 @@ interface FastScriptMain {
 
     fun onReload()
 
-    fun sendConsoleMessage(message: String)
-
-    fun sendMessage(sender: Any, string: String)
+    fun sendMessage(sender: Any, string: String, colorIndex: Boolean)
 
 
 }

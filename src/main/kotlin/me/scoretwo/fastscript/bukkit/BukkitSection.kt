@@ -4,6 +4,8 @@ import me.scoretwo.fastscript.FastScript
 import me.scoretwo.fastscript.api.plugin.FastScriptMain
 import me.scoretwo.fastscript.bukkit.hooks.PlaceholderAPIHook
 import net.md_5.bungee.api.ChatColor
+import net.md_5.bungee.api.ChatMessageType
+import net.md_5.bungee.api.chat.TextComponent
 import org.bukkit.Bukkit
 import org.bukkit.command.Command
 import org.bukkit.command.CommandMap
@@ -28,6 +30,8 @@ class BukkitSection: JavaPlugin(), FastScriptMain {
         })
     }
 
+    override val CONSOLE: Any = Bukkit.getConsoleSender()
+
     override fun getPluginClassLoader(): ClassLoader {
         return super.getClassLoader()
     }
@@ -41,17 +45,15 @@ class BukkitSection: JavaPlugin(), FastScriptMain {
         return text
     }
 
-    override fun sendConsoleMessage(message: String) = Bukkit.getConsoleSender().sendMessage(ChatColor.translateAlternateColorCodes('&', message))
-
-    override fun sendMessage(sender: Any, string: String) {
-        (sender as? CommandSender)?.sendMessage(string)
+    override fun sendMessage(sender: Any, string: String, colorIndex: Boolean) {
+        (sender as? CommandSender)?.sendMessage(if (colorIndex) ChatColor.translateAlternateColorCodes('&', string) else string)
     }
 
     override fun onReload() {
         if (PAPIHook == null) {
             if (Bukkit.getPluginManager().isPluginEnabled("PlaceholderAPI")) {
                 PAPIHook = PlaceholderAPIHook(this)
-                sendConsoleMessage("&7[&2Fast&aScript&7] &6HOOKED &8| &2成功挂钩 PlaceholderAPI!")
+                FastScript.sendMessage(CONSOLE,"&7[&2Fast&aScript&7] &6HOOKED &8| &2成功挂钩 PlaceholderAPI!")
             }
         }
     }

@@ -18,6 +18,7 @@ import:
         - 1
         - 100
         - 1
+
   vector_length:
     object:
       class: 'org.bukkit.util.Vector'
@@ -25,6 +26,13 @@ import:
     method:
       name: 'length'
       args: []
+
+# 暂不支持
+#  vector_x:
+#    import: vector
+#    method:
+#      name: 'getX'
+#      args: []
 
   server:
     static:
