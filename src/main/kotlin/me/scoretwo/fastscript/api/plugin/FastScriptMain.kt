@@ -19,5 +19,7 @@ interface FastScriptMain {
 
     fun sendMessage(sender: Any, string: String, colorIndex: Boolean)
 
+    fun hasPermission(sender: Any, string: String): Boolean
+
 
 }

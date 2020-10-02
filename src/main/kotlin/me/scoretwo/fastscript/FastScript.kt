@@ -1,6 +1,5 @@
 package me.scoretwo.fastscript
 
-import com.andreapivetta.kolor.*
 import me.scoretwo.fastscript.api.plugin.FastScriptMain
 import me.scoretwo.fastscript.api.script.ScriptManager
 import me.scoretwo.fastscript.commands.CommandManager
@@ -16,13 +15,14 @@ class FastScript(main: FastScriptMain) {
     val dataFolder = main.getDataFolder()
     val classLoader = main.getPluginClassLoader()
 
-
+    fun hasPermission(sender: Any, string: String) = main.hasPermission(sender, string)
     fun setPlaceholder(player: Any, string: String) = main.setPlaceholder(player, string)
     fun sendMessage(sender: Any, string: String, colorIndex: Boolean) = main.sendMessage(sender, string, colorIndex)
     fun sendMessage(sender: Any, strings: Array<String>, colorIndex: Boolean) = strings.forEach { main.sendMessage(sender, it, colorIndex) }
 
     init {
         CONSOLE = main.CONSOLE
+        printLogo()
     }
 
    /**
@@ -37,6 +37,7 @@ class FastScript(main: FastScriptMain) {
         main.onReload()
         initInternalScripts()
         scriptManager.loadScripts()
+        commandManager.initCommands()
     }
 
    /**
@@ -65,7 +66,7 @@ class FastScript(main: FastScriptMain) {
                 it[index] = String(line).replaceFirst(replace, "§${arrayOf('9', 'b', '3').random()}$replace§8")
             }
         }
-        sendMessage(CONSOLE, it, false)
+        CONSOLE.sendMessage(it)
     }
 
     companion object {
@@ -154,4 +155,22 @@ class FastScript(main: FastScriptMain) {
 
     }
 
+}
+
+enum class FormatHeader { INFO, WARN, ERROR, TIPS, HOOKED, DEBUG }
+
+fun Any.hasPermission(string: String): Boolean {
+    return FastScript.instance.hasPermission(this, string)
+}
+
+fun Any.sendMessage(string: String, colorIndex: Boolean = false) {
+    FastScript.instance.sendMessage(this, string, colorIndex)
+}
+
+fun Any.sendMessage(strings: Array<String>, colorIndex: Boolean = false) {
+    FastScript.instance.sendMessage(this, strings, colorIndex)
+}
+
+fun String.setPlaceholder(sender: Any): String {
+    return FastScript.instance.setPlaceholder(sender, this)
 }

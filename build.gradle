@@ -6,7 +6,7 @@ plugins {
 group 'me.scoretwo'
 version '0.11'
 
-defaultTasks 'clean', 'build', 'test', 'jar'
+defaultTasks 'clean', 'build', 'test', 'shadowJar'
 
 repositories {
     jcenter()

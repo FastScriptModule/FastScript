@@ -1,6 +1,6 @@
 package me.scoretwo.fastscript.commands
 
-abstract class SubCommand(val name: String, val sendLimit: SendLimit = SendLimit.ALL, val alias: Array<String> = arrayOf()) {
+abstract class SubCommand(val name: String, val sendLimit: SendLimit = SendLimit.PERMISSION, val alias: Array<String> = arrayOf()) {
 
     abstract fun execute(sender: Any, args: Array<String>)
 
@@ -9,7 +9,9 @@ abstract class SubCommand(val name: String, val sendLimit: SendLimit = SendLimit
     }
 
     companion object {
-        enum class SendLimit { PLAYER, CONSOLE, ALL }
+        enum class SendLimit {
+            PLAYER, CONSOLE, ALL, PERMISSION
+        }
 
 
     }

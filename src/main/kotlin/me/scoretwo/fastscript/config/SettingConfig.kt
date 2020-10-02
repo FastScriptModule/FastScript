@@ -10,6 +10,8 @@ class SettingConfig: Config(File(FastScript.instance.dataFolder, "settings.yml")
 
     lateinit var defaultScriptOption: ScriptOption
 
+    lateinit var defaultLanguage: MessageConfig
+
     val scriptPaths = mutableListOf<File>()
 
     init {
@@ -21,6 +23,9 @@ class SettingConfig: Config(File(FastScript.instance.dataFolder, "settings.yml")
         setMap(loadConfiguration(file))
         for (s in getLowerCaseYAMLArray("load-script-files")) { if (s is String) { scriptPaths.add(File(s)) } }
         defaultScriptOption = ScriptOption.fromConfigSection(getLowerCaseYAMLObject("default-script-options"))
+        defaultLanguage = MessageConfig(File(
+                "${FastScript.instance.dataFolder}/languages",
+                "${getLowerCaseYAMLObject("options").getLowerCaseString("language")}.yml"))
     }
 
     companion object {

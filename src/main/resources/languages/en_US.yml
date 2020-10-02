@@ -1,0 +1,7 @@
+FORMAT-HEADER:
+  INFO: '&7[&2Fast&aScript&7] &bINFO &8| &7'
+  WARN: '&7[&2Fast&aScript&7] &eWARN &8| &7'
+  ERROR: '&7[&2Fast&aScript&7] &cERROR &8| &7'
+  TIPS: '&7[&2Fast&aScript&7] &2TIPS &8| &7'
+  HOOKED: '&7[&2Fast&aScript&7] &6HOOKED &8| &7'
+  DEBUG: '&7[&2Fast&aScript&7] &3DEBUG &8| &7'

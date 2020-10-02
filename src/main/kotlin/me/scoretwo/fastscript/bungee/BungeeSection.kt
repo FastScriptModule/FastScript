@@ -40,7 +40,15 @@ class BungeeSection: Plugin(), FastScriptMain {
     }
 
     override fun sendMessage(sender: Any, string: String, colorIndex: Boolean) {
-        (sender as? org.bukkit.command.CommandSender)?.sendMessage(if (colorIndex) ChatColor.translateAlternateColorCodes('&', string) else string)
+        asSender(sender)?.sendMessage(if (colorIndex) ChatColor.translateAlternateColorCodes('&', string) else string)
+    }
+
+    override fun hasPermission(sender: Any, string: String): Boolean {
+        return asSender(sender)?.hasPermission(string)!!
+    }
+
+    fun asSender(sender: Any): CommandSender? {
+        return sender as? CommandSender
     }
 
     override fun onReload() {
