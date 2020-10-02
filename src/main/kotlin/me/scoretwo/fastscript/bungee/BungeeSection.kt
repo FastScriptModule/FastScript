@@ -39,8 +39,12 @@ class BungeeSection: Plugin(), FastScriptMain {
         return string
     }
 
+    override fun translateStringColors(string: String): String {
+        return ChatColor.translateAlternateColorCodes('&', string)
+    }
+
     override fun sendMessage(sender: Any, string: String, colorIndex: Boolean) {
-        asSender(sender)?.sendMessage(if (colorIndex) ChatColor.translateAlternateColorCodes('&', string) else string)
+        asSender(sender)?.sendMessage(if (colorIndex) translateStringColors(string) else string)
     }
 
     override fun hasPermission(sender: Any, string: String): Boolean {

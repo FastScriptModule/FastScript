@@ -1,7 +1,9 @@
 package me.scoretwo.fastscript.utils
 
 import me.scoretwo.fastscript.FastScript
+import me.scoretwo.fastscript.FormatHeader
 import me.scoretwo.fastscript.api.script.Script
+import me.scoretwo.fastscript.sendMessage
 import java.io.File
 import java.io.InputStream
 import java.lang.reflect.InvocationTargetException
@@ -19,7 +21,8 @@ object Utils {
             Class.forName(target)
         } catch (e: ClassNotFoundException) {
             e.printStackTrace()
-            FastScript.sendMessage(FastScript.CONSOLE,"§7[§2Fast§aScript§7] §cERROR §8| §c脚本 §4${script.name} 没有找到类 ${target}, 依赖于该类的方法将不会起作用!")
+            FastScript.CONSOLE.sendMessage(FormatHeader.ERROR, "脚本 §c${script.name} §7没有找到类 §c${target}§7, 错误如下:")
+            FastScript.CONSOLE.sendMessage("§7${e.message}")
             null
         }
     }
@@ -31,8 +34,8 @@ object Utils {
             constructor.newInstance(args)
         } catch (e: Exception) {
             e.printStackTrace()
-            FastScript.sendMessage(FastScript.CONSOLE,"§7[§2Fast§aScript§7] §cERROR §8| §7脚本 §c${script.name} §7执行初始化时发生错误, 错误如下:")
-            FastScript.sendMessage(FastScript.CONSOLE, "§7${e.message}")
+            FastScript.CONSOLE.sendMessage(FormatHeader.ERROR, "脚本 §c${script.name} §7执行初始化时发生错误, 错误如下:")
+            FastScript.CONSOLE.sendMessage("§7${e.message}")
             null
         }
     }
@@ -80,8 +83,8 @@ object Utils {
             return method.invoke(obj, args)
         } catch (e: Exception) {
             e.printStackTrace()
-            FastScript.sendMessage(FastScript.CONSOLE,"§7[§2Fast§aScript§7] §cERROR §8| §7脚本 §c${script.name} §7访问方法 §c${method.name} §7时发生错误, 错误如下:")
-            FastScript.sendMessage(FastScript.CONSOLE, "§7${e.message}")
+            FastScript.CONSOLE.sendMessage(FormatHeader.ERROR, "脚本 §c${script.name} §7访问方法 §c${method.name} §7时发生错误, 错误如下:")
+            FastScript.CONSOLE.sendMessage("§7${e.message}")
         }
         return null
     }

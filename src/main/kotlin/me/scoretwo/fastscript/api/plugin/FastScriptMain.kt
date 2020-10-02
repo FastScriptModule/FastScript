@@ -21,5 +21,6 @@ interface FastScriptMain {
 
     fun hasPermission(sender: Any, string: String): Boolean
 
+    fun translateStringColors(string: String): String
 
 }

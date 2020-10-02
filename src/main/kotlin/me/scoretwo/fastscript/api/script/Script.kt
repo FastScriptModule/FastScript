@@ -1,15 +1,19 @@
 package me.scoretwo.fastscript.api.script
 
 import me.scoretwo.fastscript.FastScript
+import me.scoretwo.fastscript.FormatHeader
 import me.scoretwo.fastscript.api.script.ScriptImport.Companion.TYPE.*
 import me.scoretwo.fastscript.api.yaml.YAMLObject
 import me.scoretwo.fastscript.config.SettingConfig
+import me.scoretwo.fastscript.sendMessage
+import me.scoretwo.fastscript.utils.StreamUtils
 import me.scoretwo.fastscript.utils.Utils
 import java.io.File
 import java.io.FileInputStream
 import java.io.InputStream
 import javax.script.ScriptEngine
 import javax.script.ScriptEngineManager
+import javax.script.ScriptException
 
 abstract class Script {
 
@@ -40,6 +44,15 @@ abstract class Script {
         onReload()
     }
 
+    fun directEval(): String? {
+        return try {
+            scriptEngine.eval(StreamUtils.toString(inputStream)).toString()
+        } catch (e: ScriptException) {
+            e.printStackTrace()
+            null
+        }
+    }
+
     fun onReload() {
         if (scriptFile == null) return
         Utils.saveDefaultResource(scriptFile!!, inputStream)
@@ -56,34 +69,34 @@ abstract class Script {
             when (it.type) {
                 INIT -> {
                     this.scriptEngine.put(
-                        it.name,
-                        Utils.getObjectInit(this, Utils.findClass(this, it.obj!!.clazz)!!, it.obj.args)
+                            it.name,
+                            Utils.getObjectInit(this, Utils.findClass(this, it.obj!!.clazz)!!, it.obj.args)
                     )
                 }
                 OBJECT -> {
                     this.scriptEngine.put(
-                        it.name,
-                        Utils.getObjectMethodResults(
-                            this,
-                            Utils.findClass(this, it.obj!!.clazz)!!,
-                            it.obj.args,
-                            it.met!!.name,
-                            it.met.args
-                        )
+                            it.name,
+                            Utils.getObjectMethodResults(
+                                    this,
+                                    Utils.findClass(this, it.obj!!.clazz)!!,
+                                    it.obj.args,
+                                    it.met!!.name,
+                                    it.met.args
+                            )
                     )
                 }
                 STATIC -> {
                     this.scriptEngine.put(
-                        it.name,
-                        Utils.getStaticMethodResults(
-                            this,
-                            Utils.findClass(this, it.obj!!.clazz)!!,
-                            it.met!!.name
-                        )
+                            it.name,
+                            Utils.getStaticMethodResults(
+                                    this,
+                                    Utils.findClass(this, it.obj!!.clazz)!!,
+                                    it.met!!.name
+                            )
                     )
                 }
                 else -> {
-                    FastScript.sendMessage(FastScript.CONSOLE, "§7[§2Fast§aScript§7] §cERROR §8| §7脚本 §c$name §7元素 §c${it.name} §7导入失败, 无法识别该元素的形式.")
+                    FastScript.CONSOLE.sendMessage(FormatHeader.ERROR,"脚本 §c$name §7元素 §c${it.name} §7导入失败, 无法识别该元素的形式.")
                 }
             }
         }

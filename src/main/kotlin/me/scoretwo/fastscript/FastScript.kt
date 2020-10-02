@@ -3,6 +3,8 @@ package me.scoretwo.fastscript
 import me.scoretwo.fastscript.api.plugin.FastScriptMain
 import me.scoretwo.fastscript.api.script.ScriptManager
 import me.scoretwo.fastscript.commands.CommandManager
+import me.scoretwo.fastscript.config.MessageConfig
+import me.scoretwo.fastscript.config.SettingConfig
 import java.io.File
 
 class FastScript(main: FastScriptMain) {
@@ -18,7 +20,7 @@ class FastScript(main: FastScriptMain) {
     fun hasPermission(sender: Any, string: String) = main.hasPermission(sender, string)
     fun setPlaceholder(player: Any, string: String) = main.setPlaceholder(player, string)
     fun sendMessage(sender: Any, string: String, colorIndex: Boolean) = main.sendMessage(sender, string, colorIndex)
-    fun sendMessage(sender: Any, strings: Array<String>, colorIndex: Boolean) = strings.forEach { main.sendMessage(sender, it, colorIndex) }
+    fun translateStringColors(string: String): String = main.translateStringColors(string)
 
     init {
         CONSOLE = main.CONSOLE
@@ -72,6 +74,13 @@ class FastScript(main: FastScriptMain) {
     companion object {
         lateinit var instance: FastScript
         var CONSOLE = Any()
+
+        fun setBootstrap(main: FastScriptMain) {
+            /*if (initialized) {
+                throw UnsupportedOperationException("Cannot redefine instance")
+            }*/
+            instance = FastScript(main)
+        }
 /*
         @JvmStatic
         fun main(args: Array<out String>) {
@@ -136,23 +145,6 @@ class FastScript(main: FastScriptMain) {
             println()
         }
 */
-
-        fun sendMessage(sender: Any, string: String, colorIndex: Boolean = false) {
-            instance.sendMessage(sender, string, colorIndex)
-        }
-        fun sendMessage(sender: Any, strings: Array<String>, colorIndex: Boolean = false) {
-            instance.sendMessage(sender, strings, colorIndex)
-        }
-
-        fun setBootstrap(main: FastScriptMain) {
-            if (instance != null) {
-                throw UnsupportedOperationException("Cannot redefine instance")
-            }
-
-            instance = FastScript(main)
-        }
-
-
     }
 
 }
@@ -163,12 +155,25 @@ fun Any.hasPermission(string: String): Boolean {
     return FastScript.instance.hasPermission(this, string)
 }
 
+
+fun Any.sendMessage(formatHeader: FormatHeader, strings: Array<String>, colorIndex: Boolean = false) {
+    strings.forEach {
+        this.sendMessage(formatHeader, it, colorIndex)
+    }
+}
+
+fun Any.sendMessage(formatHeader: FormatHeader, string: String, colorIndex: Boolean = false) {
+    this.sendMessage("${SettingConfig.instance.defaultLanguage.getLowerCaseYAMLObject("FORMAT-HEADER").getLowerCaseString(formatHeader.name)}${string}", colorIndex)
+}
+
 fun Any.sendMessage(string: String, colorIndex: Boolean = false) {
     FastScript.instance.sendMessage(this, string, colorIndex)
 }
 
 fun Any.sendMessage(strings: Array<String>, colorIndex: Boolean = false) {
-    FastScript.instance.sendMessage(this, strings, colorIndex)
+    strings.forEach {
+        this.sendMessage(it, colorIndex)
+    }
 }
 
 fun String.setPlaceholder(sender: Any): String {

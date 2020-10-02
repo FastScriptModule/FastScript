@@ -28,7 +28,6 @@ class PlaceholderAPIHook(val javaPlugin: JavaPlugin): PlaceholderExpansion() {
     }
 
     companion object {
-
         fun setPlaceholder(player: Player?, string: String): String = PlaceholderAPI.setPlaceholders(player, string)
     }
 }
