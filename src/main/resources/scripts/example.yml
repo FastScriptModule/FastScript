@@ -40,3 +40,10 @@ import:
     method:
       name: 'getServer'
       args: []
+
+  example:
+    type: STATIC
+    object:
+      class: 'org.buikkt.Bukkit'
+    method:
+      name: 'getServer'
