@@ -5,17 +5,18 @@ import me.scoretwo.fastscript.api.script.ScriptManager
 import me.scoretwo.fastscript.commands.CommandManager
 import me.scoretwo.fastscript.config.MessageConfig
 import me.scoretwo.fastscript.config.SettingConfig
+import me.scoretwo.utils.configuration.patchs.getLowerCaseNode
 import java.io.File
 
 class FastScript(main: FastScriptMain) {
 
     private val main: FastScriptMain = main
 
-    val scriptManager = ScriptManager()
-    val commandManager = CommandManager()
+    val dataFolder: File
+    val classLoader: ClassLoader
 
-    val dataFolder = main.getDataFolder()
-    val classLoader = main.getPluginClassLoader()
+    val scriptManager: ScriptManager
+    val commandManager: CommandManager
 
     fun hasPermission(sender: Any, string: String) = main.hasPermission(sender, string)
     fun setPlaceholder(player: Any, string: String) = main.setPlaceholder(player, string)
@@ -23,8 +24,20 @@ class FastScript(main: FastScriptMain) {
     fun translateStringColors(string: String): String = main.translateStringColors(string)
 
     init {
+        instance = this
         CONSOLE = main.CONSOLE
         printLogo()
+
+        dataFolder = main.getDataFolder()
+        classLoader = main.getPluginClassLoader()
+        scriptManager = ScriptManager()
+        commandManager = CommandManager()
+
+        if (!dataFolder.exists()) {
+            dataFolder.mkdirs()
+        }
+
+        SettingConfig.init()
     }
 
    /**
@@ -36,6 +49,9 @@ class FastScript(main: FastScriptMain) {
     }
 
     fun onReload() {
+        if (!dataFolder.exists()) {
+            dataFolder.mkdirs()
+        }
         main.onReload()
         initInternalScripts()
         scriptManager.loadScripts()
@@ -59,7 +75,7 @@ class FastScript(main: FastScriptMain) {
         it.forEachIndexed { index, raw ->
             if (raw.isNotBlank()) {
                 val line = raw.toCharArray()
-                val width = (2..8).random()
+                val width = (2..6).random()
                 var randomIndex: Int
                 do {
                     randomIndex = (2..line.size - width).random()
@@ -79,7 +95,7 @@ class FastScript(main: FastScriptMain) {
             /*if (initialized) {
                 throw UnsupportedOperationException("Cannot redefine instance")
             }*/
-            instance = FastScript(main)
+            FastScript(main)
         }
 /*
         @JvmStatic
@@ -163,7 +179,9 @@ fun Any.sendMessage(formatHeader: FormatHeader, strings: Array<String>, colorInd
 }
 
 fun Any.sendMessage(formatHeader: FormatHeader, string: String, colorIndex: Boolean = false) {
-    this.sendMessage("${SettingConfig.instance.defaultLanguage.getLowerCaseYAMLObject("FORMAT-HEADER").getLowerCaseString(formatHeader.name)}${string}", colorIndex)
+    this.sendMessage("${
+        SettingConfig.instance.defaultLanguage.getString(SettingConfig.instance.defaultLanguage.getLowerCaseNode("format-header.${formatHeader.name.toLowerCase()}"))
+    }${string}", colorIndex)
 }
 
 fun Any.sendMessage(string: String, colorIndex: Boolean = false) {

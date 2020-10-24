@@ -1,0 +1,14 @@
+[
+    {
+        "modid": "${modid}",
+        "name": "${name}",
+        "version": "${version}",
+        "description": "${description}",
+        "dependencies": [
+            "placeholderapi"
+        ],
+        "authorList": [
+            "Score2"
+        ]
+    }
+]

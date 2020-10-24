@@ -3,11 +3,9 @@ package me.scoretwo.fastscript.bukkit
 import me.scoretwo.fastscript.FastScript
 import me.scoretwo.fastscript.FormatHeader
 import me.scoretwo.fastscript.api.plugin.FastScriptMain
-import me.scoretwo.fastscript.bukkit.hooks.PlaceholderAPIHook
+import me.scoretwo.fastscript.bukkit.hook.PlaceholderAPIHook
 import me.scoretwo.fastscript.sendMessage
 import net.md_5.bungee.api.ChatColor
-import net.md_5.bungee.api.ChatMessageType
-import net.md_5.bungee.api.chat.TextComponent
 import org.bstats.bukkit.Metrics
 import org.bukkit.Bukkit
 import org.bukkit.command.Command
@@ -17,13 +15,13 @@ import org.bukkit.command.SimpleCommandMap
 import org.bukkit.entity.Player
 import org.bukkit.plugin.java.JavaPlugin
 
-class BukkitSection: JavaPlugin(), FastScriptMain {
+class BukkitPlugin: JavaPlugin(), FastScriptMain {
 
     override fun onLoad() {
-        FastScript.setBootstrap(this)
     }
 
     override fun onEnable() {
+        FastScript.setBootstrap(this)
         FastScript.instance.onReload()
 
         // 暂无计划

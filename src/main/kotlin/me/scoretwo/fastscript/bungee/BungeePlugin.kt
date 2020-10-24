@@ -10,13 +10,13 @@ import net.md_5.bungee.api.plugin.Command
 import net.md_5.bungee.api.plugin.Plugin
 import net.md_5.bungee.api.plugin.TabExecutor
 
-class BungeeSection: Plugin(), FastScriptMain {
+class BungeePlugin: Plugin(), FastScriptMain {
 
     override fun onLoad() {
-        FastScript.setBootstrap(this)
     }
 
     override fun onEnable() {
+        FastScript.setBootstrap(this)
         FastScript.instance.onReload()
 
         ProxyServer.getInstance().pluginManager.registerCommand(this, object : Command("FastScript", null, "script"), TabExecutor {

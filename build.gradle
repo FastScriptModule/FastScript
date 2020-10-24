@@ -7,52 +7,74 @@ buildscript {
         classpath("com.github.jengelman.gradle.plugins:shadow:5.2.0")
     }
 }
+
 plugins {
     id 'org.jetbrains.kotlin.jvm' version '1.4.10'
     id 'com.github.johnrengelman.shadow' version '5.2.0'
 }
 
+apply plugin: 'maven'
+
 group 'me.scoretwo'
-version '0.11'
+version '1.0.1-SNAPSHOT'
+description 'FastScript is a Spigot plugin, which can run JavaScript-based scripts more efficiently.'
 
 defaultTasks 'clean', 'build', 'test', 'shadowJar'
 
 repositories {
     jcenter()
     mavenCentral()
+    maven {url 'https://jitpack.io'}
+    maven {url 'http://repo.drnaylor.co.uk/artifactory/list/minecraft'}
+    maven {url 'https://repo.velocitypowered.com/snapshots/'}
+    maven {url 'https://raw.github.com/FabioZumbi12/UltimateChat/mvn-repo/'}
     maven {url 'https://repo.codemc.org/repository/maven-public'}
     maven {url 'https://hub.spigotmc.org/nexus/content/repositories/snapshots/'}
     maven {url 'https://oss.sonatype.org/content/repositories/snapshots'}
     maven {url 'https://repo.md-5.net/repository/public'}
     maven {url 'https://repo.extendedclip.com/content/repositories/placeholderapi/'}
     maven {url 'http://maven.aliyun.com/nexus/content/groups/public'}
+    maven {url 'https://repo.spongepowered.org/maven'}
 }
 
 dependencies {
-    compile "org.bstats:bstats-bukkit:1.7"
-    compile "commons-io:commons-io:2.7"
-    compile "com.alibaba:fastjson:1.2.9"
-    compile "org.jetbrains.kotlin:kotlin-stdlib"
-    compile "com.andreapivetta.kolor:kolor:1.0.0"
-    implementation "org.yaml:snakeyaml:1.27"
-    implementation "org.apache.commons:commons-lang3:3.10"
-    implementation "org.spigotmc:spigot-api:1.16.3-R0.1-SNAPSHOT"
-    implementation "net.md-5:bungeecord-api:1.16-R0.3"
-    implementation "me.clip:placeholderapi:2.10.9"
+    // Other
+    compile 'commons-io:commons-io:2.7'
+    compile 'org.jetbrains.kotlin:kotlin-stdlib'
+    implementation 'org.yaml:snakeyaml:1.27'
+    implementation 'org.apache.commons:commons-lang3:3.10'
     implementation fileTree(dir: 'libs', includes: ['*.jar'])
+
+    // Sponge
+    implementation 'org.spongepowered:spongeapi:7.2.0'
+    implementation 'com.github.rojo8399:PlaceholderAPI:master-SNAPSHOT'
+
+    // Bukkit
+    implementation 'org.spigotmc:spigot-api:1.16.3-R0.1-SNAPSHOT'
+    implementation 'me.clip:placeholderapi:2.10.9'
+    compile 'org.bstats:bstats-bukkit:1.7'
+
+    // Bungee
+    implementation 'net.md-5:bungeecord-api:1.16-R0.3'
+
+    // Velocity
+    implementation 'com.velocitypowered:velocity-api:1.0.11-SNAPSHOT'
 }
 
 shadowJar {
     dependencies {
         include(dependency('org.bstats:bstats-bukkit:1.7'))
         include(dependency('commons-io:commons-io:2.7'))
-        include(dependency('com.alibaba:fastjson:1.2.9'))
         include(dependency('org.jetbrains.kotlin:kotlin-stdlib'))
         include(dependency(fileTree(dir: 'libs', includes: ['*.jar'])))
     }
-    relocate("org.bstats", "me.scoretwo.fastscript.libs.bstats")
-    relocate("org.apache", "me.scoretwo.fastscript.libs.apache")
+    relocate("org.bstats", "me.scoretwo.utils.bstats")
+    relocate("org.apache.commons.io", "me.scoretwo.utils.apache.commons.io")
     archiveFileName = "${project.name}-${project.version}.jar"
+}
+
+artifacts {
+    archives shadowJar
 }
 
 processResources {
@@ -60,16 +82,37 @@ processResources {
         include 'plugin.yml'
         expand(
                 'name': project.name,
-                'main': project.group + "." + project.name.toLowerCase() + ".bukkit.BukkitSection",
+                'main': project.group + "." + project.name.toLowerCase() + ".bukkit.BukkitPlugin",
                 'version': project.version,
+                'description': project.description,
         )
     }
     from(sourceSets.main.resources.srcDirs) {
         include 'bungee.yml'
         expand(
                 'name': project.name,
-                'main': project.group + "." + project.name.toLowerCase() + ".bungee.BungeeSection",
+                'main': project.group + "." + project.name.toLowerCase() + ".bungee.BungeePlugin",
                 'version': project.version,
+                'description': project.description,
+        )
+    }
+    from(sourceSets.main.resources.srcDirs) {
+        include 'mcmod.info'
+        expand(
+                'modid': "fastscript",
+                'name': project.name,
+                'version': project.version,
+                'description': project.description,
+        )
+    }
+    from(sourceSets.main.resources.srcDirs) {
+        include 'velocity-plugin.json'
+        expand(
+                'modid': "fastscript",
+                'name': project.name,
+                'main': project.group + "." + project.name.toLowerCase() + ".veloity.VeloityPlugin",
+                'version': project.version,
+                'description': project.description,
         )
     }
 }

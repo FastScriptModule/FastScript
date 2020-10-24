@@ -1,12 +1,15 @@
 package me.scoretwo.fastscript.config
 
-import me.scoretwo.fastscript.api.yaml.YAMLObject
+import me.scoretwo.utils.configuration.file.YamlConfiguration
 import java.io.File
 
-abstract class Config: YAMLObject {
+abstract class Config: YamlConfiguration {
 
-    constructor(file: File): super(file) {
+    val file: File
 
+    constructor(file: File) {
+        this.file = file
+        this.load(file)
     }
 
     abstract fun onReload()

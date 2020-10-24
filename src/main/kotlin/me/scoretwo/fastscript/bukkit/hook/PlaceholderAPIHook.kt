@@ -1,7 +1,8 @@
-package me.scoretwo.fastscript.bukkit.hooks
+package me.scoretwo.fastscript.bukkit.hook
 
 import me.clip.placeholderapi.PlaceholderAPI
 import me.clip.placeholderapi.expansion.PlaceholderExpansion
+import me.scoretwo.fastscript.api.placeholder.Placeholders
 import org.bukkit.entity.Player
 import org.bukkit.plugin.java.JavaPlugin
 
@@ -24,7 +25,7 @@ class PlaceholderAPIHook(val javaPlugin: JavaPlugin): PlaceholderExpansion() {
     }
 
     override fun onPlaceholderRequest(player: Player, params: String): String {
-        TODO()
+        return Placeholders.parse(player, params)
     }
 
     companion object {

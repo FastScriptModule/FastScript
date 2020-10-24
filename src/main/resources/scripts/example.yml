@@ -12,7 +12,8 @@ import:
 #  demo2: 'object|org.bukkit.util.Vector|1|2...'
 
   vector:
-    init:
+    type: OBJECT_INIT
+    object:
       class: 'org.bukkit.util.Vector'
       args:
         - 1
@@ -20,6 +21,7 @@ import:
         - 1
 
   vector_length:
+    type: OBJECT
     object:
       class: 'org.bukkit.util.Vector'
       args: []
@@ -35,15 +37,9 @@ import:
 #      args: []
 
   server:
-    static:
+    type: STATIC
+    object:
       class: 'org.bukkit.Bukkit'
     method:
       name: 'getServer'
       args: []
-
-  example:
-    type: STATIC
-    object:
-      class: 'org.buikkt.Bukkit'
-    method:
-      name: 'getServer'

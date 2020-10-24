@@ -2,12 +2,13 @@ package me.scoretwo.fastscript.api.script
 
 import me.scoretwo.fastscript.FastScript
 import me.scoretwo.fastscript.FormatHeader
-import me.scoretwo.fastscript.api.script.ScriptImport.Companion.TYPE.*
-import me.scoretwo.fastscript.api.yaml.YAMLObject
+import me.scoretwo.fastscript.api.script.options.ScriptOption
+import me.scoretwo.fastscript.api.script.options.imports.ScriptImportType.*
 import me.scoretwo.fastscript.config.SettingConfig
 import me.scoretwo.fastscript.sendMessage
 import me.scoretwo.fastscript.utils.StreamUtils
 import me.scoretwo.fastscript.utils.Utils
+import me.scoretwo.utils.configuration.file.YamlConfiguration
 import java.io.File
 import java.io.FileInputStream
 import java.io.InputStream
@@ -38,7 +39,7 @@ abstract class Script {
         if (scriptFile != null && !optionFile!!.exists()) {
             this.scriptOption = SettingConfig.instance.defaultScriptOption
         } else {
-            this.scriptOption = ScriptOption.fromConfigSection(YAMLObject.loadConfiguration(optionFile!!))
+            this.scriptOption = ScriptOption.fromConfig(YamlConfiguration.loadConfiguration(optionFile!!))
         }
 
         onReload()
@@ -67,7 +68,7 @@ abstract class Script {
         scriptOption.import.forEach {
 
             when (it.type) {
-                INIT -> {
+                OBJECT_INIT -> {
                     this.scriptEngine.put(
                             it.name,
                             Utils.getObjectInit(this, Utils.findClass(this, it.obj!!.clazz)!!, it.obj.args)

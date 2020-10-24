@@ -1,12 +1,12 @@
 package me.scoretwo.fastscript.config
 
 import me.scoretwo.fastscript.FastScript
-import me.scoretwo.fastscript.api.script.ScriptOption
-import me.scoretwo.fastscript.api.yaml.YAMLObject
-import me.scoretwo.fastscript.utils.FileUtils
+import me.scoretwo.fastscript.api.script.options.ScriptOption
+import me.scoretwo.utils.configuration.patchs.getLowerCaseNode
+import me.scoretwo.utils.language.save
 import java.io.File
 
-class SettingConfig: Config(File(FastScript.instance.dataFolder, "settings.yml")) {
+class SettingConfig(file: File): Config(file) {
 
     lateinit var defaultScriptOption: ScriptOption
 
@@ -20,16 +20,29 @@ class SettingConfig: Config(File(FastScript.instance.dataFolder, "settings.yml")
     }
 
     override fun onReload() {
-        setMap(loadConfiguration(file))
-        for (s in getLowerCaseYAMLArray("load-script-files")) { if (s is String) { scriptPaths.add(File(s)) } }
-        defaultScriptOption = ScriptOption.fromConfigSection(getLowerCaseYAMLObject("default-script-options"))
+        load(file)
+        for (s in getStringList(getLowerCaseNode("load-script-files"))) {
+            scriptPaths.add(File(s))
+        }
+
+        defaultScriptOption = ScriptOption.fromConfig(getConfigurationSection(getLowerCaseNode("default-script-options"))!!)
         defaultLanguage = MessageConfig(File(
                 "${FastScript.instance.dataFolder}/languages",
-                "${getLowerCaseYAMLObject("options").getLowerCaseString("language")}.yml"))
+                "${getString(getLowerCaseNode("options.language"))}.yml"))
     }
 
     companion object {
         lateinit var instance: SettingConfig
+
+        fun init() {
+            val file = File(FastScript.instance.dataFolder, "settings.yml")
+
+            if (!file.exists()) {
+                file.save(FastScript.instance.classLoader.getResourceAsStream("/settings.yml")!!)
+            }
+
+            SettingConfig(file)
+        }
     }
 
 }
