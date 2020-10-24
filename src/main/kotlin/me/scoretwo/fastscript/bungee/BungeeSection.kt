@@ -5,6 +5,7 @@ import me.scoretwo.fastscript.api.plugin.FastScriptMain
 import net.md_5.bungee.api.ChatColor
 import net.md_5.bungee.api.CommandSender
 import net.md_5.bungee.api.ProxyServer
+import net.md_5.bungee.api.chat.TextComponent
 import net.md_5.bungee.api.plugin.Command
 import net.md_5.bungee.api.plugin.Plugin
 import net.md_5.bungee.api.plugin.TabExecutor
@@ -44,7 +45,7 @@ class BungeeSection: Plugin(), FastScriptMain {
     }
 
     override fun sendMessage(sender: Any, string: String, colorIndex: Boolean) {
-        asSender(sender)?.sendMessage(if (colorIndex) translateStringColors(string) else string)
+        asSender(sender)?.sendMessage(TextComponent(if (colorIndex) translateStringColors(string) else string))
     }
 
     override fun hasPermission(sender: Any, string: String): Boolean {
