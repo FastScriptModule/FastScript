@@ -17,6 +17,35 @@ In the project root directory:
 ./gradle shadowJar
 ```
 ***
+### Developer
+> Maven usage
+```
+<repositories>
+    <repository>
+        <id>roselle-repo</id>
+        <url>http://mc3.roselle.vip:602/maven-repositories/</url>
+    </repository>
+</repositories>
+
+<dependencies>
+    <dependency>
+        <groupId>me.scoretwo</groupId>
+        <artifactId>FastScript</artifactId>
+        <version>1.0.1-SNAPSHOT</version>
+        <scope>provided</scope>
+    </dependency>
+</dependencies>
+```
+> Gradle
+```
+repositories {
+    maven {url 'http://mc3.roselle.vip:602/maven-repositories/'}
+}
+dependencies {
+    implementation 'me.scoretwo:FastScript:1.0.1-SNAPSHOT'
+}
+```
+
 ### Links
 
 [<img src="http://mc3.roselle.vip:602/icons/github.svg" width="64" height="64"/>](https://github.com/Score2/FastScript) 　[<img src="http://mc3.roselle.vip:602/icons/wiki.svg" width="64" height="64"/>](https://github.com/Score2/FastScript/wiki) 　[<img src="http://mc3.roselle.vip:602/icons/discord.svg" width="64" height="64"/>](https://discord.gg/GVM6vx9)
