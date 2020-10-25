@@ -26,7 +26,7 @@ abstract class Script {
 
     lateinit var scriptEngine: ScriptEngine
 
-    constructor(file: File): this(file.name.substring(0, file.name.indexOf(".") - 1), FileInputStream(file)) {
+    constructor(file: File): this(file.name.substring(0, file.name.indexOf(".") + 1), FileInputStream(file)) {
         this.scriptFile = file
     }
 

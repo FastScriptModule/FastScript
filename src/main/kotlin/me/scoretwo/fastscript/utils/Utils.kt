@@ -91,12 +91,14 @@ object Utils {
 
 
     fun saveDefaultResource(target: File, inputStream: InputStream) {
-        if (target.exists()) {
+        target.parentFile.mkdirs()
+        if (!target.exists()) {
             saveResource(target, inputStream)
         }
     }
 
     fun saveResource(target: File, inputStream: InputStream) {
+        target.parentFile.mkdirs()
         FileUtils.save(target, inputStream)
     }
 

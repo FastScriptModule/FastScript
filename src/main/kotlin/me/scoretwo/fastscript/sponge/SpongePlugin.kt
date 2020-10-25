@@ -6,6 +6,7 @@ import me.scoretwo.fastscript.FormatHeader
 import me.scoretwo.fastscript.api.plugin.FastScriptMain
 import me.scoretwo.fastscript.sendMessage
 import me.scoretwo.fastscript.sponge.hook.PlaceholderAPIHook
+import net.md_5.bungee.api.ChatColor
 import org.spongepowered.api.Sponge
 import org.spongepowered.api.command.CommandResult
 import org.spongepowered.api.command.CommandSource
@@ -87,7 +88,7 @@ class SpongePlugin: FastScriptMain {
     }
 
     override fun translateStringColors(string: String): String {
-        return string.replace("§", "&")
+        return ChatColor.translateAlternateColorCodes('&', string)
     }
 
     fun asSender(sender: Any): CommandSource? {

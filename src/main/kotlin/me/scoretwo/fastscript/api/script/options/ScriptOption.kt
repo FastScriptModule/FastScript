@@ -17,7 +17,7 @@ class ScriptOption(val engine: String, val import: MutableList<ScriptImport>, va
             val importSection = section.getConfigurationSection(section.getLowerCaseNode("import"))!!
 
             for (name in importSection.getKeys(false)) {
-                import.add(ScriptImport.fromConfig(name, section.getConfigurationSection(name)!!))
+                import.add(ScriptImport.fromConfig(name, importSection.getConfigurationSection(name)!!))
             }
 
             return ScriptOption(engine, import, main)

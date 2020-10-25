@@ -3,10 +3,13 @@ package me.scoretwo.fastscript
 import me.scoretwo.fastscript.api.plugin.FastScriptMain
 import me.scoretwo.fastscript.api.script.ScriptManager
 import me.scoretwo.fastscript.commands.CommandManager
-import me.scoretwo.fastscript.config.MessageConfig
 import me.scoretwo.fastscript.config.SettingConfig
+import me.scoretwo.fastscript.utils.Utils
 import me.scoretwo.utils.configuration.patchs.getLowerCaseNode
 import java.io.File
+import java.io.IOException
+import java.io.InputStream
+import java.net.URL
 
 class FastScript(main: FastScriptMain) {
 
@@ -27,6 +30,7 @@ class FastScript(main: FastScriptMain) {
         instance = this
         CONSOLE = main.CONSOLE
         printLogo()
+        println("FastScript 正在初始化...")
 
         dataFolder = main.getDataFolder()
         classLoader = main.getPluginClassLoader()
@@ -40,7 +44,18 @@ class FastScript(main: FastScriptMain) {
         SettingConfig.init()
     }
 
-   /**
+    fun getResource(filename: String): InputStream? {
+        return try {
+            val url: URL = classLoader.getResource(filename) ?: return null
+            val connection = url.openConnection()
+            connection.useCaches = false
+            connection.getInputStream()
+        } catch (ex: IOException) {
+            null
+        }
+    }
+
+    /**
     * 初始化内置脚本
     * 暂时弃坑
     */
@@ -48,40 +63,45 @@ class FastScript(main: FastScriptMain) {
 
     }
 
+    fun initLanguageFiles() {
+        Utils.saveDefaultResource(File("${dataFolder}/languages", "en_US.yml"), getResource("lang/en_US.yml")!!)
+        Utils.saveDefaultResource(File("${dataFolder}/languages", "zh_CN.yml"), getResource("lang/zh_CN.yml")!!)
+    }
+
     fun onReload() {
         if (!dataFolder.exists()) {
             dataFolder.mkdirs()
         }
         main.onReload()
+        initLanguageFiles()
         initInternalScripts()
         scriptManager.loadScripts()
         commandManager.initCommands()
     }
 
-   /**
+    /**
     * 用于随机点亮 FastScript 的 Logo.
     * 该创意来源于 TrMenu
     * @author Arasple
     */
-
     fun printLogo() = arrayOf(
-            "___________                __   _________            .__        __   ",
-            "\\_   _____/____    _______/  |_/   _____/ ___________|__|______/  |_ ",
-            " |    __) \\__  \\  /  ___/\\   __\\_____  \\_/ ___\\_  __ \\  \\____ \\   __\\",
-            " |     \\   / __ \\_\\___ \\  |  | /        \\  \\___|  | \\/  |  |_> >  |  ",
-            " \\___  /  (____  /____  > |__|/_______  /\\___  >__|  |__|   __/|__|  ",
-            "     \\/        \\/     \\/              \\/     \\/         |__|         "
-    ).let {
+       "___________                __   _________            .__        __   ",
+       "\\_   _____/____    _______/  |_/   _____/ ___________|__|______/  |_ ",
+       " |    __) \\__  \\  /  ___/\\   __\\_____  \\_/ ___\\_  __ \\  \\____ \\   __\\",
+       " |     \\   / __ \\_\\___ \\  |  | /        \\  \\___|  | \\/  |  |_> >  |  ",
+       " \\___  /  (____  /____  > |__|/_______  /\\___  >__|  |__|   __/|__|  ",
+       "     \\/        \\/     \\/              \\/     \\/         |__|         "
+   ).let {
         it.forEachIndexed { index, raw ->
             if (raw.isNotBlank()) {
                 val line = raw.toCharArray()
-                val width = (2..6).random()
+                val width = (2..8).random()
                 var randomIndex: Int
                 do {
                     randomIndex = (2..line.size - width).random()
                 } while (String(line.copyOfRange(randomIndex, randomIndex + width)).isBlank())
                 val replace = String(line.copyOfRange(randomIndex, randomIndex + width))
-                it[index] = String(line).replaceFirst(replace, "§${arrayOf('9', 'b', '3').random()}$replace§8")
+                it[index] = String(line).replaceFirst(replace, "§${arrayOf('a', 'b', '2').random()}$replace§8")
             }
         }
         CONSOLE.sendMessage(it)
@@ -172,23 +192,23 @@ fun Any.hasPermission(string: String): Boolean {
 }
 
 
-fun Any.sendMessage(formatHeader: FormatHeader, strings: Array<String>, colorIndex: Boolean = false) {
+fun Any.sendMessage(formatHeader: FormatHeader, strings: Array<String>, colorIndex: Boolean = true) {
     strings.forEach {
         this.sendMessage(formatHeader, it, colorIndex)
     }
 }
 
-fun Any.sendMessage(formatHeader: FormatHeader, string: String, colorIndex: Boolean = false) {
-    this.sendMessage("${
-        SettingConfig.instance.defaultLanguage.getString(SettingConfig.instance.defaultLanguage.getLowerCaseNode("format-header.${formatHeader.name.toLowerCase()}"))
-    }${string}", colorIndex)
+fun Any.sendMessage(formatHeader: FormatHeader, string: String, colorIndex: Boolean = true) {
+    this.sendMessage(
+        "${SettingConfig.instance.defaultLanguage.getString(SettingConfig.instance.defaultLanguage.getLowerCaseNode("format-header.${formatHeader.name.toLowerCase()}"))}${string}", colorIndex
+    )
 }
 
-fun Any.sendMessage(string: String, colorIndex: Boolean = false) {
+fun Any.sendMessage(string: String, colorIndex: Boolean = true) {
     FastScript.instance.sendMessage(this, string, colorIndex)
 }
 
-fun Any.sendMessage(strings: Array<String>, colorIndex: Boolean = false) {
+fun Any.sendMessage(strings: Array<String>, colorIndex: Boolean = true) {
     strings.forEach {
         this.sendMessage(it, colorIndex)
     }

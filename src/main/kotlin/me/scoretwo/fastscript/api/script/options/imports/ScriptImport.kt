@@ -13,10 +13,7 @@ class ScriptImport(val name: String, val type: ScriptImportType, val obj: Object
 
         fun fromConfig(name: String, section: ConfigurationSection): ScriptImport {
             val stringType = section.getString(section.getLowerCaseNode("type"))!!.toUpperCase()
-            val type = if (ScriptImportType.values().contains(ScriptImportType.valueOf(stringType)))
-                ScriptImportType.valueOf(stringType)
-            else
-                ScriptImportType.UNKNOWN
+            val type = ScriptImportType.fromString(stringType)
             val objectSection = section.getConfigurationSection(section.getLowerCaseNode("object"))!!
             val obj = Object(objectSection.getString(objectSection.getLowerCaseNode("class"))!!,
                 if (objectSection.contains(objectSection.getLowerCaseNode("args")))

@@ -8,19 +8,24 @@ Load-Script-Files:
   - 'plugins/CustomScriptFolder'
 
 Default-Script-Options:
+  Main: execute
   Engine: nashorn
 
   Import:
     server:
-      static:
+      type: STATIC
+      object:
         class: 'org.bukkit.Bukkit'
+        args: []
       method:
         name: 'getServer'
         args: []
 
     utils:
-      static:
+      type: STATIC
+      object:
         class: 'me.scoretwo.fastscript.utils.Assist'
+        args: []
       method:
         name: 'instance'
         args: []

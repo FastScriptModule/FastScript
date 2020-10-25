@@ -2,6 +2,7 @@ package me.scoretwo.fastscript.config
 
 import me.scoretwo.fastscript.FastScript
 import me.scoretwo.fastscript.api.script.options.ScriptOption
+import me.scoretwo.fastscript.utils.Utils
 import me.scoretwo.utils.configuration.patchs.getLowerCaseNode
 import me.scoretwo.utils.language.save
 import java.io.File
@@ -12,8 +13,6 @@ class SettingConfig(file: File): Config(file) {
 
     lateinit var defaultLanguage: MessageConfig
 
-    val scriptPaths = mutableListOf<File>()
-
     init {
         instance = this
         onReload()
@@ -21,10 +20,8 @@ class SettingConfig(file: File): Config(file) {
 
     override fun onReload() {
         load(file)
-        for (s in getStringList(getLowerCaseNode("load-script-files"))) {
-            scriptPaths.add(File(s))
-        }
 
+        FastScript.instance.initLanguageFiles()
         defaultScriptOption = ScriptOption.fromConfig(getConfigurationSection(getLowerCaseNode("default-script-options"))!!)
         defaultLanguage = MessageConfig(File(
                 "${FastScript.instance.dataFolder}/languages",
@@ -37,9 +34,7 @@ class SettingConfig(file: File): Config(file) {
         fun init() {
             val file = File(FastScript.instance.dataFolder, "settings.yml")
 
-            if (!file.exists()) {
-                file.save(FastScript.instance.classLoader.getResourceAsStream("/settings.yml")!!)
-            }
+            Utils.saveDefaultResource(file, FastScript.instance.getResource("settings.yml")!!)
 
             SettingConfig(file)
         }

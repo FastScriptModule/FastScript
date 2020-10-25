@@ -1,7 +1,10 @@
 package me.scoretwo.fastscript.api.script
 
 import me.scoretwo.fastscript.FastScript
+import me.scoretwo.fastscript.FormatHeader
 import me.scoretwo.fastscript.config.SettingConfig
+import me.scoretwo.fastscript.sendMessage
+import me.scoretwo.utils.configuration.patchs.getLowerCaseNode
 import java.io.File
 
 class ScriptManager {
@@ -21,23 +24,38 @@ class ScriptManager {
         scripts.add(CustomScript(file))
     }
 
-   /**
+    /**
     * 暂时同步, 异步以后写
     */
     @Synchronized
     fun loadScripts() {
         scripts.clear()
+        defaultScriptPath.mkdirs()
         defaultScriptPath.listFiles()?.forEach { loadScript(it) }
 
-        for (file in SettingConfig.instance.scriptPaths) {
-            if (file.isDirectory) {
-                file.listFiles()?.forEach { loadScript(it) }
-            } else {
-                loadScript(file)
-            }
+        SettingConfig.instance.getStringList(SettingConfig.instance.getLowerCaseNode("load-script-files")).forEach {
+            val file = File(it)
+
+            if (file.exists()) selectScriptFiles(file).forEach { loadScript(it) }
+
         }
-
-
     }
+
+    /**
+     * 选取脚本文件
+     * 该创意来源于 TrMenu
+     * @author Arasple
+     */
+    fun selectScriptFiles(file: File): MutableList<File> =
+        mutableListOf<File>().let { files ->
+            if (file.isDirectory) {
+                file.listFiles()?.forEach {
+                    files.addAll(selectScriptFiles(it))
+                }
+            } else if (!file.name.startsWith("#") && file.name.endsWith(".js", true)) {
+                files.add(file)
+            }
+            return@let files
+        }
 
 }

@@ -24,6 +24,7 @@ defaultTasks 'clean', 'build', 'test', 'shadowJar'
 repositories {
     jcenter()
     mavenCentral()
+    maven {url 'https://hub.spigotmc.org/nexus/content/groups/public/'}
     maven {url 'https://jitpack.io'}
     maven {url 'http://repo.drnaylor.co.uk/artifactory/list/minecraft'}
     maven {url 'https://repo.velocitypowered.com/snapshots/'}
@@ -43,6 +44,7 @@ dependencies {
     compile 'org.jetbrains.kotlin:kotlin-stdlib'
     implementation 'org.yaml:snakeyaml:1.27'
     implementation 'org.apache.commons:commons-lang3:3.10'
+    implementation 'com.google.code.gson:gson:2.8.6'
     implementation fileTree(dir: 'libs', includes: ['*.jar'])
 
     // Sponge
@@ -56,6 +58,7 @@ dependencies {
 
     // Bungee
     implementation 'net.md-5:bungeecord-api:1.16-R0.3'
+    implementation 'net.md-5:bungeecord-chat:1.16-R0.4'
 
     // Velocity
     implementation 'com.velocitypowered:velocity-api:1.0.11-SNAPSHOT'
@@ -65,17 +68,18 @@ shadowJar {
     dependencies {
         include(dependency('org.bstats:bstats-bukkit:1.7'))
         include(dependency('commons-io:commons-io:2.7'))
+        include(dependency('net.md-5:bungeecord-chat:1.16-R0.4'))
         include(dependency('org.jetbrains.kotlin:kotlin-stdlib'))
         include(dependency(fileTree(dir: 'libs', includes: ['*.jar'])))
     }
-    relocate("org.bstats", "me.scoretwo.utils.bstats")
-    relocate("org.apache.commons.io", "me.scoretwo.utils.apache.commons.io")
+    relocate("org.bstats", "me.scoretwo.utils.libs.bstats")
+    relocate("org.apache.commons.io", "me.scoretwo.utils.libs.apache.commons.io")
     archiveFileName = "${project.name}-${project.version}.jar"
 }
 
-artifacts {
+/*artifacts {
     archives shadowJar
-}
+}*/
 
 processResources {
     from(sourceSets.main.resources.srcDirs) {
@@ -110,7 +114,7 @@ processResources {
         expand(
                 'modid': "fastscript",
                 'name': project.name,
-                'main': project.group + "." + project.name.toLowerCase() + ".veloity.VeloityPlugin",
+                'main': project.group + "." + project.name.toLowerCase() + ".velocity.VelocityPlugin",
                 'version': project.version,
                 'description': project.description,
         )
