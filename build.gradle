@@ -33,6 +33,7 @@ repositories {
     maven {url 'https://hub.spigotmc.org/nexus/content/repositories/snapshots/'}
     maven {url 'https://oss.sonatype.org/content/repositories/snapshots'}
     maven {url 'https://repo.md-5.net/repository/public'}
+    maven {url 'http://mc3.roselle.vip:602/maven-repositories/'}
     maven {url 'https://repo.extendedclip.com/content/repositories/placeholderapi/'}
     maven {url 'http://maven.aliyun.com/nexus/content/groups/public'}
     maven {url 'https://repo.spongepowered.org/maven'}
@@ -45,7 +46,8 @@ dependencies {
     implementation 'org.yaml:snakeyaml:1.27'
     implementation 'org.apache.commons:commons-lang3:3.10'
     implementation 'com.google.code.gson:gson:2.8.6'
-    implementation fileTree(dir: 'libs', includes: ['*.jar'])
+    implementation 'me.scoretwo:commons-language:1.0-SNAPSHOT'
+    implementation 'me.scoretwo:commons-configuration:1.0-SNAPSHOT'
 
     // Sponge
     implementation 'org.spongepowered:spongeapi:7.2.0'

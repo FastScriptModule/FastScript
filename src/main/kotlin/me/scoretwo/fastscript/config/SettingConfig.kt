@@ -4,7 +4,6 @@ import me.scoretwo.fastscript.FastScript
 import me.scoretwo.fastscript.api.script.options.ScriptOption
 import me.scoretwo.fastscript.utils.Utils
 import me.scoretwo.utils.configuration.patchs.getLowerCaseNode
-import me.scoretwo.utils.language.save
 import java.io.File
 
 class SettingConfig(file: File): Config(file) {
