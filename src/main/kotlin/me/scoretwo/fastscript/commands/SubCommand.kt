@@ -9,9 +9,7 @@ abstract class SubCommand(val name: String, val sendLimit: SendLimit = SendLimit
     }
 
     companion object {
-        enum class SendLimit {
-            PLAYER, CONSOLE, ALL, PERMISSION
-        }
+        enum class SendLimit { PLAYER, CONSOLE, ALL, PERMISSION }
 
 
     }

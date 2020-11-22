@@ -48,4 +48,6 @@ dependencies {
 
 ### Links
 
-[<img src="http://mc3.roselle.vip:602/icons/github.svg" width="64" height="64"/>](https://github.com/Score2/FastScript) 　[<img src="http://mc3.roselle.vip:602/icons/wiki.svg" width="64" height="64"/>](https://github.com/Score2/FastScript/wiki) 　[<img src="http://mc3.roselle.vip:602/icons/discord.svg" width="64" height="64"/>](https://discord.gg/GVM6vx9)
+[<img src="http://mc3.roselle.vip:602/icons/github.svg" width="64" height="64"/>](https://github.com/Score2/FastScript) 　
+[<img src="http://mc3.roselle.vip:602/icons/wiki.svg" width="64" height="64"/>](https://github.com/Score2/FastScript/wiki) 　
+[<img src="http://mc3.roselle.vip:602/icons/discord.svg" width="64" height="64"/>](https://discord.gg/GVM6vx9)
