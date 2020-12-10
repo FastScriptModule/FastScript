@@ -5,7 +5,6 @@ import me.scoretwo.fastscript.api.script.ScriptManager
 import me.scoretwo.fastscript.commands.CommandManager
 import me.scoretwo.fastscript.config.SettingConfig
 import me.scoretwo.fastscript.utils.Utils
-import me.scoretwo.utils.configuration.patchs.getLowerCaseNode
 import java.io.File
 import java.io.IOException
 import java.io.InputStream
@@ -30,7 +29,7 @@ class FastScript(main: FastScriptMain) {
         instance = this
         CONSOLE = main.CONSOLE
         printLogo()
-        println("FastScript 正在初始化...")
+        println("[FastScript | INIT] 正在初始化...")
 
         dataFolder = main.getDataFolder()
         classLoader = main.getPluginClassLoader()
@@ -80,10 +79,10 @@ class FastScript(main: FastScriptMain) {
     }
 
     /**
-    * 用于随机点亮 FastScript 的 Logo.
-    * 该创意来源于 TrMenu
-    * @author Arasple
-    */
+     * 用于随机点亮 FastScript 的 Logo.
+     * 该创意来源于 TrMenu
+     * @author Arasple
+     */
     fun printLogo() = arrayOf(
        "___________                __   _________            .__        __   ",
        "\\_   _____/____    _______/  |_/   _____/ ___________|__|______/  |_ ",
