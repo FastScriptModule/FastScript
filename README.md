@@ -15,6 +15,8 @@ FastScript is a Spigot plugin, which can run JavaScript-based scripts more effic
 In the project root directory:
 ```
 ./gradle shadowJar
+  or
+./gradle
 ```
 ***
 ### Developer
@@ -23,7 +25,7 @@ In the project root directory:
 <repositories>
     <repository>
         <id>roselle-repo</id>
-        <url>http://mc3.roselle.vip:602/maven-repositories/</url>
+        <url>http://repo.iroselle.com/snapshots/</url>
     </repository>
 </repositories>
 
@@ -39,10 +41,19 @@ In the project root directory:
 > Gradle
 ```
 repositories {
-    maven {url 'http://mc3.roselle.vip:602/maven-repositories/'}
+    maven {url 'http://repo.iroselle.com/snapshots/'}
 }
 dependencies {
     implementation 'me.scoretwo:FastScript:1.0.1-SNAPSHOT'
+}
+```
+> Gradle Kotlin DSL
+```
+repositories {
+    maven("http://repo.iroselle.com/snapshots/")
+}
+dependencies {
+    implementation("me.scoretwo:FastScript:1.0.1-SNAPSHOT")
 }
 ```
 
