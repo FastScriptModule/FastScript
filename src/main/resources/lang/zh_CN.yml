@@ -1,7 +1,0 @@
-FORMAT-HEADER:
-  INFO: '&7[&2Fast&aScript&7] &b信息 &8| &7'
-  WARN: '&7[&2Fast&aScript&7] &e警告 &8| &7'
-  ERROR: '&7[&2Fast&aScript&7] &c错误 &8| &7'
-  TIPS: '&7[&2Fast&aScript&7] &2提示 &8| &7'
-  HOOKED: '&7[&2Fast&aScript&7] &6挂钩 &8| &7'
-  DEBUG: '&7[&2Fast&aScript&7] &3调试 &8| &7'

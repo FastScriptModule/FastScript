@@ -1,9 +1,0 @@
-{
-  "id": "${modid}",
-  "name": "${name}",
-  "version": "${version}",
-  "description": "${description}",
-  "authors": ["Score2"],
-  "dependencies": [],
-  "main": "${main}"
-}
