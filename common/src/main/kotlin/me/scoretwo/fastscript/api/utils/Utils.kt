@@ -4,6 +4,7 @@ import me.scoretwo.fastscript.FastScript
 import me.scoretwo.fastscript.FormatHeader
 import me.scoretwo.fastscript.api.script.Script
 import me.scoretwo.fastscript.sendMessage
+import me.scoretwo.utils.syntaxes.FileUtils
 import java.io.File
 import java.io.InputStream
 import java.lang.reflect.InvocationTargetException

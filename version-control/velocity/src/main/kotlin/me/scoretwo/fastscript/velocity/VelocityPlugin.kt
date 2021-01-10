@@ -4,7 +4,7 @@ import com.google.inject.Inject
 import com.velocitypowered.api.plugin.Plugin
 import com.velocitypowered.api.plugin.annotation.DataDirectory
 import com.velocitypowered.api.proxy.ProxyServer
-import me.scoretwo.fastscript.api.plugin.FastScriptPlugin
+import me.scoretwo.fastscript.api.plugin.ScriptPlugin
 import net.md_5.bungee.api.ChatColor
 import java.io.File
 import java.nio.file.Path
@@ -17,7 +17,7 @@ import java.util.logging.Logger
     description = "%%description%%",
     authors = ["Score2"]
 )
-class VelocityPlugin: FastScriptPlugin {
+class VelocityPlugin: ScriptPlugin {
 
     @Inject
     fun onStart(server: ProxyServer, logger: Logger) {

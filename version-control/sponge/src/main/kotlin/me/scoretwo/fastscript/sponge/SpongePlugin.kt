@@ -3,7 +3,7 @@ package me.scoretwo.fastscript.sponge
 import me.rojo8399.placeholderapi.PlaceholderService
 import me.scoretwo.fastscript.FastScript
 import me.scoretwo.fastscript.FormatHeader
-import me.scoretwo.fastscript.api.plugin.FastScriptPlugin
+import me.scoretwo.fastscript.api.plugin.ScriptPlugin
 import me.scoretwo.fastscript.sendMessage
 import me.scoretwo.fastscript.sponge.hook.PlaceholderAPIHook
 import net.md_5.bungee.api.ChatColor
@@ -27,7 +27,7 @@ import java.io.File
     dependencies = [Dependency(id = "placeholderapi", optional = true)],
     version = "%%version%%"
 )
-class SpongePlugin: FastScriptPlugin {
+class SpongePlugin: ScriptPlugin {
 
     @Listener
     fun onStart(e: GameAboutToStartServerEvent) {

@@ -1,57 +1,38 @@
 package me.scoretwo.fastscript
 
-import me.scoretwo.fastscript.api.plugin.FastScriptPlugin
+import me.scoretwo.fastscript.api.plugin.ScriptPlugin
 import me.scoretwo.fastscript.script.ScriptManager
 import me.scoretwo.fastscript.commands.CommandManager
 import me.scoretwo.fastscript.config.SettingConfig
 import me.scoretwo.fastscript.utils.Utils
 import me.scoretwo.utils.bukkit.configuration.yaml.patchs.getLowerCaseNode
-import me.scoretwo.utils.command.GlobalSender
+import me.scoretwo.utils.sender.GlobalPlayer
+import me.scoretwo.utils.sender.GlobalSender
+import me.scoretwo.utils.syntaxes.StreamUtils
+import net.md_5.bungee.api.ChatColor
 import java.io.File
-import java.io.IOException
-import java.io.InputStream
-import java.net.URL
 
-class FastScript(plugin: FastScriptPlugin) {
-
-    private val plugin: FastScriptPlugin = plugin
-
-    val dataFolder: File
-    val classLoader: ClassLoader
+class FastScript(val plugin: ScriptPlugin) {
 
     val scriptManager: ScriptManager
     val commandManager: CommandManager
 
-    fun setPlaceholder(player: Any, string: String) = plugin.setPlaceholder(player, string)
-    fun translateStringColors(string: String): String = plugin.translateStringColors(string)
+    fun setPlaceholder(player: GlobalPlayer, string: String) = plugin.setPlaceholder(player, string)
 
     init {
         instance = this
-        console = plugin.console
         printLogo()
-        println("[FastScript | INIT] 正在初始化...")
 
-        dataFolder = plugin.getDataFolder()
-        classLoader = plugin.getPluginClassLoader()
+        plugin.server.console.sendMessage(FormatHeader.INFO, "Initializing...")
+
         scriptManager = ScriptManager()
         commandManager = CommandManager()
 
-        if (!dataFolder.exists()) {
-            dataFolder.mkdirs()
+        if (!plugin.dataFolder.exists()) {
+            plugin.dataFolder.mkdirs()
         }
 
         SettingConfig.init()
-    }
-
-    fun getResource(filename: String): InputStream? {
-        return try {
-            val url: URL = classLoader.getResource(filename) ?: return null
-            val connection = url.openConnection()
-            connection.useCaches = false
-            connection.getInputStream()
-        } catch (ex: IOException) {
-            null
-        }
     }
 
     /**
@@ -63,15 +44,15 @@ class FastScript(plugin: FastScriptPlugin) {
     }
 
     fun initLanguageFiles() {
-        Utils.saveDefaultResource(File("${dataFolder}/languages", "en_US.yml"), getResource("lang/en_US.yml")!!)
-        Utils.saveDefaultResource(File("${dataFolder}/languages", "zh_CN.yml"), getResource("lang/zh_CN.yml")!!)
+        Utils.saveDefaultResource(File("${plugin.dataFolder}/languages", "en_US.yml"), StreamUtils.getResource("lang/en_US.yml")!!)
+        Utils.saveDefaultResource(File("${plugin.dataFolder}/languages", "zh_CN.yml"), StreamUtils.getResource("lang/zh_CN.yml")!!)
     }
 
     fun onReload() {
-        if (!dataFolder.exists()) {
-            dataFolder.mkdirs()
+        if (!plugin.dataFolder.exists()) {
+            plugin.dataFolder.mkdirs()
         }
-        plugin.onReload()
+        plugin.reload()
         initLanguageFiles()
         initInternalScripts()
         scriptManager.loadScripts()
@@ -103,88 +84,19 @@ class FastScript(plugin: FastScriptPlugin) {
                 it[index] = String(line).replaceFirst(replace, "§${arrayOf('a', 'b', '2').random()}$replace§8")
             }
         }
-        console.sendMessage(it)
+        plugin.server.console.sendMessage(it)
     }
 
     companion object {
         lateinit var instance: FastScript
-        var console = object : GlobalSender {
-            override val name = "console"
-            override fun hasPermission(name: String) = true
-            override fun sendMessage(messages: Array<String>) = println(messages)
-            override fun sendMessage(message: String) = println(message)
-        }
 
-        fun setBootstrap(plugin: FastScriptPlugin) {
-            /*if (initialized) {
+        fun setBootstrap(plugin: ScriptPlugin) {
+            if (::instance.isInitialized) {
                 throw UnsupportedOperationException("Cannot redefine instance")
-            }*/
+            }
             FastScript(plugin)
         }
-/*
-        @JvmStatic
-        fun main(args: Array<out String>) {
 
-            val main = object : FastScriptMain {
-                override val console: Any = this
-
-                override fun getDataFolder(): File {
-                    return File("FastScript")
-                }
-
-                override fun getPluginClassLoader(): ClassLoader {
-                    return javaClass.classLoader
-                }
-
-                override fun setPlaceholder(player: Any, string: String): String {
-                    return string
-                }
-
-                override fun onReload() {}
-
-                override fun sendMessage(sender: Any, string: String, colorIndex: Boolean) {
-                    printColors(if (colorIndex) string.replace("§", "&") else string)
-                }
-            }
-
-            instance = FastScript(main)
-
-            instance.printLogo()
-        }
-
-        fun printColors(list: MutableList<String>) {
-            list.forEach { printColors(it) }
-        }
-
-        fun printColors(string: String) {
-            for (s in string.split("§")) {
-                if (s.isEmpty()) continue
-                val index = s.substring(0,1)
-                val rawMessage = s.substring(1)
-
-                when(index) {
-                    "a"-> print(rawMessage.lightGreen())
-                    "b"-> print(rawMessage.lightCyan())
-                    "c"-> print(rawMessage.lightRed())
-                    "d"-> print(rawMessage.lightMagenta())
-                    "e"-> print(rawMessage.lightYellow())
-                    "f"-> print(rawMessage.lightWhite())
-                    "0"-> print(rawMessage.black())
-                    "1"-> print(rawMessage.blue())
-                    "2"-> print(rawMessage.green())
-                    "3"-> print(rawMessage.cyan())
-                    "4"-> print(rawMessage.red())
-                    "5"-> print(rawMessage.magenta())
-                    "6"-> print(rawMessage.yellow())
-                    "7"-> print(rawMessage.lightGray())
-                    "8"-> print(rawMessage.lightGray())
-                    "9"-> print(rawMessage.lightBlue())
-                    else-> print(rawMessage.lightGray())
-                }
-            }
-            println()
-        }
-*/
     }
 
 }
@@ -201,9 +113,9 @@ fun GlobalSender.sendMessage(formatHeader: FormatHeader, string: String, colorIn
     if (colorIndex)
         this.sendMessage("${SettingConfig.instance.defaultLanguage.getString(SettingConfig.instance.defaultLanguage.getLowerCaseNode("format-header.${formatHeader.name.toLowerCase()}"))}${string}")
     else
-        this.sendMessage(FastScript.instance.translateStringColors("${SettingConfig.instance.defaultLanguage.getString(SettingConfig.instance.defaultLanguage.getLowerCaseNode("format-header.${formatHeader.name.toLowerCase()}"))}${string}"))
+        this.sendMessage(ChatColor.translateAlternateColorCodes('&',"${SettingConfig.instance.defaultLanguage.getString(SettingConfig.instance.defaultLanguage.getLowerCaseNode("format-header.${formatHeader.name.toLowerCase()}"))}${string}"))
 }
 
-fun String.setPlaceholder(sender: Any): String {
-    return FastScript.instance.setPlaceholder(sender, this)
+fun String.setPlaceholder(player: GlobalPlayer): String {
+    return FastScript.instance.setPlaceholder(player, this)
 }

@@ -6,7 +6,6 @@ import me.scoretwo.fastscript.script.options.ScriptOption
 import me.scoretwo.fastscript.script.options.imports.ScriptImportType.*
 import me.scoretwo.fastscript.config.SettingConfig
 import me.scoretwo.fastscript.sendMessage
-import me.scoretwo.fastscript.utils.StreamUtils
 import me.scoretwo.fastscript.utils.Utils
 import java.io.File
 import java.io.FileInputStream

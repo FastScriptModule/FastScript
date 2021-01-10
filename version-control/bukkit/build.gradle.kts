@@ -7,18 +7,17 @@ plugins {
     id("maven-publish")
 }
 
-
 repositories {
     maven("https://hub.spigotmc.org/nexus/content/repositories/snapshots/")
 }
 
 dependencies {
     implementation(project(":common"))
-    implementation("me.scoretwo:commons-bukkit-command:2.0-SNAPSHOT")
 
     compileOnly("org.spigotmc:spigot-api:1.16.4-R0.1-SNAPSHOT")
     compileOnly("me.clip:placeholderapi:2.10.9")
     implementation("org.bstats:bstats-bukkit:1.7")
+    implementation("me.scoretwo:commons-bukkit-plugin:2.0.1-SNAPSHOT")
 }
 
 configure<PublishingExtension> {

@@ -4,24 +4,24 @@ import me.clip.placeholderapi.PlaceholderAPI
 import me.clip.placeholderapi.expansion.PlaceholderExpansion
 import me.scoretwo.fastscript.placeholder.Placeholders
 import org.bukkit.entity.Player
-import org.bukkit.plugin.java.JavaPlugin
+import org.bukkit.plugin.Plugin
 
-class PlaceholderAPIHook(val javaPlugin: JavaPlugin): PlaceholderExpansion() {
+class PlaceholderAPIHook(val plugin: Plugin): PlaceholderExpansion() {
 
     override fun persist(): Boolean {
         return true
     }
 
     override fun getIdentifier(): String {
-        return javaPlugin.description.name.toLowerCase()
+        return plugin.description.name.toLowerCase()
     }
 
     override fun getAuthor(): String {
-        return javaPlugin.description.authors.toString()
+        return plugin.description.authors.toString()
     }
 
     override fun getVersion(): String {
-        return javaPlugin.description.version
+        return plugin.description.version
     }
 
     override fun onPlaceholderRequest(player: Player, params: String): String {
