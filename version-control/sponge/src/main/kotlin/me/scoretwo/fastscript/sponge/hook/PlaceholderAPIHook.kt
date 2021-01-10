@@ -1,9 +1,9 @@
 package me.scoretwo.fastscript.sponge.hook
 
 import me.rojo8399.placeholderapi.PlaceholderService
-import me.scoretwo.fastscript.api.plugin.FastScriptMain
+import me.scoretwo.fastscript.api.plugin.FastScriptPlugin
 
-class PlaceholderAPIHook(val fastScriptMain: FastScriptMain) {
+class PlaceholderAPIHook(val fastScriptPlugin: FastScriptPlugin) {
 
 
     companion object {

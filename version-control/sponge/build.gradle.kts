@@ -5,6 +5,7 @@ plugins {
     id("com.github.johnrengelman.shadow")
     id("maven")
     id("maven-publish")
+    id("net.kyori.blossom")
 }
 
 
@@ -13,6 +14,12 @@ repositories {
     maven("https://jitpack.io")
     maven("https://hub.spigotmc.org/nexus/content/repositories/sonatype-nexus-snapshots/")
     maven("https://repo.codemc.io/repository/maven-snapshots/")
+}
+
+blossom {
+    replaceTokenIn("src/main/kotlin/me/scoretwo/fastscript/sponge/SpongePlugin.kt")
+    replaceToken("%%version%%", rootProject.version)
+    replaceToken("%%description%%", rootProject.description)
 }
 
 dependencies {
@@ -31,6 +38,7 @@ configure<PublishingExtension> {
     }
 }
 
+/*
 tasks.processResources {
     from("src/main/resource") {
         include("mcmod.info")
@@ -41,4 +49,4 @@ tasks.processResources {
             "description" to project.description
         ))
     }
-}
+}*/

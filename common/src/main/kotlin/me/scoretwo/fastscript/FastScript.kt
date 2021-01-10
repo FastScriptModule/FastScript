@@ -1,19 +1,20 @@
 package me.scoretwo.fastscript
 
-import me.scoretwo.fastscript.api.plugin.FastScriptMain
+import me.scoretwo.fastscript.api.plugin.FastScriptPlugin
 import me.scoretwo.fastscript.script.ScriptManager
 import me.scoretwo.fastscript.commands.CommandManager
 import me.scoretwo.fastscript.config.SettingConfig
 import me.scoretwo.fastscript.utils.Utils
 import me.scoretwo.utils.bukkit.configuration.yaml.patchs.getLowerCaseNode
+import me.scoretwo.utils.command.GlobalSender
 import java.io.File
 import java.io.IOException
 import java.io.InputStream
 import java.net.URL
 
-class FastScript(main: FastScriptMain) {
+class FastScript(plugin: FastScriptPlugin) {
 
-    private val main: FastScriptMain = main
+    private val plugin: FastScriptPlugin = plugin
 
     val dataFolder: File
     val classLoader: ClassLoader
@@ -21,19 +22,17 @@ class FastScript(main: FastScriptMain) {
     val scriptManager: ScriptManager
     val commandManager: CommandManager
 
-    fun hasPermission(sender: Any, string: String) = main.hasPermission(sender, string)
-    fun setPlaceholder(player: Any, string: String) = main.setPlaceholder(player, string)
-    fun sendMessage(sender: Any, string: String, colorIndex: Boolean) = main.sendMessage(sender, string, colorIndex)
-    fun translateStringColors(string: String): String = main.translateStringColors(string)
+    fun setPlaceholder(player: Any, string: String) = plugin.setPlaceholder(player, string)
+    fun translateStringColors(string: String): String = plugin.translateStringColors(string)
 
     init {
         instance = this
-        console = main.console
+        console = plugin.console
         printLogo()
         println("[FastScript | INIT] 正在初始化...")
 
-        dataFolder = main.getDataFolder()
-        classLoader = main.getPluginClassLoader()
+        dataFolder = plugin.getDataFolder()
+        classLoader = plugin.getPluginClassLoader()
         scriptManager = ScriptManager()
         commandManager = CommandManager()
 
@@ -72,7 +71,7 @@ class FastScript(main: FastScriptMain) {
         if (!dataFolder.exists()) {
             dataFolder.mkdirs()
         }
-        main.onReload()
+        plugin.onReload()
         initLanguageFiles()
         initInternalScripts()
         scriptManager.loadScripts()
@@ -109,13 +108,18 @@ class FastScript(main: FastScriptMain) {
 
     companion object {
         lateinit var instance: FastScript
-        var console = Any()
+        var console = object : GlobalSender {
+            override val name = "console"
+            override fun hasPermission(name: String) = true
+            override fun sendMessage(messages: Array<String>) = println(messages)
+            override fun sendMessage(message: String) = println(message)
+        }
 
-        fun setBootstrap(main: FastScriptMain) {
+        fun setBootstrap(plugin: FastScriptPlugin) {
             /*if (initialized) {
                 throw UnsupportedOperationException("Cannot redefine instance")
             }*/
-            FastScript(main)
+            FastScript(plugin)
         }
 /*
         @JvmStatic
@@ -187,31 +191,17 @@ class FastScript(main: FastScriptMain) {
 
 enum class FormatHeader { INFO, WARN, ERROR, TIPS, HOOKED, DEBUG }
 
-fun Any.hasPermission(string: String): Boolean {
-    return FastScript.instance.hasPermission(this, string)
-}
-
-
-fun Any.sendMessage(formatHeader: FormatHeader, strings: Array<String>, colorIndex: Boolean = true) {
+fun GlobalSender.sendMessage(formatHeader: FormatHeader, strings: Array<String>, colorIndex: Boolean = true) {
     strings.forEach {
         this.sendMessage(formatHeader, it, colorIndex)
     }
 }
 
-fun Any.sendMessage(formatHeader: FormatHeader, string: String, colorIndex: Boolean = true) {
-    this.sendMessage(
-        "${SettingConfig.instance.defaultLanguage.getString(SettingConfig.instance.defaultLanguage.getLowerCaseNode("format-header.${formatHeader.name.toLowerCase()}"))}${string}", colorIndex
-    )
-}
-
-fun Any.sendMessage(string: String, colorIndex: Boolean = true) {
-    FastScript.instance.sendMessage(this, string, colorIndex)
-}
-
-fun Any.sendMessage(strings: Array<String>, colorIndex: Boolean = true) {
-    strings.forEach {
-        this.sendMessage(it, colorIndex)
-    }
+fun GlobalSender.sendMessage(formatHeader: FormatHeader, string: String, colorIndex: Boolean = true) {
+    if (colorIndex)
+        this.sendMessage("${SettingConfig.instance.defaultLanguage.getString(SettingConfig.instance.defaultLanguage.getLowerCaseNode("format-header.${formatHeader.name.toLowerCase()}"))}${string}")
+    else
+        this.sendMessage(FastScript.instance.translateStringColors("${SettingConfig.instance.defaultLanguage.getString(SettingConfig.instance.defaultLanguage.getLowerCaseNode("format-header.${formatHeader.name.toLowerCase()}"))}${string}"))
 }
 
 fun String.setPlaceholder(sender: Any): String {

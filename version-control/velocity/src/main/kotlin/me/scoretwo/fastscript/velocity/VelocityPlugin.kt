@@ -1,15 +1,11 @@
 package me.scoretwo.fastscript.velocity
 
 import com.google.inject.Inject
-import com.velocitypowered.api.command.CommandSource
 import com.velocitypowered.api.plugin.Plugin
 import com.velocitypowered.api.plugin.annotation.DataDirectory
 import com.velocitypowered.api.proxy.ProxyServer
-import me.scoretwo.fastscript.api.plugin.FastScriptMain
-import net.kyori.text.serializer.gson.GsonComponentSerializer
+import me.scoretwo.fastscript.api.plugin.FastScriptPlugin
 import net.md_5.bungee.api.ChatColor
-import net.md_5.bungee.api.chat.TextComponent
-import net.md_5.bungee.chat.ComponentSerializer
 import java.io.File
 import java.nio.file.Path
 import java.util.logging.Logger
@@ -17,11 +13,11 @@ import java.util.logging.Logger
 @Plugin(
     id = "fastscript",
     name = "FastScript",
-    version = "1.0.1-SNAPSHOT",
-    description = "FastScript is a Spigot plugin, which can run JavaScript-based scripts more efficiently.",
+    version = "%%version%%",
+    description = "%%description%%",
     authors = ["Score2"]
 )
-class VelocityPlugin: FastScriptMain {
+class VelocityPlugin: FastScriptPlugin {
 
     @Inject
     fun onStart(server: ProxyServer, logger: Logger) {

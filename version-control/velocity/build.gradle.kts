@@ -5,6 +5,7 @@ plugins {
     id("com.github.johnrengelman.shadow")
     id("maven")
     id("maven-publish")
+    id("net.kyori.blossom")
 }
 
 
@@ -12,6 +13,12 @@ repositories {
     maven("https://nexus.velocitypowered.com/repository/velocity-artifacts-snapshots/")
     maven("https://hub.spigotmc.org/nexus/content/repositories/sonatype-nexus-snapshots/")
     maven("https://repo.codemc.io/repository/maven-snapshots/")
+}
+
+blossom {
+    replaceTokenIn("src/main/kotlin/me/scoretwo/fastscript/velocity/VelocityPlugin.kt")
+    replaceToken("%%version%%", rootProject.version)
+    replaceToken("%%description%%", rootProject.description)
 }
 
 dependencies {
@@ -30,6 +37,7 @@ configure<PublishingExtension> {
     }
 }
 
+/*
 tasks.processResources {
     from("src/main/resource") {
         include("velocity-plugin.json")
@@ -41,4 +49,4 @@ tasks.processResources {
             "description" to project.description
         ))
     }
-}
+}*/

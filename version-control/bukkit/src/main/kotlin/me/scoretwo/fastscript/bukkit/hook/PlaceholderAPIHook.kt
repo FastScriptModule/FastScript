@@ -2,7 +2,7 @@ package me.scoretwo.fastscript.bukkit.hook
 
 import me.clip.placeholderapi.PlaceholderAPI
 import me.clip.placeholderapi.expansion.PlaceholderExpansion
-import me.scoretwo.fastscript.api.placeholder.Placeholders
+import me.scoretwo.fastscript.placeholder.Placeholders
 import org.bukkit.entity.Player
 import org.bukkit.plugin.java.JavaPlugin
 

@@ -1,4 +1,4 @@
-package me.scoretwo.fastscript.api.placeholder
+package me.scoretwo.fastscript.placeholder
 
 object Placeholders {
 

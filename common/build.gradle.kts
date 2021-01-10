@@ -8,7 +8,6 @@ plugins {
 }
 
 repositories {
-    maven("http://repo.iroselle.com/snapshots/")
 }
 
 dependencies {
@@ -16,8 +15,10 @@ dependencies {
 
     compileOnly("org.apache.commons:commons-lang3:3.10")
     compileOnly("com.google.code.gson:gson:2.8.6")
+    compileOnly("org.slf4j:slf4j-log4j12:1.7.30")
     implementation("commons-io:commons-io:2.7")
     implementation("me.scoretwo:commons-syntaxes:2.0-SNAPSHOT")
+    implementation("me.scoretwo:commons-command:2.0-SNAPSHOT")
     implementation("me.scoretwo:commons-bukkit-configuration:2.0-SNAPSHOT")
 }
 

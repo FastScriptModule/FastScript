@@ -1,16 +1,15 @@
 package me.scoretwo.fastscript.bungee
 
 import me.scoretwo.fastscript.FastScript
-import me.scoretwo.fastscript.api.plugin.FastScriptMain
+import me.scoretwo.fastscript.api.plugin.FastScriptPlugin
 import net.md_5.bungee.api.ChatColor
 import net.md_5.bungee.api.CommandSender
 import net.md_5.bungee.api.ProxyServer
-import net.md_5.bungee.api.chat.TextComponent
 import net.md_5.bungee.api.plugin.Command
 import net.md_5.bungee.api.plugin.Plugin
 import net.md_5.bungee.api.plugin.TabExecutor
 
-class BungeePlugin: Plugin(), FastScriptMain {
+class BungeePlugin: Plugin(), FastScriptPlugin {
 
     override fun onLoad() {
     }

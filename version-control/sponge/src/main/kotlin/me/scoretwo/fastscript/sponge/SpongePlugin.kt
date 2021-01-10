@@ -3,16 +3,12 @@ package me.scoretwo.fastscript.sponge
 import me.rojo8399.placeholderapi.PlaceholderService
 import me.scoretwo.fastscript.FastScript
 import me.scoretwo.fastscript.FormatHeader
-import me.scoretwo.fastscript.api.plugin.FastScriptMain
+import me.scoretwo.fastscript.api.plugin.FastScriptPlugin
 import me.scoretwo.fastscript.sendMessage
 import me.scoretwo.fastscript.sponge.hook.PlaceholderAPIHook
 import net.md_5.bungee.api.ChatColor
 import org.spongepowered.api.Sponge
 import org.spongepowered.api.command.CommandResult
-import org.spongepowered.api.command.CommandSource
-import org.spongepowered.api.command.args.CommandContext
-import org.spongepowered.api.command.args.GenericArguments.plugin
-import org.spongepowered.api.command.spec.CommandExecutor
 import org.spongepowered.api.command.spec.CommandSpec
 import org.spongepowered.api.event.Listener
 import org.spongepowered.api.event.game.state.GameAboutToStartServerEvent
@@ -27,10 +23,11 @@ import java.io.File
     id = "fastscript",
     name = "FastScript",
     authors = ["Score2"],
-    description = "FastScript is a Spigot plugin, which can run JavaScript-based scripts more efficiently.",
-    dependencies = [Dependency(id = "placeholderapi", optional = true)]
+    description = "%%description%%",
+    dependencies = [Dependency(id = "placeholderapi", optional = true)],
+    version = "%%version%%"
 )
-class SpongePlugin: FastScriptMain {
+class SpongePlugin: FastScriptPlugin {
 
     @Listener
     fun onStart(e: GameAboutToStartServerEvent) {
@@ -81,10 +78,6 @@ class SpongePlugin: FastScriptMain {
 
     override fun translateStringColors(string: String): String {
         return ChatColor.translateAlternateColorCodes('&', string)
-    }
-
-    fun asSender(sender: Any): CommandSource? {
-        return sender as? CommandSource
     }
 
     companion object {

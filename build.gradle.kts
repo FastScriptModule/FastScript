@@ -3,6 +3,7 @@ plugins {
     id("org.jetbrains.dokka") version "1.4.10.2" apply false
     id("org.jlleitschuh.gradle.ktlint") version "9.4.1" apply false
     id("com.github.johnrengelman.shadow") version "6.1.0" apply false
+    id("net.kyori.blossom") version "1.1.0" apply false
     id("maven")
     id("maven-publish")
 }
@@ -11,7 +12,7 @@ group = "me.scoretwo"
 version = "1.0.1-SNAPSHOT"
 description = "FastScript is a Spigot plugin, which can run JavaScript-based scripts more efficiently."
 
-defaultTasks = mutableListOf("shadowJar")
+defaultTasks = mutableListOf("publishToMavenLocal")
 
 subprojects {
     group = rootProject.group
@@ -22,6 +23,8 @@ subprojects {
         jcenter()
         mavenCentral()
         mavenLocal()
+        maven("https://repo.lucko.me/")
+        maven("http://repo.iroselle.com/snapshots/")
     }
 }
 

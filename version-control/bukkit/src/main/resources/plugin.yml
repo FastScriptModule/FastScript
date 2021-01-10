@@ -1,0 +1,6 @@
+name: ${name}
+version: ${version}
+main: ${main}
+authors:
+  - Score2
+api-version: 1.13
