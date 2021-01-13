@@ -2,9 +2,8 @@ package me.scoretwo.fastscript.sponge
 
 import me.rojo8399.placeholderapi.PlaceholderService
 import me.scoretwo.fastscript.FastScript
-import me.scoretwo.fastscript.FormatHeader
+import me.scoretwo.fastscript.api.format.FormatHeader
 import me.scoretwo.fastscript.api.plugin.ScriptPlugin
-import me.scoretwo.fastscript.sendMessage
 import me.scoretwo.fastscript.sponge.hook.PlaceholderAPIHook
 import net.md_5.bungee.api.ChatColor
 import org.spongepowered.api.Sponge
@@ -71,7 +70,7 @@ class SpongePlugin: ScriptPlugin {
         if (PAPIHook == null) {
             if (Sponge.getPluginManager().isLoaded("placeholderapi")) {
                 PAPIHook = PlaceholderAPIHook(this)
-                FastScript.console.sendMessage(FormatHeader.HOOKED, "成功挂钩 §ePlaceholderAPI!")
+                plugin.server.console.sendMessage(FormatHeader.HOOKED, "成功挂钩 §ePlaceholderAPI!")
             }
         }
     }

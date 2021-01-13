@@ -1,10 +1,9 @@
 package me.scoretwo.fastscript.bukkit
 
 import me.scoretwo.fastscript.FastScript
-import me.scoretwo.fastscript.FormatHeader
+import me.scoretwo.fastscript.api.format.FormatHeader
 import me.scoretwo.fastscript.api.plugin.ScriptPlugin
 import me.scoretwo.fastscript.bukkit.hook.PlaceholderAPIHook
-import me.scoretwo.fastscript.sendMessage
 import me.scoretwo.utils.bukkit.command.bukkitCommandMap
 import me.scoretwo.utils.bukkit.command.toBukkitPlayer
 import me.scoretwo.utils.bukkit.plugin.toBukkitPlugin
@@ -46,7 +45,7 @@ class BukkitPlugin(val plugin: GlobalPlugin): ScriptPlugin(plugin) {
         if (PAPIHook == null) {
             if (Bukkit.getPluginManager().isPluginEnabled("PlaceholderAPI")) {
                 PAPIHook = PlaceholderAPIHook(plugin.toBukkitPlugin())
-                FastScript.console.sendMessage(FormatHeader.HOOKED, "成功挂钩 §ePlaceholderAPI!")
+                plugin.server.console.sendMessage(FormatHeader.HOOKED, "成功挂钩 §ePlaceholderAPI!")
             }
         }
     }

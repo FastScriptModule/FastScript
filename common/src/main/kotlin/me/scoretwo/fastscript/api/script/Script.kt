@@ -1,11 +1,10 @@
 package me.scoretwo.fastscript.api.script
 
 import me.scoretwo.fastscript.FastScript
-import me.scoretwo.fastscript.FormatHeader
+import me.scoretwo.fastscript.api.format.FormatHeader
 import me.scoretwo.fastscript.script.options.ScriptOption
 import me.scoretwo.fastscript.script.options.imports.ScriptImportType.*
 import me.scoretwo.fastscript.config.SettingConfig
-import me.scoretwo.fastscript.sendMessage
 import me.scoretwo.fastscript.utils.Utils
 import java.io.File
 import java.io.FileInputStream
@@ -95,7 +94,7 @@ abstract class Script {
                     )
                 }
                 else -> {
-                    FastScript.console.sendMessage(FormatHeader.ERROR,"脚本 §c$name §7元素 §c${it.name} §7导入失败, 无法识别该元素的形式.")
+                    plugin.server.console.sendMessage(FormatHeader.ERROR,"脚本 §c$name §7元素 §c${it.name} §7导入失败, 无法识别该元素的形式.")
                 }
             }
         }

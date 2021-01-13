@@ -1,13 +1,17 @@
 package me.scoretwo.fastscript.utils
 
 import me.scoretwo.fastscript.FastScript
-import me.scoretwo.fastscript.FormatHeader
+import me.scoretwo.fastscript.api.format.FormatHeader
 import me.scoretwo.fastscript.api.script.Script
-import me.scoretwo.fastscript.sendMessage
+import me.scoretwo.fastscript.config.SettingConfig
+import me.scoretwo.fastscript.plugin
+import me.scoretwo.utils.bukkit.configuration.yaml.patchs.getLowerCaseNode
+import me.scoretwo.utils.sender.GlobalPlayer
+import me.scoretwo.utils.sender.GlobalSender
 import me.scoretwo.utils.syntaxes.FileUtils
+import net.md_5.bungee.api.ChatColor
 import java.io.File
 import java.io.InputStream
-import java.lang.reflect.InvocationTargetException
 import java.lang.reflect.Method
 
 object Utils {
@@ -22,8 +26,8 @@ object Utils {
             Class.forName(target)
         } catch (e: ClassNotFoundException) {
             e.printStackTrace()
-            FastScript.console.sendMessage(FormatHeader.ERROR, "脚本 §c${script.name} §7没有找到类 §c${target}§7, 错误如下:")
-            FastScript.console.sendMessage("§7${e.message}")
+            plugin.server.console.sendMessage(FormatHeader.ERROR, "脚本 §c${script.name} §7没有找到类 §c${target}§7, 错误如下:")
+            plugin.server.console.sendMessage("§7${e.message}")
             null
         }
     }
@@ -35,8 +39,8 @@ object Utils {
             constructor.newInstance(args)
         } catch (e: Exception) {
             e.printStackTrace()
-            FastScript.console.sendMessage(FormatHeader.ERROR, "脚本 §c${script.name} §7执行初始化时发生错误, 错误如下:")
-            FastScript.console.sendMessage("§7${e.message}")
+            plugin.server.console.sendMessage(FormatHeader.ERROR, "脚本 §c${script.name} §7执行初始化时发生错误, 错误如下:")
+            plugin.server.console.sendMessage("§7${e.message}")
             null
         }
     }
@@ -84,8 +88,8 @@ object Utils {
             return method.invoke(obj, args)
         } catch (e: Exception) {
             e.printStackTrace()
-            FastScript.console.sendMessage(FormatHeader.ERROR, "脚本 §c${script.name} §7访问方法 §c${method.name} §7时发生错误, 错误如下:")
-            FastScript.console.sendMessage("§7${e.message}")
+            plugin.server.console.sendMessage(FormatHeader.ERROR, "脚本 §c${script.name} §7访问方法 §c${method.name} §7时发生错误, 错误如下:")
+            plugin.server.console.sendMessage("§7${e.message}")
         }
         return null
     }
@@ -103,4 +107,24 @@ object Utils {
         FileUtils.save(target, inputStream)
     }
 
+}
+
+fun GlobalSender.sendMessage(formatHeader: FormatHeader, strings: Array<String>, colorIndex: Boolean = true) {
+    strings.forEach {
+        this.sendMessage(formatHeader, it, colorIndex)
+    }
+}
+
+fun GlobalSender.sendMessage(formatHeader: FormatHeader, string: String, colorIndex: Boolean = true) {
+    if (colorIndex)
+        this.sendMessage("${SettingConfig.instance.defaultLanguage.getString(SettingConfig.instance.defaultLanguage.getLowerCaseNode("format-header.${formatHeader.name.toLowerCase()}"))}${string}")
+    else
+        this.sendMessage(
+            ChatColor.translateAlternateColorCodes('&',"${
+                SettingConfig.instance.defaultLanguage.getString(
+                    SettingConfig.instance.defaultLanguage.getLowerCaseNode("format-header.${formatHeader.name.toLowerCase()}"))}${string}"))
+}
+
+fun String.setPlaceholder(player: GlobalPlayer): String {
+    return FastScript.instance.setPlaceholder(player, this)
 }

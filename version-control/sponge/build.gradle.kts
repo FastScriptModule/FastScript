@@ -28,7 +28,7 @@ dependencies {
     compileOnly("org.spongepowered:spongeapi:7.3.0")
     compileOnly("com.github.rojo8399:PlaceholderAPI:master-SNAPSHOT")
     implementation("net.md-5:bungeecord-chat:1.16-R0.4-SNAPSHOT")
-    implementation("me.scoretwo:commons-sponge-plugin:2.0.1-SNAPSHOT")
+    implementation("me.scoretwo:commons-sponge-plugin:2.0.2-SNAPSHOT")
 }
 
 configure<PublishingExtension> {

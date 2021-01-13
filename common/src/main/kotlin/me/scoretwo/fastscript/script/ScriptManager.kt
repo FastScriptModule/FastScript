@@ -8,7 +8,7 @@ import java.io.File
 
 class ScriptManager {
 
-    val defaultScriptPath = File(FastScript.instance.dataFolder, "scripts")
+    val defaultScriptPath = File(plugin.dataFolder, "scripts")
 
     val scripts = mutableListOf<Script>()
 
