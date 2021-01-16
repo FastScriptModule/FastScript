@@ -1,7 +1,5 @@
 package me.scoretwo.fastscript.script
 
-import me.scoretwo.fastscript.FastScript
-import me.scoretwo.fastscript.api.script.Script
 import me.scoretwo.fastscript.config.SettingConfig
 import me.scoretwo.utils.bukkit.configuration.yaml.patchs.getLowerCaseNode
 import java.io.File

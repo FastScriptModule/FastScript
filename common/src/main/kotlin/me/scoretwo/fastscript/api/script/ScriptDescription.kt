@@ -1,5 +1,7 @@
 package me.scoretwo.fastscript.api.script
 
+import javax.security.auth.login.Configuration
+
 interface ScriptDescription {
 
     val name: String

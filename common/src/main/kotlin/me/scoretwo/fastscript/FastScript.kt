@@ -7,9 +7,12 @@ import me.scoretwo.fastscript.config.SettingConfig
 import me.scoretwo.fastscript.script.ScriptManager
 import me.scoretwo.fastscript.utils.Utils
 import me.scoretwo.fastscript.utils.sendMessage
+import me.scoretwo.utils.bukkit.configuration.yaml.patchs.getLowerCaseNode
 import me.scoretwo.utils.plugin.GlobalPlugin
 import me.scoretwo.utils.sender.GlobalPlayer
+import me.scoretwo.utils.sender.GlobalSender
 import me.scoretwo.utils.syntaxes.StreamUtils
+import net.md_5.bungee.api.ChatColor
 import java.io.File
 
 class FastScript(val plugin: ScriptPlugin) {
@@ -102,3 +105,23 @@ class FastScript(val plugin: ScriptPlugin) {
 
 }
 lateinit var plugin: GlobalPlugin
+
+fun GlobalSender.sendMessage(formatHeader: FormatHeader, strings: Array<String>, colorIndex: Boolean = true) {
+    strings.forEach {
+        this.sendMessage(formatHeader, it, colorIndex)
+    }
+}
+
+fun GlobalSender.sendMessage(formatHeader: FormatHeader, string: String, colorIndex: Boolean = true) {
+    if (colorIndex)
+        this.sendMessage("${SettingConfig.instance.defaultLanguage.getString(SettingConfig.instance.defaultLanguage.getLowerCaseNode("format-header.${formatHeader.name.toLowerCase()}"))}${string}")
+    else
+        this.sendMessage(
+            ChatColor.translateAlternateColorCodes('&',"${
+                SettingConfig.instance.defaultLanguage.getString(
+                    SettingConfig.instance.defaultLanguage.getLowerCaseNode("format-header.${formatHeader.name.toLowerCase()}"))}${string}"))
+}
+
+fun String.setPlaceholder(player: GlobalPlayer): String {
+    return FastScript.instance.setPlaceholder(player, this)
+}
