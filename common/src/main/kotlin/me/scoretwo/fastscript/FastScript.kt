@@ -6,7 +6,6 @@ import me.scoretwo.fastscript.command.ScriptCommandNexus
 import me.scoretwo.fastscript.config.SettingConfig
 import me.scoretwo.fastscript.script.ScriptManager
 import me.scoretwo.fastscript.utils.Utils
-import me.scoretwo.fastscript.utils.sendMessage
 import me.scoretwo.utils.bukkit.configuration.yaml.patchs.getLowerCaseNode
 import me.scoretwo.utils.plugin.GlobalPlugin
 import me.scoretwo.utils.sender.GlobalPlayer
