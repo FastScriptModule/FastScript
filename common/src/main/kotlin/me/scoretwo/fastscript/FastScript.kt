@@ -2,6 +2,7 @@ package me.scoretwo.fastscript
 
 import me.scoretwo.fastscript.api.format.FormatHeader
 import me.scoretwo.fastscript.api.plugin.ScriptPlugin
+import me.scoretwo.fastscript.api.script.AbstractScript
 import me.scoretwo.fastscript.command.ScriptCommandNexus
 import me.scoretwo.fastscript.config.SettingConfig
 import me.scoretwo.fastscript.script.ScriptManager
@@ -103,7 +104,8 @@ class FastScript(val plugin: ScriptPlugin) {
     }
 
 }
-lateinit var plugin: GlobalPlugin
+lateinit var plugin: ScriptPlugin
+val scripts = mutableListOf<AbstractScript>()
 
 fun GlobalSender.sendMessage(formatHeader: FormatHeader, strings: Array<String>, colorIndex: Boolean = true) {
     strings.forEach {

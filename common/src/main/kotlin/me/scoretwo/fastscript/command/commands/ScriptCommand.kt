@@ -6,13 +6,19 @@ import me.scoretwo.utils.sender.GlobalSender
 
 class ScriptCommand: SubCommand(plugin, arrayOf("script")) {
 
+    init {
 
+    }
 
     override fun executed(sender: GlobalSender, parents: MutableList<String>, args: MutableList<String>): Boolean {
         if (args.isEmpty()) {
             // list script
+            return true
         }
 
+        if (args[0] == "") {
+
+        }
 
 
         return true

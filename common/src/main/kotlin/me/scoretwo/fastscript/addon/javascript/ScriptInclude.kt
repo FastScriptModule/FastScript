@@ -5,7 +5,7 @@ import me.scoretwo.fastscript.addon.javascript.exception.IncludeFormatException
 import me.scoretwo.fastscript.addon.javascript.exception.TypeInferenceException
 import me.scoretwo.fastscript.api.format.FormatHeader
 import me.scoretwo.fastscript.plugin
-import me.scoretwo.fastscript.utils.sendMessage
+import me.scoretwo.fastscript.sendMessage
 import me.scoretwo.utils.bukkit.configuration.yaml.ConfigurationSection
 import me.scoretwo.utils.bukkit.configuration.yaml.patchs.getLowerCaseNode
 import java.lang.reflect.Method
@@ -31,7 +31,7 @@ class ScriptInclude(
         } else this.type = type
     }
 
-    fun get(script: JavaScript): Any? {
+    operator fun get(script: JavaScript): Any? {
         obj ?: throw IncludeFormatException()
         met ?: throw IncludeFormatException()
         val clazz = findClass(script, obj.first) ?: throw ClassNotFoundException()
