@@ -74,7 +74,7 @@ class FastScript(val plugin: ScriptPlugin) {
        " |     \\   / __ \\_\\___ \\  |  | /        \\  \\___|  | \\/  |  |_> >  |  ",
        " \\___  /  (____  /____  > |__|/_______  /\\___  >__|  |__|   __/|__|  ",
        "     \\/        \\/     \\/              \\/     \\/         |__|         "
-   ).let {
+   ).also {
         it.forEachIndexed { index, raw ->
             if (raw.isNotBlank()) {
                 val line = raw.toCharArray()
