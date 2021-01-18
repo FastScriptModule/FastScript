@@ -6,9 +6,6 @@ import me.scoretwo.utils.server.GlobalServer
 
 abstract class AbstractScriptUtils {
 
-    abstract fun toSender(sender: GlobalSender): Any?
-    abstract fun toPlayer(player: GlobalPlayer): Any?
-    abstract fun toServer(): Any?
 
 
 }

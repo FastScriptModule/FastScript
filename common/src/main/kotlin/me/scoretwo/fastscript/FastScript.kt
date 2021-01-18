@@ -1,5 +1,6 @@
 package me.scoretwo.fastscript
 
+import me.scoretwo.fastscript.api.addon.AddonManager
 import me.scoretwo.fastscript.api.format.FormatHeader
 import me.scoretwo.fastscript.api.plugin.ScriptPlugin
 import me.scoretwo.fastscript.api.script.AbstractScript
@@ -19,6 +20,7 @@ class FastScript(val plugin: ScriptPlugin) {
 
     val commandNexus: ScriptCommandNexus
     val scriptManager: ScriptManager
+    val addonManager: AddonManager
 
     fun setPlaceholder(player: GlobalPlayer, string: String) = plugin.setPlaceholder(player, string)
 
@@ -32,6 +34,7 @@ class FastScript(val plugin: ScriptPlugin) {
 
         commandNexus = ScriptCommandNexus()
         scriptManager = ScriptManager()
+        addonManager = AddonManager()
 
         if (!plugin.dataFolder.exists()) {
             plugin.dataFolder.mkdirs()

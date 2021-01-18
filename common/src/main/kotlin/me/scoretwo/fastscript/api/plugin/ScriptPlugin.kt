@@ -5,6 +5,7 @@ import me.scoretwo.utils.plugin.GlobalPlugin
 import me.scoretwo.utils.plugin.PluginDescription
 import me.scoretwo.utils.plugin.logging.GlobalLogger
 import me.scoretwo.utils.sender.GlobalPlayer
+import me.scoretwo.utils.sender.GlobalSender
 import me.scoretwo.utils.server.GlobalServer
 import java.io.File
 
@@ -12,7 +13,11 @@ abstract class ScriptPlugin(plugin: GlobalPlugin): GlobalPlugin {
 
     abstract fun setPlaceholder(player: GlobalPlayer, string: String): String
 
-    abstract val abstractScriptUtils: AbstractScriptUtils
+    val scriptKits = mutableMapOf<String, Any?>()
+
+    abstract fun toOriginalSender(sender: GlobalSender): Any?
+    abstract fun toOriginalPlayer(player: GlobalPlayer): Any?
+    abstract fun toOriginalServer(): Any?
 
     open fun load() {}
     open fun reload() {}

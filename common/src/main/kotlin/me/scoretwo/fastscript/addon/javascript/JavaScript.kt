@@ -7,6 +7,7 @@ import me.scoretwo.fastscript.api.script.FileScript
 import me.scoretwo.fastscript.api.script.ScriptDescription
 import me.scoretwo.fastscript.plugin
 import me.scoretwo.fastscript.sendMessage
+import me.scoretwo.utils.sender.GlobalSender
 import me.scoretwo.utils.syntaxes.readString
 import java.io.File
 import javax.script.Invocable
@@ -38,9 +39,11 @@ class JavaScript(
         meta.forEach {
             engine.put(it.key, it.value)
         }
-        engine.put("api", plugin.abstractScriptUtils)
+        engine.put("server", plugin.server)
     }
-    fun directEval(): Any? {
+    fun directEval(sender: GlobalSender): Any? {
+        engine.put("sender", sender)
+        engine.put("originalsender", plugin.toOriginalSender(sender))
         return try {
             engine.eval(mergedString)
         } catch (e: ScriptException) {
@@ -48,7 +51,7 @@ class JavaScript(
         }
     }
 
-    fun execute(function: String = options.main, args: Array<Any?> = arrayOf()): Any? {
+    fun execute(sender: GlobalSender, function: String = options.main, args: Array<Any?> = arrayOf()): Any? {
         /*if (engine !is Invocable)*/
         return try {
             directEval()
