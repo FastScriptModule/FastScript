@@ -26,7 +26,7 @@ dependencies {
 
     compileOnly("com.velocitypowered:velocity-api:1.0.11-SNAPSHOT")
     implementation("net.md-5:bungeecord-chat:1.16-R0.4-SNAPSHOT")
-    implementation("me.scoretwo:commons-velocity-plugin:2.0.2-SNAPSHOT")
+    implementation("me.scoretwo:commons-velocity-plugin:2.0.3-SNAPSHOT")
 }
 
 configure<PublishingExtension> {

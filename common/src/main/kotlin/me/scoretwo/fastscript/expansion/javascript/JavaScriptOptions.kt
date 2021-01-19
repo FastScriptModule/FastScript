@@ -1,4 +1,4 @@
-package me.scoretwo.fastscript.addon.javascript
+package me.scoretwo.fastscript.expansion.javascript
 
 import me.scoretwo.fastscript.api.script.ConfigScriptOptions
 import me.scoretwo.utils.bukkit.configuration.yaml.file.YamlConfiguration
@@ -20,7 +20,8 @@ class JavaScriptOptions(file: File, section: YamlConfiguration): ConfigScriptOpt
         engine = section.getString(section.getLowerCaseNode("javascript.engine"), "nashorn")
 
         section.getConfigurationSection(section.getLowerCaseNode("includes")).getKeys(false).forEach { key ->
-            includes[key] = ScriptInclude.fromSection(section.getConfigurationSection(section.getLowerCaseNode("includes.$key")))
+            includes[key] =
+                ScriptInclude.fromSection(section.getConfigurationSection(section.getLowerCaseNode("includes.$key")))
         }
 
 

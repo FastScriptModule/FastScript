@@ -3,7 +3,6 @@ package me.scoretwo.fastscript.bukkit
 import me.scoretwo.fastscript.FastScript
 import me.scoretwo.fastscript.api.format.FormatHeader
 import me.scoretwo.fastscript.api.plugin.ScriptPlugin
-import me.scoretwo.fastscript.api.utils.AbstractScriptUtils
 import me.scoretwo.fastscript.bukkit.hook.PlaceholderAPIHook
 import me.scoretwo.fastscript.sendMessage
 import me.scoretwo.utils.bukkit.command.bukkitCommandMap
@@ -14,7 +13,6 @@ import me.scoretwo.utils.bukkit.plugin.toBukkitPlugin
 import me.scoretwo.utils.plugin.GlobalPlugin
 import me.scoretwo.utils.sender.GlobalPlayer
 import me.scoretwo.utils.sender.GlobalSender
-import me.scoretwo.utils.server.GlobalServer
 import org.bukkit.Bukkit
 import org.bukkit.command.Command
 import org.bukkit.command.CommandSender
@@ -38,14 +36,6 @@ class BukkitPlugin(val plugin: GlobalPlugin): ScriptPlugin(plugin) {
         })
     }
 
-    override val abstractScriptUtils = object : AbstractScriptUtils() {
-        override fun toSender(sender: GlobalSender) = sender.toBukkitSender()
-        override fun toPlayer(player: GlobalPlayer) = player.toBukkitPlayer()
-
-        override fun toServer() = Bukkit.getServer()
-
-    }
-
     override fun setPlaceholder(player: GlobalPlayer, string: String): String {
         var text: String = string
         if (PAPIHook != null) {
@@ -54,6 +44,12 @@ class BukkitPlugin(val plugin: GlobalPlugin): ScriptPlugin(plugin) {
 
         return text
     }
+
+    override fun toOriginalSender(sender: GlobalSender) = sender.toBukkitSender()
+
+    override fun toOriginalPlayer(player: GlobalPlayer) = player.toBukkitPlayer()
+
+    override fun toOriginalServer() = Bukkit.getServer()
 
     override fun reload() {
         if (PAPIHook == null) {

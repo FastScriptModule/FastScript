@@ -1,6 +1,8 @@
 package me.scoretwo.fastscript.script
 
+import me.scoretwo.fastscript.api.script.FileScript
 import me.scoretwo.fastscript.config.SettingConfig
+import me.scoretwo.fastscript.plugin
 import me.scoretwo.utils.bukkit.configuration.yaml.patchs.getLowerCaseNode
 import java.io.File
 
@@ -8,18 +10,14 @@ class ScriptManager {
 
     val defaultScriptPath = File(plugin.dataFolder, "scripts")
 
-    val scripts = mutableListOf<Script>()
+    val scripts = mutableMapOf<String, FileScript>()
 
-    fun getScript(name: String): Script? {
-        for (script in scripts) {
-            if (script.name == name) return script
-        }
-        return null
-    }
+    fun getScript(name: String) = if (scripts.containsKey(name)) scripts[name] else null
 
-    fun loadScript(file: File) {
-        scripts.add(CustomScript(file))
-    }
+    fun loadScript(file: File) = scripts[file.name.substringBeforeLast(".")]
+    // {
+    //    scripts.add(CustomScript(file))
+    // }
 
     /**
     * 暂时同步, 异步以后写
@@ -38,21 +36,15 @@ class ScriptManager {
         }
     }
 
-    /**
-     * 选取脚本文件
-     * 该创意来源于 TrMenu
-     * @author Arasple
-     */
-    fun selectScriptFiles(file: File): MutableList<File> =
-        mutableListOf<File>().let { files ->
-            if (file.isDirectory) {
-                file.listFiles()?.forEach {
-                    files.addAll(selectScriptFiles(it))
-                }
-            } else if (!file.name.startsWith("#") && file.name.endsWith(".js", true)) {
-                files.add(file)
+    fun selectScriptFiles(file: File): MutableList<File> = mutableListOf<File>().let { files ->
+        if (file.isDirectory) {
+            file.listFiles()?.forEach {
+                files.addAll(selectScriptFiles(it))
             }
-            return@let files
+        } else if (file.name.endsWith(".js", true)) {
+            files.add(file)
         }
+        files
+    }
 
 }

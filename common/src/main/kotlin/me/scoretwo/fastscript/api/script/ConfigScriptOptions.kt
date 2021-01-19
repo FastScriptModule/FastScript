@@ -13,9 +13,10 @@ abstract class ConfigScriptOptions(val file: File, val config: YamlConfiguration
         }
     }
 
-    val otherSection = mutableListOf<ConfigurationSection>().also { sections ->
+    val otherSection = mutableMapOf<String, ConfigurationSection>().also { sections ->
         config.getKeys(false).forEach {
-            if (!arrayOf("main", "meta").contains(it.toLowerCase())) sections.add(config.getConfigurationSection(it))
+            if (!arrayOf("main", "meta").contains(it.toLowerCase()))
+                sections[it] = config.getConfigurationSection(it)
         }
     }
 

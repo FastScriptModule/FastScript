@@ -1,10 +1,12 @@
 package me.scoretwo.fastscript.api.script
 
+import me.scoretwo.fastscript.api.expansion.FastScriptExpansion
 import java.io.File
 
 abstract class AbstractScript (
+    val expansion: FastScriptExpansion,
     val description: ScriptDescription,
-    options: ScriptOptions,
+    val options: ScriptOptions,
     val textScripts: MutableList<String> = mutableListOf("")
 
 ) {

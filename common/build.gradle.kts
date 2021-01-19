@@ -17,10 +17,10 @@ dependencies {
     compileOnly("com.google.code.gson:gson:2.8.6")
     compileOnly("org.slf4j:slf4j-log4j12:1.7.30")
     implementation("commons-io:commons-io:2.7")
-    implementation("me.scoretwo:commons-syntaxes:2.0.2-SNAPSHOT")
-    implementation("me.scoretwo:commons-command:2.0.2-SNAPSHOT")
-    implementation("me.scoretwo:commons-server:2.0.2-SNAPSHOT")
-    implementation("me.scoretwo:commons-bukkit-configuration:2.0.2-SNAPSHOT")
+    implementation("me.scoretwo:commons-syntaxes:2.0.3-SNAPSHOT")
+    implementation("me.scoretwo:commons-command:2.0.3-SNAPSHOT")
+    implementation("me.scoretwo:commons-server:2.0.3-SNAPSHOT")
+    implementation("me.scoretwo:commons-bukkit-configuration:2.0.3-SNAPSHOT")
 }
 
 configure<PublishingExtension> {

@@ -1,8 +1,8 @@
-package me.scoretwo.fastscript.addon.javascript
+package me.scoretwo.fastscript.expansion.javascript
 
-import me.scoretwo.fastscript.addon.javascript.ScriptIncludeType.*
-import me.scoretwo.fastscript.addon.javascript.exception.IncludeFormatException
-import me.scoretwo.fastscript.addon.javascript.exception.TypeInferenceException
+import me.scoretwo.fastscript.expansion.javascript.ScriptIncludeType.*
+import me.scoretwo.fastscript.expansion.javascript.exception.IncludeFormatException
+import me.scoretwo.fastscript.expansion.javascript.exception.TypeInferenceException
 import me.scoretwo.fastscript.api.format.FormatHeader
 import me.scoretwo.fastscript.plugin
 import me.scoretwo.fastscript.sendMessage

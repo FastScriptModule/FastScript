@@ -1,6 +1,6 @@
 package me.scoretwo.fastscript
 
-import me.scoretwo.fastscript.api.addon.AddonManager
+import me.scoretwo.fastscript.api.expansion.ExpansionManager
 import me.scoretwo.fastscript.api.format.FormatHeader
 import me.scoretwo.fastscript.api.plugin.ScriptPlugin
 import me.scoretwo.fastscript.api.script.AbstractScript
@@ -9,7 +9,6 @@ import me.scoretwo.fastscript.config.SettingConfig
 import me.scoretwo.fastscript.script.ScriptManager
 import me.scoretwo.fastscript.utils.Utils
 import me.scoretwo.utils.bukkit.configuration.yaml.patchs.getLowerCaseNode
-import me.scoretwo.utils.plugin.GlobalPlugin
 import me.scoretwo.utils.sender.GlobalPlayer
 import me.scoretwo.utils.sender.GlobalSender
 import me.scoretwo.utils.syntaxes.StreamUtils
@@ -20,7 +19,7 @@ class FastScript(val plugin: ScriptPlugin) {
 
     val commandNexus: ScriptCommandNexus
     val scriptManager: ScriptManager
-    val addonManager: AddonManager
+    val expansionManager: ExpansionManager
 
     fun setPlaceholder(player: GlobalPlayer, string: String) = plugin.setPlaceholder(player, string)
 
@@ -34,7 +33,7 @@ class FastScript(val plugin: ScriptPlugin) {
 
         commandNexus = ScriptCommandNexus()
         scriptManager = ScriptManager()
-        addonManager = AddonManager()
+        expansionManager = ExpansionManager()
 
         if (!plugin.dataFolder.exists()) {
             plugin.dataFolder.mkdirs()

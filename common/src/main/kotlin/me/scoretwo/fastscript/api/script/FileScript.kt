@@ -1,12 +1,14 @@
 package me.scoretwo.fastscript.api.script
 
+import me.scoretwo.fastscript.api.expansion.FastScriptExpansion
 import java.io.File
 
 open class FileScript(
+    expansion: FastScriptExpansion,
     description: ScriptDescription,
-    private val options: ConfigScriptOptions,
+    val configOptions: ConfigScriptOptions,
     val files: MutableList<File> = mutableListOf()
-): AbstractScript(description, options) {
+): AbstractScript(expansion, description, configOptions) {
 
     init {
         reload()
@@ -22,8 +24,8 @@ open class FileScript(
     }
 
     open fun reload() {
-        if (!options.file.exists()) {
-            options.config.save(options.file)
+        if (!configOptions.file.exists()) {
+            configOptions.config.save(configOptions.file)
         }
 
         files.forEachIndexed { i, file -> textScripts[i] = file.readText() }

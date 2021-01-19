@@ -1,6 +1,5 @@
 package me.scoretwo.fastscript.api.plugin
 
-import me.scoretwo.fastscript.api.utils.AbstractScriptUtils
 import me.scoretwo.utils.plugin.GlobalPlugin
 import me.scoretwo.utils.plugin.PluginDescription
 import me.scoretwo.utils.plugin.logging.GlobalLogger

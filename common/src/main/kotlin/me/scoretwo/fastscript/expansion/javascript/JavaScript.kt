@@ -1,8 +1,8 @@
-package me.scoretwo.fastscript.addon.javascript
+package me.scoretwo.fastscript.expansion.javascript
 
 import me.scoretwo.fastscript.FastScript
+import me.scoretwo.fastscript.api.expansion.FastScriptExpansion
 import me.scoretwo.fastscript.api.format.FormatHeader
-import me.scoretwo.fastscript.api.script.ConfigScriptOptions
 import me.scoretwo.fastscript.api.script.FileScript
 import me.scoretwo.fastscript.api.script.ScriptDescription
 import me.scoretwo.fastscript.plugin
@@ -16,10 +16,11 @@ import javax.script.ScriptEngineManager
 import javax.script.ScriptException
 
 class JavaScript(
+    expansion: FastScriptExpansion,
     description: ScriptDescription,
-    val options: JavaScriptOptions,
+    val javaScriptOptions: JavaScriptOptions,
     files: MutableList<File>
-): FileScript(description, options, files) {
+): FileScript(expansion, description, javaScriptOptions, files) {
 
     val engine: ScriptEngine
     val mergedString: String
@@ -31,17 +32,22 @@ class JavaScript(
                 builder.append("\n")
             }
         }.toString()
-        engine = ScriptEngineManager(plugin.pluginClassLoader).getEngineByName(options.engine)
+        engine = ScriptEngineManager(plugin.pluginClassLoader).getEngineByName(javaScriptOptions.engine)
 
-        options.includes.forEach {
+        javaScriptOptions.includes.forEach {
             engine.put(it.key, it.value[this])
         }
         meta.forEach {
             engine.put(it.key, it.value)
         }
         engine.put("server", plugin.server)
+        engine.put("expansionmanager", FastScript.instance.expansionManager)
     }
     fun directEval(sender: GlobalSender): Any? {
+        if (sender.isPlayer()) sender.toPlayer().let {
+            engine.put("player", it)
+            engine.put("originalplayer", it)
+        }
         engine.put("sender", sender)
         engine.put("originalsender", plugin.toOriginalSender(sender))
         return try {
@@ -51,10 +57,10 @@ class JavaScript(
         }
     }
 
-    fun execute(sender: GlobalSender, function: String = options.main, args: Array<Any?> = arrayOf()): Any? {
+    fun execute(sender: GlobalSender, function: String = javaScriptOptions.main, args: Array<Any?> = arrayOf()): Any? {
         /*if (engine !is Invocable)*/
         return try {
-            directEval()
+            directEval(sender)
 
             val invocable = engine as Invocable
 
