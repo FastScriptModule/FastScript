@@ -9,9 +9,7 @@ class JavaScriptExpansion: FastScriptExpansion() {
     override val name: String = "JavaScript"
     override val sign: String = name.toLowerCase()
 
-    val scripts = mutableListOf<JavaScript>()
-
-    override fun processScripts(scripts: MutableList<FileScript>) = scripts.forEachIndexed { i, fileScript ->
+    override fun processScript(script: FileScript): Boolean {
 
     }
 

@@ -1,8 +1,10 @@
 package me.scoretwo.fastscript.script
 
+import me.scoretwo.fastscript.FastScript
 import me.scoretwo.fastscript.api.script.FileScript
 import me.scoretwo.fastscript.config.SettingConfig
 import me.scoretwo.fastscript.plugin
+import me.scoretwo.fastscript.settings
 import me.scoretwo.utils.bukkit.configuration.yaml.patchs.getLowerCaseNode
 import java.io.File
 
@@ -14,7 +16,13 @@ class ScriptManager {
 
     fun getScript(name: String) = if (scripts.containsKey(name)) scripts[name] else null
 
-    fun loadScript(file: File) = scripts[file.name.substringBeforeLast(".")]
+    fun loadScript(file: File) {
+        FastScript.instance.expansionManager.expansions.forEach {
+
+            scripts[file.name.substringBeforeLast(".")]
+        }
+
+    }
     // {
     //    scripts.add(CustomScript(file))
     // }
@@ -28,7 +36,7 @@ class ScriptManager {
         defaultScriptPath.mkdirs()
         defaultScriptPath.listFiles()?.forEach { loadScript(it) }
 
-        SettingConfig.instance.getStringList(SettingConfig.instance.getLowerCaseNode("load-script-files")).forEach {
+        settings.getStringList(settings.getLowerCaseNode("load-script-files")).forEach {
             val file = File(it)
 
             if (file.exists()) selectScriptFiles(file).forEach { loadScript(it) }

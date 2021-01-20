@@ -3,12 +3,14 @@ package me.scoretwo.fastscript.config
 import me.scoretwo.utils.bukkit.configuration.yaml.file.YamlConfiguration
 import java.io.File
 
-abstract class Config: YamlConfiguration {
+abstract class Config(val file: File) : YamlConfiguration() {
 
-    val file: File
+    init {
+        reload()
+    }
 
-    constructor(file: File) {
-        this.file = file
+    open fun reload() {
+        onReload()
         this.load(file)
     }
 

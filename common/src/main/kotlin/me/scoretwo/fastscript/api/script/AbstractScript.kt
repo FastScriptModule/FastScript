@@ -12,5 +12,6 @@ abstract class AbstractScript (
 ) {
     val meta = mutableMapOf<String, Any?>()
 
+    val hookExpansions = mutableListOf<FastScriptExpansion>()
 
 }
