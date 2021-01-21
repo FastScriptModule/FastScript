@@ -1,19 +1,9 @@
 package me.scoretwo.fastscript.expansion.javascript
 
-import me.scoretwo.fastscript.api.expansion.FastScriptExpansion
-import me.scoretwo.fastscript.api.script.AbstractScript
-import me.scoretwo.fastscript.api.script.FileScript
-import me.scoretwo.utils.sender.GlobalSender
+import me.scoretwo.fastscript.expansion.typeengine.TypeEngineExpansion
 
-class JavaScriptExpansion: FastScriptExpansion() {
+class JavaScriptExpansion: TypeEngineExpansion() {
     override val name: String = "JavaScript"
     override val sign: String = name.toLowerCase()
-
-    override fun processScript(script: FileScript): Boolean {
-
-    }
-
-    override fun executeScript(sender: GlobalSender, script: FileScript, function: String, args: Array<Any?>) {
-        TODO("Not yet implemented")
-    }
+    override val fileSuffix: String = "js"
 }

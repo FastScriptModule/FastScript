@@ -1,4 +1,4 @@
-package me.scoretwo.fastscript.expansion.javascript
+package me.scoretwo.fastscript.expansion.typeengine
 
 enum class ScriptIncludeType {
     OBJECT,

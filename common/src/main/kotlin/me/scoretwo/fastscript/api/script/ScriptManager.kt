@@ -1,8 +1,6 @@
-package me.scoretwo.fastscript.script
+package me.scoretwo.fastscript.api.script
 
 import me.scoretwo.fastscript.FastScript
-import me.scoretwo.fastscript.api.script.FileScript
-import me.scoretwo.fastscript.config.SettingConfig
 import me.scoretwo.fastscript.plugin
 import me.scoretwo.fastscript.settings
 import me.scoretwo.utils.bukkit.configuration.yaml.patchs.getLowerCaseNode
@@ -12,7 +10,7 @@ class ScriptManager {
 
     val defaultScriptPath = File(plugin.dataFolder, "scripts")
 
-    val scripts = mutableMapOf<String, FileScript>()
+    val scripts = mutableMapOf<String, Script>()
 
     fun getScript(name: String) = if (scripts.containsKey(name)) scripts[name] else null
 

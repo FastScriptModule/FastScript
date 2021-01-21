@@ -3,14 +3,11 @@ package me.scoretwo.fastscript
 import me.scoretwo.fastscript.api.expansion.ExpansionManager
 import me.scoretwo.fastscript.api.format.FormatHeader
 import me.scoretwo.fastscript.api.plugin.ScriptPlugin
-import me.scoretwo.fastscript.api.script.AbstractScript
-import me.scoretwo.fastscript.api.script.FileScript
+import me.scoretwo.fastscript.api.script.Script
 import me.scoretwo.fastscript.command.ScriptCommandNexus
 import me.scoretwo.fastscript.config.SettingConfig
-import me.scoretwo.fastscript.script.ScriptManager
+import me.scoretwo.fastscript.api.script.ScriptManager
 import me.scoretwo.fastscript.utils.Utils
-import me.scoretwo.utils.bukkit.configuration.yaml.file.YamlConfiguration
-import me.scoretwo.utils.bukkit.configuration.yaml.patchs.getLowerCaseNode
 import me.scoretwo.utils.sender.GlobalPlayer
 import me.scoretwo.utils.sender.GlobalSender
 import me.scoretwo.utils.syntaxes.StreamUtils
@@ -109,7 +106,7 @@ class FastScript(val plugin: ScriptPlugin) {
 
 }
 lateinit var plugin: ScriptPlugin
-val scripts = mutableListOf<FileScript>()
+val scripts = mutableListOf<Script>()
 
 lateinit var settings: SettingConfig
 

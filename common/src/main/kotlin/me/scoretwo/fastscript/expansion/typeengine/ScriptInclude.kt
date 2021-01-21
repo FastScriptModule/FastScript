@@ -1,11 +1,12 @@
-package me.scoretwo.fastscript.expansion.javascript
+package me.scoretwo.fastscript.expansion.typeengine
 
-import me.scoretwo.fastscript.expansion.javascript.ScriptIncludeType.*
-import me.scoretwo.fastscript.expansion.javascript.exception.IncludeFormatException
-import me.scoretwo.fastscript.expansion.javascript.exception.TypeInferenceException
 import me.scoretwo.fastscript.api.format.FormatHeader
+import me.scoretwo.fastscript.api.script.Script
+import me.scoretwo.fastscript.expansion.typeengine.exception.IncludeFormatException
+import me.scoretwo.fastscript.expansion.typeengine.exception.TypeInferenceException
 import me.scoretwo.fastscript.plugin
 import me.scoretwo.fastscript.sendMessage
+import me.scoretwo.fastscript.expansion.typeengine.ScriptIncludeType.*
 import me.scoretwo.utils.bukkit.configuration.yaml.ConfigurationSection
 import me.scoretwo.utils.bukkit.configuration.yaml.patchs.getLowerCaseNode
 import java.lang.reflect.Method
@@ -31,7 +32,7 @@ class ScriptInclude(
         } else this.type = type
     }
 
-    operator fun get(script: JavaScript): Any? {
+    operator fun get(script: Script): Any? {
         obj ?: throw IncludeFormatException()
         met ?: throw IncludeFormatException()
         val clazz = findClass(script, obj.first) ?: throw ClassNotFoundException()
@@ -68,7 +69,7 @@ class ScriptInclude(
     fun hasMethodArgs() = if (hasMethod()) met!!.second != null else false
 
 
-    fun findClass(script: JavaScript, target: String) = try {
+    fun findClass(script: Script, target: String) = try {
         Class.forName(target)
     } catch (e: ClassNotFoundException) {
         e.printStackTrace()
@@ -77,7 +78,7 @@ class ScriptInclude(
         null
     }
 
-    fun accessMethod(script: JavaScript, `object`: Any?, method: Method) = try {
+    fun accessMethod(script: Script, `object`: Any?, method: Method) = try {
         method.invoke(`object`, obj!!.second)
     } catch (e: Exception) {
         e.printStackTrace()
