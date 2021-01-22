@@ -14,6 +14,10 @@ description = "FastScript is a Spigot plugin, which can run JavaScript-based scr
 
 defaultTasks = mutableListOf("publishToMavenLocal")
 
+extra.apply {
+    set("commonsVersion", "2.0.3-SNAPSHOT")
+}
+
 subprojects {
     group = rootProject.group
     version = rootProject.version

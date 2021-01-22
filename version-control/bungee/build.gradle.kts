@@ -15,7 +15,7 @@ repositories {
 
 dependencies {
     implementation(project(":common"))
-    implementation("me.scoretwo:commons-bungee-plugin:2.0.3-SNAPSHOT")
+    implementation("me.scoretwo:commons-bungee-plugin:${rootProject.extra.get("commonsVersion")}")
 
     compileOnly("net.md-5:bungeecord-api:1.16-R0.4-SNAPSHOT")
 }

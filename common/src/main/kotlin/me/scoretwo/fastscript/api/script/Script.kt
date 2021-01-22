@@ -4,7 +4,7 @@ import me.scoretwo.fastscript.FastScript
 import me.scoretwo.utils.sender.GlobalSender
 import java.io.File
 
-abstract class Script(
+open class Script(
     val description: ScriptDescription,
     val options: ScriptOptions,
     val scriptFiles: MutableList<File> = mutableListOf()

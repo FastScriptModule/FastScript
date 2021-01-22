@@ -1,5 +1,7 @@
 package me.scoretwo.fastscript.api.script
 
+import me.scoretwo.utils.bukkit.configuration.yaml.ConfigurationSection
+import me.scoretwo.utils.bukkit.configuration.yaml.patchs.getLowerCaseNode
 import javax.security.auth.login.Configuration
 
 interface ScriptDescription {
@@ -14,6 +16,26 @@ interface ScriptDescription {
     val authors: Array<String>
 
     companion object {
+
+        fun fromSection(section: ConfigurationSection) = parseDescription(
+            section.getString(section.getLowerCaseNode("name")),
+            section.getString(section.getLowerCaseNode("main")),
+            section.getString(section.getLowerCaseNode("version")),
+            section.getString(section.getLowerCaseNode("description")),
+            if (section.isList(section.getLowerCaseNode("authors")))
+                section.getStringList(section.getLowerCaseNode("authors"))!!
+            else
+                mutableListOf(section[section.getLowerCaseNode("authors")])
+        )
+
+        fun parseDescription(
+            name: String,
+            main: String,
+            version: String? = null,
+            description: String? = null,
+            authors: MutableList<String> = mutableListOf()
+        ) = parseDescription(name, main, version, description, *authors.toTypedArray())
+
         fun parseDescription(
             name: String,
             main: String,
@@ -28,5 +50,7 @@ interface ScriptDescription {
             override val authors: Array<String> = arrayOf(*authors)
 
         }
+
+
     }
 }

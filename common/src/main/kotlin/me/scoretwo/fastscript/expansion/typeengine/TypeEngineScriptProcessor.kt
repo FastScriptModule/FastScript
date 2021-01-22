@@ -15,6 +15,7 @@ import javax.script.ScriptException
 class TypeEngineScriptProcessor(script: TypeEngineScript, expansion: TypeEngineExpansion): ScriptProcessor(script, expansion) {
 
     val engine: ScriptEngine
+    override val needEval = true
 
     init {
         engine = ScriptEngineManager(plugin.pluginClassLoader).getEngineByName(script.engineOption.engine)

@@ -5,6 +5,7 @@ import me.scoretwo.utils.sender.GlobalSender
 
 abstract class ScriptProcessor(val script: Script, val expansion: FastScriptExpansion) {
 
+    abstract val needEval: Boolean
     abstract fun eval(sender: GlobalSender): Any?
     abstract fun execute(sender: GlobalSender, main: String = script.options.main, args: Array<Any?> = arrayOf()): Any?
 

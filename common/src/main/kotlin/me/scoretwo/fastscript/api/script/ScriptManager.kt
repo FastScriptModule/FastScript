@@ -12,11 +12,12 @@ class ScriptManager {
 
     val scripts = mutableMapOf<String, Script>()
 
-    fun getScript(name: String) = if (scripts.containsKey(name)) scripts[name] else null
+    fun getScript(name: String) = scripts[name]
 
     fun loadScript(file: File) {
         FastScript.instance.expansionManager.expansions.forEach {
 
+            // 載入脚本
             scripts[file.name.substringBeforeLast(".")]
         }
 
