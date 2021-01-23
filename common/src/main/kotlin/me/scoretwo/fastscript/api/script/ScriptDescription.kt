@@ -23,9 +23,9 @@ interface ScriptDescription {
             section.getString(section.getLowerCaseNode("version")),
             section.getString(section.getLowerCaseNode("description")),
             if (section.isList(section.getLowerCaseNode("authors")))
-                section.getStringList(section.getLowerCaseNode("authors"))!!
+                section.getStringList(section.getLowerCaseNode("authors"))
             else
-                mutableListOf(section[section.getLowerCaseNode("authors")])
+                mutableListOf(section.getString(section.getLowerCaseNode("authors")))
         )
 
         fun parseDescription(

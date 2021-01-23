@@ -1,11 +1,15 @@
 package me.scoretwo.fastscript.api.expansion
 
+import me.scoretwo.fastscript.expansion.javascript.JavaScriptExpansion
+import me.scoretwo.fastscript.expansion.kotlinscript.KotlinScriptExpansion
+
 class ExpansionManager {
 
     val expansions = mutableSetOf<FastScriptExpansion>()
 
     init {
-
+        register(KotlinScriptExpansion())
+        register(JavaScriptExpansion())
     }
 
     fun register(expansion: FastScriptExpansion) {
