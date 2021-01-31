@@ -9,6 +9,9 @@ open class Script(
     val options: ScriptOptions,
     val scriptFiles: MutableList<File> = mutableListOf()
 ) {
+
+    val name = description.name
+
     // sign, processor
     val scriptProcessor = mutableMapOf<String, ScriptProcessor>()
     // sign, mergedText

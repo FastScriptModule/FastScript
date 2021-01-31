@@ -14,11 +14,10 @@ import javax.script.ScriptException
 
 class TypeEngineScriptProcessor(script: TypeEngineScript, expansion: TypeEngineExpansion): ScriptProcessor(script, expansion) {
 
-    val engine: ScriptEngine
+    val engine: ScriptEngine = ScriptEngineManager(plugin.pluginClassLoader).getEngineByName(script.engineOption.engine)
     override val needEval = true
 
     init {
-        engine = ScriptEngineManager(plugin.pluginClassLoader).getEngineByName(script.engineOption.engine)
         script.engineOption.includes.forEach {
             engine.put(it.key, it.value[script])
         }

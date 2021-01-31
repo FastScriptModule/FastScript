@@ -7,7 +7,7 @@ import java.io.File
 
 class TypeEngineScriptOptions(expansion: TypeEngineExpansion, file: File, section: YamlConfiguration): ScriptOptions(file, section) {
 
-    val javaScriptSection = section.getConfigurationSection(section.getLowerCaseNode(expansion.sign))
+    val typeEngineSection = section.getConfigurationSection(section.getLowerCaseNode(expansion.sign))
 
     val engine: String
     val includes = mutableMapOf<String, ScriptInclude>()

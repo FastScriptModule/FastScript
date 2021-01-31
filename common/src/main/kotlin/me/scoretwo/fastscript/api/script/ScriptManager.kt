@@ -1,6 +1,8 @@
 package me.scoretwo.fastscript.api.script
 
 import me.scoretwo.fastscript.FastScript
+import me.scoretwo.fastscript.api.utils.process.ProcessResult
+import me.scoretwo.fastscript.api.utils.process.ProcessResultType
 import me.scoretwo.fastscript.plugin
 import me.scoretwo.fastscript.settings
 import me.scoretwo.utils.bukkit.configuration.yaml.ConfigurationSection
@@ -12,6 +14,8 @@ class ScriptManager {
     val folders = mutableListOf(File(plugin.dataFolder, "scripts"))
 
     val scripts = mutableMapOf<String, Script>()
+
+    private val optionFiles =
 
     fun getScript(name: String) = scripts[name]
 
@@ -59,5 +63,31 @@ class ScriptManager {
         }
         files
     }
+
+
+    fun loadFromFolderScript(folder: File): ProcessResult {
+        val optionFile: File = arrayOf(
+            "option.yml",
+            "${folder.name}.yml",
+            "setting.yml"
+        ).let {
+            for (fileName in it) {
+                val file = File(fileName)
+                if (file.exists()) return@let file
+            }
+
+            return ProcessResult(ProcessResultType.FAILED, "Option file not found in ${folder.name}.")
+        }
+        val option = ScriptOptions(optionFile)
+        val script = Script(ScriptDescription.fromSection(option.config), option)
+
+
+        val scriptFiles = mutableListOf<File>().also {
+
+        }
+
+
+    }
+
 
 }
