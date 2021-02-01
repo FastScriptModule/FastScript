@@ -7,7 +7,7 @@ import java.io.File
 open class Script(
     val description: ScriptDescription,
     val options: ScriptOptions,
-    val scriptFiles: MutableList<File> = mutableListOf()
+    var scriptFiles: MutableList<File> = mutableListOf()
 ) {
 
     val name = description.name

@@ -15,17 +15,55 @@ class ScriptManager {
 
     val scripts = mutableMapOf<String, Script>()
 
-    private val optionFiles =
-
     fun getScript(name: String) = scripts[name]
 
-    fun loadScript(file: File) {
-        FastScript.instance.expansionManager.expansions.forEach {
+    /**
+     * 仅接受文件后缀为yml的文件或者可用的脚本文件夹才能被处理
+     */
+    private fun loadScript(file: File): ProcessResult {
+        if (file.isDirectory) {
+            return loadFromFolderScript(file)
+        }
+
+        if (file.name.endsWith(".yml")) {
+            val scriptName = file.name.substringBeforeLast(".")
+
+            val option = ScriptOptions(file)
+
+        }
+
+        FastScript.instance.expansionManager.expansions.forEach { expansion ->
 
             // 載入脚本
             scripts[file.name.substringBeforeLast(".")]
         }
 
+    }
+
+    private fun loadFromFolderScript(folder: File): ProcessResult {
+        val optionFiles = arrayOf("option.yml", "${folder.name}.yml", "setting.yml")
+
+        val optionFile: File = optionFiles.let {
+            for (fileName in it) {
+                val file = File(fileName)
+                if (file.exists()) return@let file
+            }
+
+            return ProcessResult(ProcessResultType.FAILED, "Option file not found in ${folder.name}.")
+        }
+        val option = ScriptOptions(optionFile)
+        val script = Script(ScriptDescription.fromSection(option.config), option)
+
+        script.scriptFiles = mutableListOf<File>().also { files ->
+            folder.listFiles()?.forEach { file ->
+                script.scriptProcessor.forEach {
+                    if (file.endsWith(it.value.expansion.fileSuffix)) files.add(file)
+                }
+            }
+        }
+        scripts[folder.name] = script
+
+        return ProcessResult(ProcessResultType.SUCCESS)
     }
     // {
     //    scripts.add(CustomScript(file))
@@ -37,8 +75,8 @@ class ScriptManager {
     @Synchronized
     fun loadScripts() {
         scripts.clear()
-        defaultScriptPath.mkdirs()
-        defaultScriptPath.listFiles()?.forEach { loadScript(it) }
+        folders[0].mkdirs()
+        folders[0].listFiles()?.forEach { loadScript(it) }
 
         settings.getStringList(settings.getLowerCaseNode("load-script-files")).forEach {
             val file = File(it)
@@ -65,29 +103,6 @@ class ScriptManager {
     }
 
 
-    fun loadFromFolderScript(folder: File): ProcessResult {
-        val optionFile: File = arrayOf(
-            "option.yml",
-            "${folder.name}.yml",
-            "setting.yml"
-        ).let {
-            for (fileName in it) {
-                val file = File(fileName)
-                if (file.exists()) return@let file
-            }
-
-            return ProcessResult(ProcessResultType.FAILED, "Option file not found in ${folder.name}.")
-        }
-        val option = ScriptOptions(optionFile)
-        val script = Script(ScriptDescription.fromSection(option.config), option)
-
-
-        val scriptFiles = mutableListOf<File>().also {
-
-        }
-
-
-    }
 
 
 }
