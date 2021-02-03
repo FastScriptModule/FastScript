@@ -36,15 +36,3 @@ tasks.withType<com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar> {
 
     classifier = null
 }
-
-tasks.processResources {
-    from("src/main/resource") {
-        include("plugin.yml")
-        expand(mapOf(
-            "name" to rootProject.name,
-            "main" to "${rootProject.group}.${rootProject.name.toLowerCase()}.bukkit.BukkitBootStrap",
-            "version" to rootProject.version,
-            "description" to rootProject.description
-        ))
-    }
-}

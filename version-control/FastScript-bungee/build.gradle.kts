@@ -32,15 +32,3 @@ tasks.withType<com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar> {
 
     classifier = null
 }
-
-tasks.processResources {
-    from("src/main/resource") {
-        include("bungee.yml")
-        expand(mapOf(
-            "name" to project.name,
-            "main" to "${rootProject.group}.${rootProject.name.toLowerCase()}.bungee.BungeeBootStrap",
-            "version" to project.version,
-            "description" to project.description
-        ))
-    }
-}

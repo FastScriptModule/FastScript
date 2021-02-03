@@ -43,16 +43,3 @@ tasks.withType<com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar> {
 
     classifier = null
 }
-
-tasks.processResources {
-    from("src/main/resource") {
-        include("velocity-plugin.json")
-        expand(mapOf(
-            "id" to project.name.toLowerCase(),
-            "name" to project.name,
-            "version" to project.version,
-            "main" to "${rootProject.group}.${rootProject.name.toLowerCase()}.velocity.VelocityBootStrap",
-            "description" to project.description
-        ))
-    }
-}

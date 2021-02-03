@@ -2,12 +2,12 @@ package me.scoretwo.fastscript.api.language
 
 class LanguageManager {
 
+    val defaultLanguage = Language()
     val languages = mutableMapOf<String, Language>().also {
-        it["en_US"] = Language()
+        it["en_US"] = defaultLanguage
     }
 
-    var current = languages["en_US"]!!
-
+    var current = defaultLanguage
 
     operator fun set(node: String, any: Any?) = current.set(node, any)
 

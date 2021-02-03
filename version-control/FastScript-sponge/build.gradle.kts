@@ -43,15 +43,3 @@ tasks.withType<com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar> {
 
     classifier = null
 }
-
-tasks.processResources {
-    from("src/main/resource") {
-        include("mcmod.info")
-        expand(mapOf(
-            "id" to project.name.toLowerCase(),
-            "name" to project.name,
-            "version" to project.version,
-            "description" to project.description
-        ))
-    }
-}

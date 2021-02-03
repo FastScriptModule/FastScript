@@ -29,7 +29,7 @@ class FastScript(val plugin: ScriptPlugin) {
 
         printLogo()
 
-        plugin.server.console.sendMessage(FormatHeader.INFO, "Initializing...")
+        plugin.server.console.sendMessage("§3FastScript initializing...")
 
         if (!plugin.dataFolder.exists()) {
             plugin.dataFolder.mkdirs()
@@ -58,6 +58,7 @@ class FastScript(val plugin: ScriptPlugin) {
             plugin.dataFolder.mkdirs()
         }
         plugin.reload()
+        expansionManager.reload()
         initInternalScripts()
         scriptManager.loadScripts()
     }

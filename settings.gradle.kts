@@ -51,9 +51,7 @@ class MergeBuilder {
         return MergeBuilder(nodes, addNodes)
     }
 }
-
 include("FastScript-common")
-include("FastScript-plugin")
 
 MergeBuilder("version-control").also {
     it.add("FastScript-bukkit")
@@ -61,3 +59,5 @@ MergeBuilder("version-control").also {
     it.add("FastScript-sponge")
     it.add("FastScript-velocity")
 }
+
+include("FastScript-plugin")

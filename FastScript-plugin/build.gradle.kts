@@ -35,10 +35,10 @@ tasks.withType<com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar> {
         include(dependency("org.jetbrains.kotlin:kotlin-stdlib"))
 
         include(dependency(":FastScript-common"))
-        include(dependency(":version-control:FastScript-bukkit"))
-        include(dependency(":version-control:FastScript-bungee"))
-        include(dependency(":version-control:FastScript-sponge"))
-        include(dependency(":version-control:FastScript-velocity"))
+        include(dependency(":FastScript-bukkit"))
+        include(dependency(":FastScript-bungee"))
+        include(dependency(":FastScript-sponge"))
+        include(dependency(":FastScript-velocity"))
 
         include(dependency("me.scoretwo:commons-velocity-plugin:${rootProject.extra.get("commonsVersion")}"))
         include(dependency("me.scoretwo:commons-sponge-plugin:${rootProject.extra.get("commonsVersion")}"))
@@ -59,4 +59,44 @@ tasks.withType<com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar> {
     relocate("org.bstats","me.scoretwo.utils.libs.org.bstats")
 
     classifier = null
+}
+
+tasks.processResources {
+    from("src/main/resources") {
+        include("plugin.yml")
+        expand(mapOf(
+            "name" to rootProject.name,
+            "main" to "${rootProject.group}.${rootProject.name.toLowerCase()}.bukkit.BukkitBootStrap",
+            "version" to rootProject.version,
+            "description" to rootProject.description
+        ))
+    }
+    from("src/main/resources") {
+        include("bungee.yml")
+        expand(mapOf(
+            "name" to project.name,
+            "main" to "${rootProject.group}.${rootProject.name.toLowerCase()}.bungee.BungeeBootStrap",
+            "version" to project.version,
+            "description" to project.description
+        ))
+    }
+    from("src/main/resources") {
+        include("mcmod.info")
+        expand(mapOf(
+            "id" to project.name.toLowerCase(),
+            "name" to project.name,
+            "version" to project.version,
+            "description" to project.description
+        ))
+    }
+    from("src/main/resources") {
+        include("velocity-plugin.json")
+        expand(mapOf(
+            "id" to project.name.toLowerCase(),
+            "name" to project.name,
+            "version" to project.version,
+            "main" to "${rootProject.group}.${rootProject.name.toLowerCase()}.velocity.VelocityBootStrap",
+            "description" to project.description
+        ))
+    }
 }
