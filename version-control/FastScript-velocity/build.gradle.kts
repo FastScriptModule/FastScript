@@ -8,13 +8,6 @@ plugins {
     id("net.kyori.blossom")
 }
 
-
-repositories {
-    maven("https://nexus.velocitypowered.com/repository/velocity-artifacts-snapshots/")
-    maven("https://hub.spigotmc.org/nexus/content/repositories/sonatype-nexus-snapshots/")
-    maven("https://repo.codemc.io/repository/maven-snapshots/")
-}
-
 blossom {
     replaceTokenIn("src/main/kotlin/me/scoretwo/fastscript/velocity/VelocityBootStrap.kt")
     replaceToken("%%id%%", project.name.toLowerCase())
@@ -24,7 +17,7 @@ blossom {
 }
 
 dependencies {
-    implementation(project(":common"))
+    implementation(project(":FastScript-common"))
 
     compileOnly("com.velocitypowered:velocity-api:1.0.11-SNAPSHOT")
     implementation("net.md-5:bungeecord-chat:1.16-R0.4-SNAPSHOT")
@@ -41,7 +34,8 @@ configure<PublishingExtension> {
 
 tasks.withType<com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar> {
     dependencies {
-        include(dependency("org.jetbrains.kotlin:kotlin-stdlib"))
+        exclude(dependency("org.jetbrains.kotlin:kotlin-stdlib"))
+        exclude(dependency("org.jetbrains.kotlin:kotlin-stdlib-common"))
 
         include(dependency("net.md-5:bungeecord-chat:1.16-R0.4-SNAPSHOT"))
         include(dependency("me.scoretwo:commons-velocity-plugin:${rootProject.extra.get("commonsVersion")}"))
@@ -62,16 +56,3 @@ tasks.processResources {
         ))
     }
 }
-/*
-tasks.processResources {
-    from("src/main/resource") {
-        include("velocity-plugin.json")
-        expand(mapOf(
-            "modid" to "fastscript",
-            "name" to project.name,
-            "main" to "${rootProject.group}.${rootProject.name.toLowerCase()}.velocity.VelocityPlugin",
-            "version" to project.version,
-            "description" to project.description
-        ))
-    }
-}*/

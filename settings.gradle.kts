@@ -52,11 +52,12 @@ class MergeBuilder {
     }
 }
 
-include("common")
+include("FastScript-common")
+include("FastScript-plugin")
 
 MergeBuilder("version-control").also {
-    it.add("bukkit")
-    it.add("bungee")
-    it.add("sponge")
-    it.add("velocity")
+    it.add("FastScript-bukkit")
+    it.add("FastScript-bungee")
+    it.add("FastScript-sponge")
+    it.add("FastScript-velocity")
 }

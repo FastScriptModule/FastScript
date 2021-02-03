@@ -15,60 +15,32 @@ description = "FastScript is a Spigot plugin, which can run JavaScript-based scr
 defaultTasks = mutableListOf("publishToMavenLocal")
 
 extra.apply {
-    set("commonsVersion", "2.0.3-SNAPSHOT")
+    set("commonsVersion", "2.0.5-SNAPSHOT")
     set("kotlinVersion", "1.4.21")
 }
 
-repositories {
-    mavenCentral()
-}
-
-dependencies {
-    implementation(project(":common"))
-    implementation(project(":version-control:bukkit"))
-    implementation(project(":version-control:bungee"))
-    implementation(project(":version-control:sponge"))
-    implementation(project(":version-control:velocity"))
-}
-
-
-tasks.withType<com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar> {
-    dependencies {
-        include(dependency(":common"))
-        include(dependency(":version-control:bukkit"))
-        include(dependency(":version-control:bungee"))
-        include(dependency(":version-control:sponge"))
-        include(dependency(":version-control:velocity"))
-    }
-
-    classifier = null
-}
-
-subprojects {
-    group = rootProject.group
-    version = rootProject.version
-    description = rootProject.description
-
+allprojects {
     repositories {
         jcenter()
         mavenCentral()
         mavenLocal()
         maven("https://repo.lucko.me/")
         maven("http://repo.iroselle.com/snapshots/")
+        maven("https://nexus.velocitypowered.com/repository/velocity-artifacts-snapshots/")
+        maven("https://hub.spigotmc.org/nexus/content/repositories/sonatype-nexus-snapshots/")
+        maven("https://repo.codemc.io/repository/maven-snapshots/")
+        maven("https://repo.spongepowered.org/maven")
+        maven("https://jitpack.io")
+        maven("https://hub.spigotmc.org/nexus/content/repositories/sonatype-nexus-snapshots/")
+        maven("https://repo.codemc.io/repository/maven-snapshots/")
+        maven("https://hub.spigotmc.org/nexus/content/repositories/sonatype-nexus-snapshots/")
+        maven("https://repo.codemc.io/repository/maven-snapshots/")
+        maven("https://hub.spigotmc.org/nexus/content/repositories/snapshots/")
     }
 }
 
-/*
-tasks.withType<com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar> {
-    dependencies {
-        include(dependency("me.scoretwo:commons-syntaxes:1.2-SNAPSHOT"))
-        include(dependency("me.scoretwo:commons-configuration:1.2-SNAPSHOT"))
-        include(dependency("org.bstats:bstats-bukkit:1.7"))
-        include(dependency("commons-io:commons-io:2.7"))
-        include(dependency("net.md-5:bungeecord-chat:1.16-R0.4-SNAPSHOT"))
-        include(dependency("org.jetbrains.kotlin:kotlin-stdlib"))
-        include(dependency(fileTree(mapOf("dir" to "libs", "include" to listOf("*.jar")))))
-    }
-    relocate("org.bstats", "me.scoretwo.utils.libs.bstats")
-    relocate("org.apache.commons.io", "me.scoretwo.utils.libs.apache.commons.io")
+subprojects {
+    group = rootProject.group
+    version = rootProject.version
+    description = rootProject.description
 }

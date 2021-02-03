@@ -7,14 +7,8 @@ plugins {
     id("maven-publish")
 }
 
-
-repositories {
-    maven("https://hub.spigotmc.org/nexus/content/repositories/sonatype-nexus-snapshots/")
-    maven("https://repo.codemc.io/repository/maven-snapshots/")
-}
-
 dependencies {
-    implementation(project(":common"))
+    implementation(project(":FastScript-common"))
     implementation("me.scoretwo:commons-bungee-plugin:${rootProject.extra.get("commonsVersion")}")
 
     compileOnly("net.md-5:bungeecord-api:1.16-R0.4-SNAPSHOT")
@@ -30,7 +24,8 @@ configure<PublishingExtension> {
 
 tasks.withType<com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar> {
     dependencies {
-        include(dependency("org.jetbrains.kotlin:kotlin-stdlib"))
+        exclude(dependency("org.jetbrains.kotlin:kotlin-stdlib"))
+        exclude(dependency("org.jetbrains.kotlin:kotlin-stdlib-common"))
 
         include(dependency("me.scoretwo:commons-bungee-plugin:${rootProject.extra.get("commonsVersion")}"))
     }

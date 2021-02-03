@@ -8,14 +8,6 @@ plugins {
     id("net.kyori.blossom")
 }
 
-
-repositories {
-    maven("https://repo.spongepowered.org/maven")
-    maven("https://jitpack.io")
-    maven("https://hub.spigotmc.org/nexus/content/repositories/sonatype-nexus-snapshots/")
-    maven("https://repo.codemc.io/repository/maven-snapshots/")
-}
-
 blossom {
     replaceTokenIn("src/main/kotlin/me/scoretwo/fastscript/sponge/SpongeBootStrap.kt")
     replaceToken("%%id%%", project.name.toLowerCase())
@@ -25,7 +17,7 @@ blossom {
 }
 
 dependencies {
-    implementation(project(":common"))
+    implementation(project(":FastScript-common"))
 
     compileOnly("org.spongepowered:spongeapi:7.3.0")
     compileOnly("com.github.rojo8399:PlaceholderAPI:master-SNAPSHOT")
@@ -43,9 +35,10 @@ configure<PublishingExtension> {
 
 tasks.withType<com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar> {
     dependencies {
-        include(dependency("org.jetbrains.kotlin:kotlin-stdlib"))
+        exclude(dependency("org.jetbrains.kotlin:kotlin-stdlib"))
+        exclude(dependency("org.jetbrains.kotlin:kotlin-stdlib-common"))
 
-        include(dependency("me.scoretwo:commons-bungee-plugin:${rootProject.extra.get("commonsVersion")}"))
+        include(dependency("me.scoretwo:commons-sponge-plugin:${rootProject.extra.get("commonsVersion")}"))
     }
 
     classifier = null
@@ -62,16 +55,3 @@ tasks.processResources {
         ))
     }
 }
-
-/*
-tasks.processResources {
-    from("src/main/resource") {
-        include("mcmod.info")
-        expand(mapOf(
-            "modid" to "fastscript",
-            "name" to project.name,
-            "version" to project.version,
-            "description" to project.description
-        ))
-    }
-}*/

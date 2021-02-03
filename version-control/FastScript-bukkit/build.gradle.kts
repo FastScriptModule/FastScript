@@ -7,12 +7,8 @@ plugins {
     id("maven-publish")
 }
 
-repositories {
-    maven("https://hub.spigotmc.org/nexus/content/repositories/snapshots/")
-}
-
 dependencies {
-    implementation(project(":common"))
+    implementation(project(":FastScript-common"))
 
     compileOnly("org.spigotmc:spigot-api:1.16.4-R0.1-SNAPSHOT")
     compileOnly("me.clip:placeholderapi:2.10.9")
@@ -30,7 +26,8 @@ configure<PublishingExtension> {
 
 tasks.withType<com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar> {
     dependencies {
-        include(dependency("org.jetbrains.kotlin:kotlin-stdlib"))
+        exclude(dependency("org.jetbrains.kotlin:kotlin-stdlib"))
+        exclude(dependency("org.jetbrains.kotlin:kotlin-stdlib-common"))
 
         include(dependency("org.bstats:bstats-bukkit:1.7"))
         include(dependency("me.scoretwo:commons-bukkit-plugin:${rootProject.extra.get("commonsVersion")}"))

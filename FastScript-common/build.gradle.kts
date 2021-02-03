@@ -7,9 +7,6 @@ plugins {
     id("maven-publish")
 }
 
-repositories {
-}
-
 dependencies {
     compileOnly("org.apache.commons:commons-lang3:3.10")
     compileOnly("com.google.code.gson:gson:2.8.6")
@@ -17,7 +14,6 @@ dependencies {
 
     implementation("org.jetbrains.kotlin:kotlin-script-util:${rootProject.extra.get("kotlinVersion")}")
     implementation("org.jetbrains.kotlin:kotlin-compiler:${rootProject.extra.get("kotlinVersion")}")
-    implementation("commons-cli:commons-cli:1.4")
 
     implementation("commons-io:commons-io:2.7")
     implementation("me.scoretwo:commons-syntaxes:${rootProject.extra.get("commonsVersion")}")
@@ -28,12 +24,10 @@ dependencies {
 
 tasks.withType<com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar> {
     dependencies {
-        include(dependency("org.jetbrains.kotlin:kotlin-stdlib"))
-        include(dependency("org.jetbrains.kotlin:kotlin-script-util:${rootProject.extra.get("kotlinVersion")}"))
-        include(dependency("org.jetbrains.kotlin:kotlin-compiler:${rootProject.extra.get("kotlinVersion")}"))
+        exclude(dependency("org.jetbrains.kotlin:kotlin-stdlib"))
+        exclude(dependency("org.jetbrains.kotlin:kotlin-stdlib-common"))
 
-        include(dependency("commons-io:commons-io:2.7"))
-        include(dependency("commons-cli:commons-cli:1.4"))
+        exclude(dependency("commons-io:commons-io:2.7"))
 
         include(dependency("me.scoretwo:commons-syntaxes:${rootProject.extra.get("commonsVersion")}"))
         include(dependency("me.scoretwo:commons-command:${rootProject.extra.get("commonsVersion")}"))
