@@ -1,0 +1,8 @@
+{
+  "id": "${id}",
+  "name": "${name}",
+  "version": "${version}",
+  "description": "${description}",
+  "authors": ["Score2"],
+  "main": "${main}"
+}

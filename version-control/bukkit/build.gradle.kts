@@ -28,12 +28,24 @@ configure<PublishingExtension> {
     }
 }
 
+tasks.withType<com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar> {
+    dependencies {
+        include(dependency("org.jetbrains.kotlin:kotlin-stdlib"))
+
+        include(dependency("org.bstats:bstats-bukkit:1.7"))
+        include(dependency("me.scoretwo:commons-bukkit-plugin:${rootProject.extra.get("commonsVersion")}"))
+    }
+    relocate("org.bstats","me.scoretwo.utils.libs.org.bstats")
+
+    classifier = null
+}
+
 tasks.processResources {
     from("src/main/resource") {
         include("plugin.yml")
         expand(mapOf(
             "name" to rootProject.name,
-            "main" to "${rootProject.group}.${rootProject.name.toLowerCase()}.bukkit.BukkitPlugin",
+            "main" to "${rootProject.group}.${rootProject.name.toLowerCase()}.bukkit.BukkitBootStrap",
             "version" to rootProject.version,
             "description" to rootProject.description
         ))

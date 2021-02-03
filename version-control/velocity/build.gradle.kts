@@ -16,9 +16,11 @@ repositories {
 }
 
 blossom {
-    replaceTokenIn("src/main/kotlin/me/scoretwo/fastscript/velocity/VelocityPlugin.kt")
-    replaceToken("%%version%%", rootProject.version)
-    replaceToken("%%description%%", rootProject.description)
+    replaceTokenIn("src/main/kotlin/me/scoretwo/fastscript/velocity/VelocityBootStrap.kt")
+    replaceToken("%%id%%", project.name.toLowerCase())
+    replaceToken("%%name%%", project.name)
+    replaceToken("%%version%%", project.version)
+    replaceToken("%%description%%", project.description)
 }
 
 dependencies {
@@ -37,6 +39,29 @@ configure<PublishingExtension> {
     }
 }
 
+tasks.withType<com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar> {
+    dependencies {
+        include(dependency("org.jetbrains.kotlin:kotlin-stdlib"))
+
+        include(dependency("net.md-5:bungeecord-chat:1.16-R0.4-SNAPSHOT"))
+        include(dependency("me.scoretwo:commons-velocity-plugin:${rootProject.extra.get("commonsVersion")}"))
+    }
+
+    classifier = null
+}
+
+tasks.processResources {
+    from("src/main/resource") {
+        include("velocity-plugin.json")
+        expand(mapOf(
+            "id" to project.name.toLowerCase(),
+            "name" to project.name,
+            "version" to project.version,
+            "main" to "${rootProject.group}.${rootProject.name.toLowerCase()}.velocity.VelocityBootStrap",
+            "description" to project.description
+        ))
+    }
+}
 /*
 tasks.processResources {
     from("src/main/resource") {

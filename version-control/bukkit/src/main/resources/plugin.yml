@@ -1,6 +1,7 @@
 name: ${name}
 version: ${version}
 main: ${main}
+description: ${description}
 authors:
   - Score2
 api-version: 1.13

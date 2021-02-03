@@ -1,5 +1,6 @@
 name: ${name}
 version: ${version}
 main: ${main}
+description: ${description}
 authors:
   - Score2

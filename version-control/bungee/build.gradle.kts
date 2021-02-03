@@ -28,12 +28,22 @@ configure<PublishingExtension> {
     }
 }
 
+tasks.withType<com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar> {
+    dependencies {
+        include(dependency("org.jetbrains.kotlin:kotlin-stdlib"))
+
+        include(dependency("me.scoretwo:commons-bungee-plugin:${rootProject.extra.get("commonsVersion")}"))
+    }
+
+    classifier = null
+}
+
 tasks.processResources {
     from("src/main/resource") {
         include("bungee.yml")
         expand(mapOf(
             "name" to project.name,
-            "main" to "${rootProject.group}.${rootProject.name.toLowerCase()}.bungee.BungeePlugin",
+            "main" to "${rootProject.group}.${rootProject.name.toLowerCase()}.bungee.BungeeBootStrap",
             "version" to project.version,
             "description" to project.description
         ))

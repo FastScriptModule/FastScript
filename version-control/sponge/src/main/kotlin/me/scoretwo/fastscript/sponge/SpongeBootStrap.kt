@@ -11,8 +11,8 @@ import org.spongepowered.api.plugin.Plugin
 import org.spongepowered.api.plugin.PluginContainer
 
 @Plugin(
-    id = "fastscript",
-    name = "FastScript",
+    id = "%%id%%",
+    name = "%%name%%",
     authors = ["Score2"],
     description = "%%description%%",
     dependencies = [Dependency(id = "placeholderapi", optional = true)],

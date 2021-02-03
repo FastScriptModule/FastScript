@@ -18,8 +18,10 @@ repositories {
 
 blossom {
     replaceTokenIn("src/main/kotlin/me/scoretwo/fastscript/sponge/SpongeBootStrap.kt")
-    replaceToken("%%version%%", rootProject.version)
-    replaceToken("%%description%%", rootProject.description)
+    replaceToken("%%id%%", project.name.toLowerCase())
+    replaceToken("%%name%%", project.name)
+    replaceToken("%%version%%", project.version)
+    replaceToken("%%description%%", project.description)
 }
 
 dependencies {
@@ -36,6 +38,28 @@ configure<PublishingExtension> {
         create<MavenPublication>("shadow") {
             shadow.component(this)
         }
+    }
+}
+
+tasks.withType<com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar> {
+    dependencies {
+        include(dependency("org.jetbrains.kotlin:kotlin-stdlib"))
+
+        include(dependency("me.scoretwo:commons-bungee-plugin:${rootProject.extra.get("commonsVersion")}"))
+    }
+
+    classifier = null
+}
+
+tasks.processResources {
+    from("src/main/resource") {
+        include("mcmod.info")
+        expand(mapOf(
+            "id" to project.name.toLowerCase(),
+            "name" to project.name,
+            "version" to project.version,
+            "description" to project.description
+        ))
     }
 }
 

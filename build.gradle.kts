@@ -1,8 +1,8 @@
 plugins {
-    kotlin("jvm") version "1.4.21" apply false
+    kotlin("jvm") version "1.4.21"
     id("org.jetbrains.dokka") version "1.4.10.2" apply false
     id("org.jlleitschuh.gradle.ktlint") version "9.4.1" apply false
-    id("com.github.johnrengelman.shadow") version "6.1.0" apply false
+    id("com.github.johnrengelman.shadow") version "6.1.0"
     id("net.kyori.blossom") version "1.1.0" apply false
     id("maven")
     id("maven-publish")
@@ -16,6 +16,32 @@ defaultTasks = mutableListOf("publishToMavenLocal")
 
 extra.apply {
     set("commonsVersion", "2.0.3-SNAPSHOT")
+    set("kotlinVersion", "1.4.21")
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    implementation(project(":common"))
+    implementation(project(":version-control:bukkit"))
+    implementation(project(":version-control:bungee"))
+    implementation(project(":version-control:sponge"))
+    implementation(project(":version-control:velocity"))
+}
+
+
+tasks.withType<com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar> {
+    dependencies {
+        include(dependency(":common"))
+        include(dependency(":version-control:bukkit"))
+        include(dependency(":version-control:bungee"))
+        include(dependency(":version-control:sponge"))
+        include(dependency(":version-control:velocity"))
+    }
+
+    classifier = null
 }
 
 subprojects {
