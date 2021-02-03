@@ -5,10 +5,7 @@ import me.scoretwo.fastscript.api.format.FormatHeader
 import me.scoretwo.fastscript.api.plugin.ScriptPlugin
 import me.scoretwo.fastscript.bukkit.hook.PlaceholderAPIHook
 import me.scoretwo.fastscript.sendMessage
-import me.scoretwo.utils.bukkit.command.bukkitCommandMap
-import me.scoretwo.utils.bukkit.command.toBukkitPlayer
-import me.scoretwo.utils.bukkit.command.toBukkitSender
-import me.scoretwo.utils.bukkit.command.toGlobalSender
+import me.scoretwo.utils.bukkit.command.*
 import me.scoretwo.utils.bukkit.plugin.toBukkitPlugin
 import me.scoretwo.utils.plugin.GlobalPlugin
 import me.scoretwo.utils.sender.GlobalPlayer
@@ -24,16 +21,9 @@ class BukkitPlugin(val plugin: GlobalPlugin): ScriptPlugin(plugin) {
     }
 
     override fun enable() {
-        bukkitCommandMap.register(description.name, object : Command(description.name, "", "/" + description.name, listOf("script","bukkitScript")) {
-            override fun execute(sender: CommandSender, label: String, args: Array<String>): Boolean {
-                FastScript.instance.commandNexus.execute(sender.toGlobalSender(), mutableListOf(label), args.toMutableList())
-                return true
-            }
+        FastScript.instance.onReload()
 
-            override fun tabComplete(sender: CommandSender, alias: String, args: Array<String>): MutableList<String> {
-                return FastScript.instance.commandNexus.tabComplete(sender.toGlobalSender(), mutableListOf(label), args.toMutableList()) ?: mutableListOf()
-            }
-        })
+        FastScript.instance.commandNexus.registerBukkitCommands()
     }
 
     override fun setPlaceholder(player: GlobalPlayer, string: String): String {

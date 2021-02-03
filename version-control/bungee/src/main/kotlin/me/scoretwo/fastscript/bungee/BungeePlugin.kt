@@ -2,6 +2,14 @@ package me.scoretwo.fastscript.bungee
 
 import me.scoretwo.fastscript.FastScript
 import me.scoretwo.fastscript.api.plugin.ScriptPlugin
+import me.scoretwo.utils.bungee.command.registerBungeeCommands
+import me.scoretwo.utils.bungee.command.toBungeePlayer
+import me.scoretwo.utils.bungee.command.toBungeeSender
+import me.scoretwo.utils.bungee.command.toGlobalSender
+import me.scoretwo.utils.bungee.plugin.toBungeePlugin
+import me.scoretwo.utils.plugin.GlobalPlugin
+import me.scoretwo.utils.sender.GlobalPlayer
+import me.scoretwo.utils.sender.GlobalSender
 import net.md_5.bungee.api.ChatColor
 import net.md_5.bungee.api.CommandSender
 import net.md_5.bungee.api.ProxyServer
@@ -9,41 +17,29 @@ import net.md_5.bungee.api.plugin.Command
 import net.md_5.bungee.api.plugin.Plugin
 import net.md_5.bungee.api.plugin.TabExecutor
 
-class BungeePlugin: Plugin(), ScriptPlugin {
+class BungeePlugin(val plugin: GlobalPlugin): ScriptPlugin(plugin) {
 
-    override fun onLoad() {
+    override fun load() {
+        FastScript.setBootstrap(this)
     }
 
-    override fun onEnable() {
-        FastScript.setBootstrap(this)
+    override fun enable() {
         FastScript.instance.onReload()
 
-        ProxyServer.getInstance().pluginManager.registerCommand(this, object : Command("FastScript", null, "script"), TabExecutor {
-            override fun execute(sender: CommandSender, args: Array<String>) {
-                FastScript.instance.commandManager.execute(sender, args)
-            }
-
-            override fun onTabComplete(sender: CommandSender, args: Array<String>): MutableIterable<String> {
-                return FastScript.instance.commandManager.tabComplete(sender, args)
-            }
-        })
+        FastScript.instance.commandNexus.registerBungeeCommands()
     }
 
-    override val console: Any = ProxyServer.getInstance().console
-
-    override fun getPluginClassLoader(): ClassLoader {
-        return javaClass.classLoader
-    }
-
-    override fun setPlaceholder(player: Any, string: String): String {
+    override fun setPlaceholder(player: GlobalPlayer, string: String): String {
         return string
     }
 
-    override fun translateStringColors(string: String): String {
-        return ChatColor.translateAlternateColorCodes('&', string)
-    }
+    override fun toOriginalSender(sender: GlobalSender) = sender.toBungeeSender()
 
-    override fun onReload() {
+    override fun toOriginalPlayer(player: GlobalPlayer) = player.toBungeePlayer()
+
+    override fun toOriginalServer(): Any? = ProxyServer.getInstance()
+
+    override fun reload() {
 
     }
 

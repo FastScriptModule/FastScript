@@ -17,7 +17,7 @@ repositories {
 }
 
 blossom {
-    replaceTokenIn("src/main/kotlin/me/scoretwo/fastscript/sponge/SpongePlugin.kt")
+    replaceTokenIn("src/main/kotlin/me/scoretwo/fastscript/sponge/SpongeBootStrap.kt")
     replaceToken("%%version%%", rootProject.version)
     replaceToken("%%description%%", rootProject.description)
 }

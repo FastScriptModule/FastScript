@@ -10,7 +10,7 @@ class SettingConfig(): Config(File(plugin.dataFolder, "settings.yml")) {
     val default = YamlConfiguration().also {
         it.set("Options", YamlConfiguration().also {
             it.set("Debug", false)
-            it.set("Language", "en_Us")
+            it.set("Language", "en_US")
             it.set("File-Listener", true)
         })
         it.set("Load-Script-Files", listOf("plugins/CustomScriptFolder"))

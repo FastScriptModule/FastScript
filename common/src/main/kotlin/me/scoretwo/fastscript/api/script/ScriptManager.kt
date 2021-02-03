@@ -21,29 +21,36 @@ class ScriptManager {
      * 仅接受文件后缀为yml的文件或者可用的脚本文件夹才能被处理
      */
     private fun loadScript(file: File): ProcessResult {
+        if (file.name.contains(" ")) return ProcessResult(ProcessResultType.FAILED, "File name cannot contain spaces!")
         if (file.isDirectory) {
             return loadFromFolderScript(file)
         }
 
-        if (file.name.endsWith(".yml")) {
-            val scriptName = file.name.substringBeforeLast(".")
+        val scriptName= if (file.name.endsWith(".yml"))
+            file.name.substringBeforeLast(".")
+        else
+            return ProcessResult(ProcessResultType.OTHER, "The file does not belong to the script, skip reading!")
 
-            val option = ScriptOptions(file)
+        val options = ScriptOptions(file)
+        val script = Script(ScriptDescription.fromSection(options.config), options)
 
+        script.scriptFiles = mutableListOf<File>().also { files ->
+            FastScript.instance.expansionManager.expansions.forEach { expansion ->
+                val candidateFile = File(file.parentFile, "$scriptName.${expansion.fileSuffix}")
+                if (candidateFile.exists()) {
+                    files.add(candidateFile)
+                }
+            }
         }
 
-        FastScript.instance.expansionManager.expansions.forEach { expansion ->
-
-            // 載入脚本
-            scripts[file.name.substringBeforeLast(".")]
-        }
-
+        scripts[file.name.substringBeforeLast(".")] = script
+        return ProcessResult(ProcessResultType.SUCCESS)
     }
 
     private fun loadFromFolderScript(folder: File): ProcessResult {
-        val optionFiles = arrayOf("option.yml", "${folder.name}.yml", "setting.yml")
+        val optionsFiles = arrayOf("option.yml", "${folder.name}.yml", "setting.yml")
 
-        val optionFile: File = optionFiles.let {
+        val optionsFile: File = optionsFiles.let {
             for (fileName in it) {
                 val file = File(fileName)
                 if (file.exists()) return@let file
@@ -51,8 +58,8 @@ class ScriptManager {
 
             return ProcessResult(ProcessResultType.FAILED, "Option file not found in ${folder.name}.")
         }
-        val option = ScriptOptions(optionFile)
-        val script = Script(ScriptDescription.fromSection(option.config), option)
+        val options = ScriptOptions(optionsFile)
+        val script = Script(ScriptDescription.fromSection(options.config), options)
 
         script.scriptFiles = mutableListOf<File>().also { files ->
             folder.listFiles()?.forEach { file ->
@@ -81,7 +88,7 @@ class ScriptManager {
         settings.getStringList(settings.getLowerCaseNode("load-script-files")).forEach {
             val file = File(it)
 
-            if (file.exists()) selectScriptFiles(file).forEach { loadScript(it) }
+            if (file.isDirectory && file.exists()) file.listFiles()?.forEach { loadScript(it) }
 
         }
     }
@@ -91,16 +98,6 @@ class ScriptManager {
         (section.isString(section.getLowerCaseNode("version")) || section.isInt(section.getLowerCaseNode("version"))) &&
         section.isString(section.getLowerCaseNode("main"))
 
-    fun selectScriptFiles(file: File): MutableList<File> = mutableListOf<File>().let { files ->
-        if (file.isDirectory) {
-            file.listFiles()?.forEach {
-                files.addAll(selectScriptFiles(it))
-            }
-        } else if (file.name.endsWith(".yml", true)) {
-            files.add(file)
-        }
-        files
-    }
 
 
 

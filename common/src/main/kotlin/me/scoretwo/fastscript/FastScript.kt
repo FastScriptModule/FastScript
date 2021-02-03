@@ -2,6 +2,7 @@ package me.scoretwo.fastscript
 
 import me.scoretwo.fastscript.api.expansion.ExpansionManager
 import me.scoretwo.fastscript.api.format.FormatHeader
+import me.scoretwo.fastscript.api.language.LanguageManager
 import me.scoretwo.fastscript.api.plugin.ScriptPlugin
 import me.scoretwo.fastscript.api.script.Script
 import me.scoretwo.fastscript.command.ScriptCommandNexus
@@ -36,6 +37,9 @@ class FastScript(val plugin: ScriptPlugin) {
 
         settings = SettingConfig()
 
+        language = LanguageManager()
+        language.current = language.languages[settings.getString("Options.Language")]!!
+
         commandNexus = ScriptCommandNexus()
         scriptManager = ScriptManager()
         expansionManager = ExpansionManager()
@@ -49,17 +53,11 @@ class FastScript(val plugin: ScriptPlugin) {
 
     }
 
-    fun initLanguageFiles() {
-        Utils.saveDefaultResource(File("${plugin.dataFolder}/languages", "en_US.yml"), StreamUtils.getResource("lang/en_US.yml")!!)
-        Utils.saveDefaultResource(File("${plugin.dataFolder}/languages", "zh_CN.yml"), StreamUtils.getResource("lang/zh_CN.yml")!!)
-    }
-
     fun onReload() {
         if (!plugin.dataFolder.exists()) {
             plugin.dataFolder.mkdirs()
         }
         plugin.reload()
-        initLanguageFiles()
         initInternalScripts()
         scriptManager.loadScripts()
     }
@@ -109,6 +107,7 @@ lateinit var plugin: ScriptPlugin
 val scripts = mutableListOf<Script>()
 
 lateinit var settings: SettingConfig
+lateinit var language: LanguageManager
 
 fun GlobalSender.sendMessage(formatHeader: FormatHeader, strings: Array<String>, colorIndex: Boolean = true) {
     strings.forEach {
@@ -118,12 +117,10 @@ fun GlobalSender.sendMessage(formatHeader: FormatHeader, strings: Array<String>,
 
 fun GlobalSender.sendMessage(formatHeader: FormatHeader, string: String, colorIndex: Boolean = true) {
     if (colorIndex)
-        this.sendMessage("${settings.defaultLanguage.getString(settings.defaultLanguage.getLowerCaseNode("format-header.${formatHeader.name.toLowerCase()}"))}${string}")
+        this.sendMessage("${language["format-header.${formatHeader.name}"]}${string}")
     else
         this.sendMessage(
-            ChatColor.translateAlternateColorCodes('&',"${
-                settings.defaultLanguage.getString(
-                    settings.defaultLanguage.getLowerCaseNode("format-header.${formatHeader.name.toLowerCase()}"))}${string}"))
+            ChatColor.translateAlternateColorCodes('&',"${"${language["format-header.${formatHeader.name}"]}${string}"}${string}"))
 }
 
 fun String.setPlaceholder(player: GlobalPlayer): String {

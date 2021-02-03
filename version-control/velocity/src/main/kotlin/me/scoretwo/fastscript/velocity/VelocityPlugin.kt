@@ -4,56 +4,43 @@ import com.google.inject.Inject
 import com.velocitypowered.api.plugin.Plugin
 import com.velocitypowered.api.plugin.annotation.DataDirectory
 import com.velocitypowered.api.proxy.ProxyServer
+import me.scoretwo.fastscript.FastScript
 import me.scoretwo.fastscript.api.plugin.ScriptPlugin
+import me.scoretwo.utils.plugin.GlobalPlugin
+import me.scoretwo.utils.sender.GlobalPlayer
+import me.scoretwo.utils.sender.GlobalSender
+import me.scoretwo.utils.velocity.command.registerVelocityCommands
+import me.scoretwo.utils.velocity.command.toVelocityPlayer
+import me.scoretwo.utils.velocity.command.toVelocitySender
+import me.scoretwo.utils.velocity.server.proxyServer
 import net.md_5.bungee.api.ChatColor
 import java.io.File
 import java.nio.file.Path
 import java.util.logging.Logger
 
-@Plugin(
-    id = "fastscript",
-    name = "FastScript",
-    version = "%%version%%",
-    description = "%%description%%",
-    authors = ["Score2"]
-)
-class VelocityPlugin: ScriptPlugin {
+class VelocityPlugin(val plugin: GlobalPlugin): ScriptPlugin(plugin) {
 
-    @Inject
-    fun onStart(server: ProxyServer, logger: Logger) {
-        VelocityPlugin.server = server
-        VelocityPlugin.logger = logger
-
+    override fun load() {
+        FastScript.setBootstrap(this)
     }
 
-    @Inject
-    @DataDirectory
-    lateinit var path: Path
+    override fun enable() {
+        FastScript.instance.onReload()
 
-    override val console: Any = server.consoleCommandSource
-
-    override fun getDataFolder(): File {
-        return path.toFile()
+        FastScript.instance.commandNexus.registerVelocityCommands()
     }
 
-    override fun getPluginClassLoader(): ClassLoader {
-        return javaClass.classLoader
-    }
-
-    override fun setPlaceholder(player: Any, string: String): String {
+    override fun setPlaceholder(player: GlobalPlayer, string: String): String {
         return string
     }
 
-    override fun onReload() {
+    override fun toOriginalSender(sender: GlobalSender) = sender.toVelocitySender()
 
-    }
+    override fun toOriginalPlayer(player: GlobalPlayer) = player.toVelocityPlayer()
 
-    override fun translateStringColors(string: String): String {
-        return ChatColor.translateAlternateColorCodes('&', string)
-    }
+    override fun toOriginalServer() = proxyServer
 
-    companion object {
-        lateinit var server: ProxyServer
-        lateinit var logger: Logger
+    override fun reload() {
+
     }
 }

@@ -4,7 +4,15 @@ import me.rojo8399.placeholderapi.PlaceholderService
 import me.scoretwo.fastscript.FastScript
 import me.scoretwo.fastscript.api.format.FormatHeader
 import me.scoretwo.fastscript.api.plugin.ScriptPlugin
+import me.scoretwo.fastscript.sendMessage
 import me.scoretwo.fastscript.sponge.hook.PlaceholderAPIHook
+import me.scoretwo.utils.plugin.GlobalPlugin
+import me.scoretwo.utils.sender.GlobalPlayer
+import me.scoretwo.utils.sender.GlobalSender
+import me.scoretwo.utils.sponge.command.registerSpongeCommands
+import me.scoretwo.utils.sponge.command.toGlobalSender
+import me.scoretwo.utils.sponge.command.toSpongePlayer
+import me.scoretwo.utils.sponge.command.toSpongeSender
 import net.md_5.bungee.api.ChatColor
 import org.spongepowered.api.Sponge
 import org.spongepowered.api.command.CommandResult
@@ -17,66 +25,36 @@ import org.spongepowered.api.plugin.Plugin
 import org.spongepowered.api.text.Text
 import java.io.File
 
+class SpongePlugin(val plugin: GlobalPlugin): ScriptPlugin(plugin) {
 
-@Plugin(
-    id = "fastscript",
-    name = "FastScript",
-    authors = ["Score2"],
-    description = "%%description%%",
-    dependencies = [Dependency(id = "placeholderapi", optional = true)],
-    version = "%%version%%"
-)
-class SpongePlugin: ScriptPlugin {
+    override fun load() {
+        FastScript.setBootstrap(this)
+    }
 
-    @Listener
-    fun onStart(e: GameAboutToStartServerEvent) {
+    override fun enable() {
+        FastScript.instance.onReload()
         PlaceholderAPIHook.placeholderService = Sponge.getServiceManager().provideUnchecked(PlaceholderService::class.java)
 
-        FastScript.setBootstrap(this)
-        FastScript.instance.onReload()
-
-        val myCommandSpec = CommandSpec.builder()
-            .description(Text.of("Hello World Command"))
-            .permission("")
-            .executor { src, args ->
-                FastScript.instance.commandManager.execute(src, args.getAll<String>("").toTypedArray())
-                CommandResult.success()
-            }
-            .build()
-
-        Sponge.getCommandManager().register(this, myCommandSpec, "FastScript", "script")
+        FastScript.instance.commandNexus.registerSpongeCommands()
     }
 
-    @Listener
-    fun onStart(e: GameStoppingServerEvent) {
-
+    override fun setPlaceholder(player: GlobalPlayer, string: String): String {
+        return PlaceholderAPIHook.placeholderService.replaceSourcePlaceholders(string, player.toSpongePlayer()).toPlain()
     }
 
-    override val console: Any = Sponge.getServer().console
+    override fun toOriginalSender(sender: GlobalSender) = sender.toSpongeSender()
 
-    override fun getDataFolder(): File {
-        return Sponge.getConfigManager().getPluginConfig(this).directory.toFile()
-    }
+    override fun toOriginalPlayer(player: GlobalPlayer) = player.toSpongePlayer()
 
-    override fun getPluginClassLoader(): ClassLoader {
-        return javaClass.classLoader
-    }
+    override fun toOriginalServer(): Any? = Sponge.getServer()
 
-    override fun setPlaceholder(player: Any, string: String): String {
-        return PlaceholderAPIHook.placeholderService.replaceSourcePlaceholders(string, player).toPlain()
-    }
-
-    override fun onReload() {
+    override fun reload() {
         if (PAPIHook == null) {
             if (Sponge.getPluginManager().isLoaded("placeholderapi")) {
                 PAPIHook = PlaceholderAPIHook(this)
                 plugin.server.console.sendMessage(FormatHeader.HOOKED, "成功挂钩 §ePlaceholderAPI!")
             }
         }
-    }
-
-    override fun translateStringColors(string: String): String {
-        return ChatColor.translateAlternateColorCodes('&', string)
     }
 
     companion object {
