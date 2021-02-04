@@ -29,13 +29,19 @@ class Language {
     }
 
     val config = YamlConfiguration().also {
-        it.addDefault("FORMAT-HEADER", YamlConfiguration().also {
-            it.addDefault("INFO", "&7[&2Fast&aScript&7] &bINFO &8| &7")
-            it.addDefault("WARN", "&7[&2Fast&aScript&7] &eWARN &8| &7")
-            it.addDefault("ERROR", "&7[&2Fast&aScript&7] &cERROR &8| &7")
-            it.addDefault("TIPS", "&7[&2Fast&aScript&7] &2TIPS &8| &7")
-            it.addDefault("HOOKED", "&7[&2Fast&aScript&7] &6HOOKED &8| &7")
-            it.addDefault("DEBUG", "&7[&2Fast&aScript&7] &3DEBUG &8| &7")
+        it.set("FORMAT-HEADER", YamlConfiguration().also {
+            it.set("INFO", "&7[&2Fast&aScript&7] &bINFO &8| &7")
+            it.set("WARN", "&7[&2Fast&aScript&7] &eWARN &8| &7")
+            it.set("ERROR", "&7[&2Fast&aScript&7] &cERROR &8| &7")
+            it.set("TIPS", "&7[&2Fast&aScript&7] &2TIPS &8| &7")
+            it.set("HOOKED", "&7[&2Fast&aScript&7] &6HOOKED &8| &7")
+            it.set("DEBUG", "&7[&2Fast&aScript&7] &3DEBUG &8| &7")
+        })
+        it.set("COMMAND-SECTIONS", YamlConfiguration().also {
+            it.set("COMMAND_ONLY_CONSOLE", "This command can only be executed on the console.")
+            it.set("COMMAND_ONLY_PLAYER", "This command can only be executed by the player.")
+            it.set("COMMAND_NO_PERMISSION", "You do not have permission to execute the command.")
+            it.set("COMMAND_UNKNOWN_USAGE", "&cUsage &e{usage_error} &cis incorrect, you may want to use &e{usage_guess}")
         })
 
     }

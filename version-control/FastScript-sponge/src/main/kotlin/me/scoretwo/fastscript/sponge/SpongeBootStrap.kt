@@ -5,23 +5,20 @@ import me.scoretwo.utils.sponge.plugin.toGlobalPlugin
 import org.spongepowered.api.event.Listener
 import org.spongepowered.api.event.game.state.GameInitializationEvent
 import org.spongepowered.api.event.game.state.GamePreInitializationEvent
-import org.spongepowered.api.event.game.state.GameStoppingEvent
 import org.spongepowered.api.plugin.Dependency
 import org.spongepowered.api.plugin.Plugin
+import org.spongepowered.api.event.game.state.GameStoppingEvent
 import org.spongepowered.api.plugin.PluginContainer
 
 @Plugin(
-    id = "%%id%%",
-    name = "%%name%%",
+    id = "fastscript",
+    name = "FastScript",
+    version = "1.0.1-SNAPSHOT",
+    description = "FastScript is a Spigot plugin, which can run JavaScript-based scripts more efficiently.",
     authors = ["Score2"],
-    description = "%%description%%",
-    dependencies = [Dependency(id = "placeholderapi", optional = true)],
-    version = "%%version%%"
+    dependencies = [Dependency(id = "placeholderapi", optional = true)]
 )
-class SpongeBootStrap {
-
-    @Inject
-    lateinit var pluginContainer: PluginContainer
+class SpongeBootStrap @Inject constructor(val pluginContainer: PluginContainer) {
 
     val spongePlugin = SpongePlugin(pluginContainer.toGlobalPlugin())
 

@@ -10,8 +10,8 @@ plugins {
 
 blossom {
     replaceTokenIn("src/main/kotlin/me/scoretwo/fastscript/velocity/VelocityBootStrap.kt")
-    replaceToken("%%id%%", project.name.toLowerCase())
-    replaceToken("%%name%%", project.name)
+    replaceToken("%%id%%", rootProject.name.toLowerCase())
+    replaceToken("%%name%%", rootProject.name)
     replaceToken("%%version%%", project.version)
     replaceToken("%%description%%", project.description)
 }

@@ -15,8 +15,8 @@ import java.util.logging.Logger
 @Plugin(
     id = "fastscript",
     name = "FastScript",
-    version = "%%version%%",
-    description = "%%description%%",
+    version = "1.0.1-SNAPSHOT",
+    description = "FastScript is a Spigot plugin, which can run JavaScript-based scripts more efficiently.",
     authors = ["Score2"]
 )
 class VelocityBootStrap {

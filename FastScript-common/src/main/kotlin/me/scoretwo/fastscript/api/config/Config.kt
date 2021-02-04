@@ -10,8 +10,14 @@ abstract class Config(val file: File) : YamlConfiguration() {
     }
 
     open fun reload() {
+        if (!file.exists()) {
+            file.parentFile.mkdirs()
+            save(file)
+        } else {
+            this.load(file)
+            save(file)
+        }
         onReload()
-        this.load(file)
     }
 
     abstract fun onReload()

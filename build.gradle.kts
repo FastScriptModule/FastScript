@@ -1,5 +1,5 @@
 plugins {
-    kotlin("jvm") version "1.4.21"
+    kotlin("jvm") version "1.4.30"
     id("org.jetbrains.dokka") version "1.4.10.2" apply false
     id("org.jlleitschuh.gradle.ktlint") version "9.4.1" apply false
     id("com.github.johnrengelman.shadow") version "6.1.0"
@@ -15,8 +15,8 @@ description = "FastScript is a Spigot plugin, which can run JavaScript-based scr
 defaultTasks = mutableListOf("publishToMavenLocal")
 
 extra.apply {
-    set("commonsVersion", "2.0.5-SNAPSHOT")
-    set("kotlinVersion", "1.4.21")
+    set("commonsVersion", "2.0.7-SNAPSHOT")
+    set("kotlinVersion", "1.4.30")
 }
 
 allprojects {
@@ -43,4 +43,8 @@ subprojects {
     group = rootProject.group
     version = rootProject.version
     description = rootProject.description
+
+    tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {
+        kotlinOptions.jvmTarget = "1.8"
+    }
 }

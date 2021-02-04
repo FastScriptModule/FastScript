@@ -27,9 +27,19 @@ class FastScript(val plugin: ScriptPlugin) {
         instance = this
         me.scoretwo.fastscript.plugin = plugin
 
-        printLogo()
+        arrayOf(
+            "___________                __   _________            .__        __   ",
+            "\\_   _____/____    _______/  |_/   _____/ ___________|__|______/  |_ ",
+            " |    __) \\__  \\  /  ___/\\   __\\_____  \\_/ ___\\_  __ \\  \\____ \\   __\\",
+            " |     \\   / __ \\_\\___ \\  |  | /        \\  \\___|  | \\/  |  |_> >  |  ",
+            " \\___  /  (____  /____  > |__|/_______  /\\___  >__|  |__|   __/|__|  ",
+            "     \\/        \\/     \\/              \\/     \\/         |__|         ",
+            ""
+        ).forEach {
+            plugin.server.console.sendMessage("§3$it")
+        }
 
-        plugin.server.console.sendMessage("§3FastScript initializing...")
+        plugin.server.console.sendMessage("§3FastScript[§bV${plugin.description.version}§3] initializing...")
 
         if (!plugin.dataFolder.exists()) {
             plugin.dataFolder.mkdirs()
@@ -38,7 +48,9 @@ class FastScript(val plugin: ScriptPlugin) {
         settings = SettingConfig()
 
         language = LanguageManager()
-        language.current = language.languages[settings.getString("Options.Language")]!!
+        language.current = language.languages[settings.getString("Options.Language")] ?: language.defaultLanguage.also {
+            plugin.server.console.sendMessage(FormatHeader.ERROR, "Language loading failed. The file may not exist. The default language will be used: en_US")
+        }
 
         commandNexus = ScriptCommandNexus()
         scriptManager = ScriptManager()
@@ -61,34 +73,6 @@ class FastScript(val plugin: ScriptPlugin) {
         expansionManager.reload()
         initInternalScripts()
         scriptManager.loadScripts()
-    }
-
-    /**
-     * 用于随机点亮 FastScript 的 Logo.
-     * 该创意来源于 TrMenu
-     * @author Arasple
-     */
-    fun printLogo() = arrayOf(
-       "___________                __   _________            .__        __   ",
-       "\\_   _____/____    _______/  |_/   _____/ ___________|__|______/  |_ ",
-       " |    __) \\__  \\  /  ___/\\   __\\_____  \\_/ ___\\_  __ \\  \\____ \\   __\\",
-       " |     \\   / __ \\_\\___ \\  |  | /        \\  \\___|  | \\/  |  |_> >  |  ",
-       " \\___  /  (____  /____  > |__|/_______  /\\___  >__|  |__|   __/|__|  ",
-       "     \\/        \\/     \\/              \\/     \\/         |__|         "
-   ).also {
-        it.forEachIndexed { index, raw ->
-            if (raw.isNotBlank()) {
-                val line = raw.toCharArray()
-                val width = (2..8).random()
-                var randomIndex: Int
-                do {
-                    randomIndex = (2..line.size - width).random()
-                } while (String(line.copyOfRange(randomIndex, randomIndex + width)).isBlank())
-                val replace = String(line.copyOfRange(randomIndex, randomIndex + width))
-                it[index] = String(line).replaceFirst(replace, "§${arrayOf('a', 'b', '2').random()}$replace§8")
-            }
-        }
-        plugin.server.console.sendMessage(it)
     }
 
     companion object {
