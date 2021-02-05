@@ -8,12 +8,9 @@ import me.scoretwo.fastscript.api.script.Script
 import me.scoretwo.fastscript.command.ScriptCommandNexus
 import me.scoretwo.fastscript.config.SettingConfig
 import me.scoretwo.fastscript.api.script.ScriptManager
-import me.scoretwo.fastscript.utils.Utils
 import me.scoretwo.utils.sender.GlobalPlayer
 import me.scoretwo.utils.sender.GlobalSender
-import me.scoretwo.utils.syntaxes.StreamUtils
 import net.md_5.bungee.api.ChatColor
-import java.io.File
 
 class FastScript(val plugin: ScriptPlugin) {
 
@@ -54,7 +51,9 @@ class FastScript(val plugin: ScriptPlugin) {
 
         commandNexus = ScriptCommandNexus()
         scriptManager = ScriptManager()
-        expansionManager = ExpansionManager()
+        expansionManager = ExpansionManager().also {
+            it.reload()
+        }
     }
 
     /**
@@ -70,7 +69,6 @@ class FastScript(val plugin: ScriptPlugin) {
             plugin.dataFolder.mkdirs()
         }
         plugin.reload()
-        expansionManager.reload()
         initInternalScripts()
         scriptManager.loadScripts()
     }
@@ -94,20 +92,26 @@ val scripts = mutableListOf<Script>()
 lateinit var settings: SettingConfig
 lateinit var language: LanguageManager
 
-fun GlobalSender.sendMessage(formatHeader: FormatHeader, strings: Array<String>, colorIndex: Boolean = true) {
-    strings.forEach {
-        this.sendMessage(formatHeader, it, colorIndex)
+fun GlobalSender.sendMessage(format: FormatHeader, texts: Array<String>, color: Boolean = true) = texts.forEach {
+    this.sendMessage(format, it, color)
+}
+
+fun GlobalSender.sendMessage(format: FormatHeader, text: String, color: Boolean = true) =
+    if (!color)
+        this.sendMessage("${language["format-header.${format.name}"]}${text}")
+    else
+        this.sendMessage(
+            ChatColor.translateAlternateColorCodes('&', "${language["format-header.${format.name}"]}${text}"))
+
+
+fun GlobalSender.sendMessage(format: FormatHeader, text: String, placeholders: Map<String, String>) =
+    this.sendMessage("${language["format-header.${format.name}"]}$text", placeholders)
+
+fun GlobalSender.sendMessage(text: String, placeholders: Map<String, String>) {
+    var rawText = text
+    placeholders.forEach {
+        rawText = rawText.replace(it.key, it.value)
     }
 }
 
-fun GlobalSender.sendMessage(formatHeader: FormatHeader, string: String, colorIndex: Boolean = true) {
-    if (colorIndex)
-        this.sendMessage("${language["format-header.${formatHeader.name}"]}${string}")
-    else
-        this.sendMessage(
-            ChatColor.translateAlternateColorCodes('&',"${"${language["format-header.${formatHeader.name}"]}${string}"}${string}"))
-}
-
-fun String.setPlaceholder(player: GlobalPlayer): String {
-    return FastScript.instance.setPlaceholder(player, this)
-}
+fun String.setPlaceholder(player: GlobalPlayer) = FastScript.instance.setPlaceholder(player, this)

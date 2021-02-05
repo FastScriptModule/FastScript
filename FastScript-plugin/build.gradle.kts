@@ -63,6 +63,9 @@ tasks.withType<com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar> {
     relocate("org.apache","me.scoretwo.utils.shaded.org.apache")
     relocate("org.bstats","me.scoretwo.utils.shaded.org.bstats")
 
+    exclude("META-INF/versions/9/module-info.class")
+    exclude("META-INF/*.kotlin_module")
+
     classifier = null
 }
 

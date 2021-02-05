@@ -30,12 +30,12 @@ class Language {
 
     val config = YamlConfiguration().also {
         it.set("FORMAT-HEADER", YamlConfiguration().also {
-            it.set("INFO", "&7[&2Fast&aScript&7] &bINFO &8| &7")
-            it.set("WARN", "&7[&2Fast&aScript&7] &eWARN &8| &7")
-            it.set("ERROR", "&7[&2Fast&aScript&7] &cERROR &8| &7")
-            it.set("TIPS", "&7[&2Fast&aScript&7] &2TIPS &8| &7")
-            it.set("HOOKED", "&7[&2Fast&aScript&7] &6HOOKED &8| &7")
-            it.set("DEBUG", "&7[&2Fast&aScript&7] &3DEBUG &8| &7")
+            it.set("INFO", "&7[&3Fast&bScript&7] &bINFO &8| &7")
+            it.set("WARN", "&7[&3Fast&bScript&7] &eWARN &8| &7")
+            it.set("ERROR", "&7[&3Fast&bScript&7] &cERROR &8| &7")
+            it.set("TIPS", "&7[&3Fast&bScript&7] &2TIPS &8| &7")
+            it.set("HOOKED", "&7[&3Fast&bScript&7] &6HOOKED &8| &7")
+            it.set("DEBUG", "&7[&3Fast&bScript&7] &3DEBUG &8| &7")
         })
         it.set("COMMAND-SECTIONS", YamlConfiguration().also {
             it.set("COMMAND_ONLY_CONSOLE", "This command can only be executed on the console.")
@@ -46,18 +46,10 @@ class Language {
 
     }
 
-    operator fun set(node: String, any: Any?) = config.set(
-        let {
-            if (config.contains(config.getLowerCaseNode(node))) {
-                config.getLowerCaseNode(node)
-            } else {
-                node.toUpperCase()
-            }
-        }
-        , any)
+    operator fun set(node: String, any: Any?) = config.set(node.toUpperCase(), any)
 
-    operator fun get(node: String) = config.getString(config.getLowerCaseNode(node))!!
+    operator fun get(node: String) = config.getString(node.toUpperCase())!!
 
-    fun getList(node: String) = config.getStringList(config.getLowerCaseNode(node))!!
+    fun getList(node: String) = config.getString(node.toUpperCase())!!
 
 }

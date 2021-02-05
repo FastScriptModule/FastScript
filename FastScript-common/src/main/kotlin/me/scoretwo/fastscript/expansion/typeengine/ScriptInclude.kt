@@ -50,8 +50,7 @@ class ScriptInclude(
                     constructor.newInstance(*obj.second!!.toTypedArray())
                 } catch (e: Exception) {
                     e.printStackTrace()
-                    plugin.server.console.sendMessage(FormatHeader.ERROR, "脚本 §c${script.description.name} §7执行初始化时发生错误, 错误如下:")
-                    plugin.server.console.sendMessage("§7${e.message}")
+                    plugin.server.console.sendMessage(FormatHeader.ERROR, "脚本 §c${script.description.name} §7执行初始化时发生错误, 错误如下:\n§8${e.stackTraceToString()}")
                     null
                 }
             }
@@ -73,8 +72,7 @@ class ScriptInclude(
         Class.forName(target)
     } catch (e: ClassNotFoundException) {
         e.printStackTrace()
-        plugin.server.console.sendMessage(FormatHeader.ERROR, "脚本 §c${script.description.name} §7没有找到类 §c${target}§7, 错误如下:")
-        plugin.server.console.sendMessage("§7${e.message}")
+        plugin.server.console.sendMessage(FormatHeader.ERROR, "脚本 §c${script.description.name} §7没有找到类 §c${target}§7, 错误如下:\n§8${e.stackTraceToString()}")
         null
     }
 
@@ -82,8 +80,7 @@ class ScriptInclude(
         method.invoke(`object`, obj!!.second)
     } catch (e: Exception) {
         e.printStackTrace()
-        plugin.server.console.sendMessage(FormatHeader.ERROR, "脚本 §c${script.description.name} §7访问方法 §c${method.name} §7时发生错误, 错误如下:")
-        plugin.server.console.sendMessage("§7${e.message}")
+        plugin.server.console.sendMessage(FormatHeader.ERROR, "脚本 §c${script.description.name} §7访问方法 §c${method.name} §7时发生错误, 错误如下:\n§8${e.stackTraceToString()}")
         null
     }
 
