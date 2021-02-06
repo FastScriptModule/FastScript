@@ -11,8 +11,6 @@ import me.scoretwo.utils.plugin.GlobalPlugin
 import me.scoretwo.utils.sender.GlobalPlayer
 import me.scoretwo.utils.sender.GlobalSender
 import org.bukkit.Bukkit
-import org.bukkit.command.Command
-import org.bukkit.command.CommandSender
 
 class BukkitPlugin(val plugin: GlobalPlugin): ScriptPlugin(plugin) {
 
@@ -21,7 +19,7 @@ class BukkitPlugin(val plugin: GlobalPlugin): ScriptPlugin(plugin) {
     }
 
     override fun enable() {
-        FastScript.instance.onReload()
+        FastScript.instance.reload("script", "plugin")
 
         FastScript.instance.commandNexus.registerBukkitCommands()
     }

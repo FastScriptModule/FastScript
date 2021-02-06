@@ -59,5 +59,3 @@ MergeBuilder("version-control").also {
     it.add("FastScript-sponge")
     it.add("FastScript-velocity")
 }
-
-include("FastScript-plugin")

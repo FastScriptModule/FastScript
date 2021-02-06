@@ -43,17 +43,19 @@ class FastScript(val plugin: ScriptPlugin) {
         }
 
         settings = SettingConfig()
-        settings.reload()
-
         languages = LanguageManager()
-        languages.current = languages.languages[settings.getString("Options.Language")] ?: languages.defaultLanguage.also {
-            plugin.server.console.sendMessage(FormatHeader.ERROR, "Language loading failed. The file may not exist. The default language will be used: en_US")
-        }
+        reload("config")
 
         commandNexus = FSCommandNexus()
         scriptManager = ScriptManager()
         expansionManager = ExpansionManager().also {
             it.reload()
+        }
+    }
+
+    fun reloadLanguage() {
+        languages.current = languages.languages[settings.getString("Options.Language")] ?: languages.defaultLanguage.also {
+            plugin.server.console.sendMessage(FormatHeader.ERROR, "Language loading failed. The file may not exist. The default language will be used: en_US")
         }
     }
 
@@ -65,14 +67,27 @@ class FastScript(val plugin: ScriptPlugin) {
 
     }
 
-    fun onReload() {
+    fun reloadAll() = reload("config", "script", "plugin")
+
+    fun reload(vararg modes: String) {
         if (!plugin.dataFolder.exists()) {
             plugin.dataFolder.mkdirs()
         }
-        settings.reload()
-        plugin.reload()
-        initInternalScripts()
-        scriptManager.loadScripts()
+        modes.forEach {mode ->
+            when (mode) {
+                "config" -> {
+                    settings.reload()
+                    reloadLanguage()
+                }
+                "script" -> {
+                    initInternalScripts()
+                    scriptManager.loadScripts()
+                }
+                "plugin" ->{
+                    plugin.reload()
+                }
+            }
+        }
     }
 
     companion object {
@@ -121,8 +136,9 @@ fun GlobalSender.sendMessage(format: FormatHeader, text: String, placeholders: M
 fun GlobalSender.sendMessage(text: String, placeholders: Map<String, String>) {
     var rawText = text
     placeholders.forEach {
-        rawText = rawText.replace(it.key, it.value)
+        rawText = rawText.replace("{${it.key}}", it.value)
     }
+    this.sendMessage(text)
 }
 
 fun String.setPlaceholder(player: GlobalPlayer) = FastScript.instance.setPlaceholder(player, this)

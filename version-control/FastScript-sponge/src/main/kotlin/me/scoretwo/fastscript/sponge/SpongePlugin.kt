@@ -20,7 +20,7 @@ class SpongePlugin(val plugin: GlobalPlugin): ScriptPlugin(plugin) {
     }
 
     override fun enable() {
-        FastScript.instance.onReload()
+        FastScript.instance.reload("script", "plugin")
         PlaceholderAPIHook.initializePlaceholder()
 
         FastScript.instance.commandNexus.registerSpongeCommands()

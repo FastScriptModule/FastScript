@@ -1,9 +1,5 @@
 package me.scoretwo.fastscript.velocity
 
-import com.google.inject.Inject
-import com.velocitypowered.api.plugin.Plugin
-import com.velocitypowered.api.plugin.annotation.DataDirectory
-import com.velocitypowered.api.proxy.ProxyServer
 import me.scoretwo.fastscript.FastScript
 import me.scoretwo.fastscript.api.plugin.ScriptPlugin
 import me.scoretwo.utils.plugin.GlobalPlugin
@@ -13,10 +9,6 @@ import me.scoretwo.utils.velocity.command.registerVelocityCommands
 import me.scoretwo.utils.velocity.command.toVelocityPlayer
 import me.scoretwo.utils.velocity.command.toVelocitySender
 import me.scoretwo.utils.velocity.server.proxyServer
-import net.md_5.bungee.api.ChatColor
-import java.io.File
-import java.nio.file.Path
-import java.util.logging.Logger
 
 class VelocityPlugin(val plugin: GlobalPlugin): ScriptPlugin(plugin) {
 
@@ -25,7 +17,7 @@ class VelocityPlugin(val plugin: GlobalPlugin): ScriptPlugin(plugin) {
     }
 
     override fun enable() {
-        FastScript.instance.onReload()
+        FastScript.instance.reload("script", "plugin")
 
         FastScript.instance.commandNexus.registerVelocityCommands()
     }
