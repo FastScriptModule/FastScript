@@ -71,7 +71,7 @@ class ExpansionManager {
                 success++
             } catch (e: Exception) {
                 e.printStackTrace()
-                plugin.server.console.sendMessage(FormatHeader.ERROR, "An exception occurred when loading extended ${file.name}, the reason:\n§8${e.stackTraceToString()}")
+                plugin.server.console.sendMessage(FormatHeader.ERROR, "An exception occurred when loading extended ${file.name}, reason:\n§8${e.stackTraceToString()}")
             }
         }
         plugin.server.console.sendMessage(FormatHeader.INFO, "Loaded §b$total §7expansions, §a$success §7successes${if (fail == 0) "" else ", §c$fail §7failures"}.§8(${System.currentTimeMillis() - startTime}ms)")
@@ -90,14 +90,14 @@ class ExpansionManager {
                 ExpansionDescription.readConfig(YamlConfiguration().also { it.load(jarFile.getInputStream(jarFile.getJarEntry("expansion.yml")).reader()) })
             } catch (e: Exception) {
                 e.printStackTrace()
-                plugin.server.console.sendMessage(FormatHeader.ERROR, "An error occurred while loading the expansion '${file.name}' description file, the reason:\n§8${e.stackTraceToString()}")
+                plugin.server.console.sendMessage(FormatHeader.ERROR, "An error occurred while loading the expansion '${file.name}' description file, reason:\n§8${e.stackTraceToString()}")
                 return Pair(ProcessResult(ProcessResultType.FAILED), null)
             }
             val clazz = try {
                 Class.forName(description.main)
             } catch (e: Exception) {
                 e.printStackTrace()
-                plugin.server.console.sendMessage(FormatHeader.ERROR, "An error occurred while loading the main class ${description.main} of expansion '${file.name}', the reason:\n§8${e.stackTraceToString()}")
+                plugin.server.console.sendMessage(FormatHeader.ERROR, "An error occurred while loading the main class ${description.main} of expansion '${file.name}', reason:\n§8${e.stackTraceToString()}")
                 return Pair(ProcessResult(ProcessResultType.FAILED), null)
             }
 
@@ -105,19 +105,19 @@ class ExpansionManager {
                 clazz.newInstance()
             } catch (e: Exception) {
                 e.printStackTrace()
-                plugin.server.console.sendMessage(FormatHeader.ERROR, "An error occurred while loading the main class ${description.main} of expansion '${file.name}', the reason:\n§8${e.stackTraceToString()}")
+                plugin.server.console.sendMessage(FormatHeader.ERROR, "An error occurred while loading the main class ${description.main} of expansion '${file.name}', reason:\n§8${e.stackTraceToString()}")
                 return Pair(ProcessResult(ProcessResultType.FAILED), null)
             }
 
             if (instance !is FastScriptExpansion) {
-                plugin.server.console.sendMessage(FormatHeader.ERROR, "An error occurred while loading the main class ${description.main} of expansion '${file.name}', the reason: §cThe main class does not depend on FastScriptExpansion.")
+                plugin.server.console.sendMessage(FormatHeader.ERROR, "An error occurred while loading the main class ${description.main} of expansion '${file.name}', reason: §cThe main class does not depend on FastScriptExpansion.")
                 return Pair(ProcessResult(ProcessResultType.FAILED), null)
             }
 
             clazz.asSubclass(FastScriptExpansion::class.java)
         } catch (e: Exception) {
             e.printStackTrace()
-            plugin.server.console.sendMessage(FormatHeader.ERROR, "An exception occurred when loading extended '${file.name}', the reason:\n§8${e.stackTraceToString()}")
+            plugin.server.console.sendMessage(FormatHeader.ERROR, "An exception occurred when loading extended '${file.name}', reason:\n§8${e.stackTraceToString()}")
             return Pair(ProcessResult(ProcessResultType.FAILED), null)
         }
 

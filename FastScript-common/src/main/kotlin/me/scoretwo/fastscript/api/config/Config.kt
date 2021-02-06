@@ -5,10 +5,6 @@ import java.io.File
 
 abstract class Config(val file: File) : YamlConfiguration() {
 
-    init {
-        reload()
-    }
-
     open fun reload() {
         if (!file.exists()) {
             file.parentFile.mkdirs()

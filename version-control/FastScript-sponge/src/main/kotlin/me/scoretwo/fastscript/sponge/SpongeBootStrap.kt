@@ -36,11 +36,4 @@ class SpongeBootStrap @Inject constructor(val pluginContainer: PluginContainer) 
         spongePlugin.disable()
     }
 
-    @Listener
-    fun execute(e: MessageEvent) {
-        if (e.message.toPlain().contains("fastscript")) {
-            e.isMessageCancelled = true
-        }
-    }
-
 }

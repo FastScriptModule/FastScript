@@ -37,7 +37,7 @@ class Language {
             it.set("HOOKED", "&7[&3Fast&bScript&7] &6HOOKED &8| &7")
             it.set("DEBUG", "&7[&3Fast&bScript&7] &3DEBUG &8| &7")
         })
-        it.set("COMMAND-SECTIONS", YamlConfiguration().also {
+        it.set("COMMAND-TIPS", YamlConfiguration().also {
             it.set("COMMAND_ONLY_CONSOLE", "This command can only be executed on the console.")
             it.set("COMMAND_ONLY_PLAYER", "This command can only be executed by the player.")
             it.set("COMMAND_NO_PERMISSION", "You do not have permission to execute the command.")

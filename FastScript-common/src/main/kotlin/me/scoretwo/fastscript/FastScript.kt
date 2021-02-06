@@ -5,7 +5,7 @@ import me.scoretwo.fastscript.api.format.FormatHeader
 import me.scoretwo.fastscript.api.language.LanguageManager
 import me.scoretwo.fastscript.api.plugin.ScriptPlugin
 import me.scoretwo.fastscript.api.script.Script
-import me.scoretwo.fastscript.command.ScriptCommandNexus
+import me.scoretwo.fastscript.command.FSCommandNexus
 import me.scoretwo.fastscript.config.SettingConfig
 import me.scoretwo.fastscript.api.script.ScriptManager
 import me.scoretwo.utils.sender.GlobalPlayer
@@ -14,7 +14,7 @@ import net.md_5.bungee.api.ChatColor
 
 class FastScript(val plugin: ScriptPlugin) {
 
-    val commandNexus: ScriptCommandNexus
+    val commandNexus: FSCommandNexus
     val scriptManager: ScriptManager
     val expansionManager: ExpansionManager
 
@@ -43,13 +43,14 @@ class FastScript(val plugin: ScriptPlugin) {
         }
 
         settings = SettingConfig()
+        settings.reload()
 
-        language = LanguageManager()
-        language.current = language.languages[settings.getString("Options.Language")] ?: language.defaultLanguage.also {
+        languages = LanguageManager()
+        languages.current = languages.languages[settings.getString("Options.Language")] ?: languages.defaultLanguage.also {
             plugin.server.console.sendMessage(FormatHeader.ERROR, "Language loading failed. The file may not exist. The default language will be used: en_US")
         }
 
-        commandNexus = ScriptCommandNexus()
+        commandNexus = FSCommandNexus()
         scriptManager = ScriptManager()
         expansionManager = ExpansionManager().also {
             it.reload()
@@ -68,6 +69,7 @@ class FastScript(val plugin: ScriptPlugin) {
         if (!plugin.dataFolder.exists()) {
             plugin.dataFolder.mkdirs()
         }
+        settings.reload()
         plugin.reload()
         initInternalScripts()
         scriptManager.loadScripts()
@@ -86,26 +88,35 @@ class FastScript(val plugin: ScriptPlugin) {
     }
 
 }
+var debug = false
+
 lateinit var plugin: ScriptPlugin
 val scripts = mutableListOf<Script>()
 
 lateinit var settings: SettingConfig
-lateinit var language: LanguageManager
+lateinit var languages: LanguageManager
 
 fun GlobalSender.sendMessage(format: FormatHeader, texts: Array<String>, color: Boolean = true) = texts.forEach {
     this.sendMessage(format, it, color)
 }
 
-fun GlobalSender.sendMessage(format: FormatHeader, text: String, color: Boolean = true) =
+fun GlobalSender.sendMessage(format: FormatHeader, text: String, color: Boolean = true) {
+    if (format == FormatHeader.DEBUG && !debug)
+        return
     if (!color)
-        this.sendMessage("${language["format-header.${format.name}"]}${text}")
+        this.sendMessage("${languages["format-header.${format.name}"]}${text}")
     else
         this.sendMessage(
-            ChatColor.translateAlternateColorCodes('&', "${language["format-header.${format.name}"]}${text}"))
+            ChatColor.translateAlternateColorCodes('&', "${languages["format-header.${format.name}"]}${text}"))
+}
 
 
-fun GlobalSender.sendMessage(format: FormatHeader, text: String, placeholders: Map<String, String>) =
-    this.sendMessage("${language["format-header.${format.name}"]}$text", placeholders)
+
+fun GlobalSender.sendMessage(format: FormatHeader, text: String, placeholders: Map<String, String>) {
+    if (format == FormatHeader.DEBUG && !debug)
+        return
+    this.sendMessage("${languages["format-header.${format.name}"]}$text", placeholders)
+}
 
 fun GlobalSender.sendMessage(text: String, placeholders: Map<String, String>) {
     var rawText = text
