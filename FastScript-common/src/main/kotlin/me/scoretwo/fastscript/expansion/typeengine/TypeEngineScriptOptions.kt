@@ -1,11 +1,11 @@
 package me.scoretwo.fastscript.expansion.typeengine
 
-import me.scoretwo.fastscript.api.script.ScriptOptions
+import me.scoretwo.fastscript.api.script.custom.ConfigScriptOption
 import me.scoretwo.utils.bukkit.configuration.yaml.file.YamlConfiguration
 import me.scoretwo.utils.bukkit.configuration.yaml.patchs.getLowerCaseNode
 import java.io.File
 
-class TypeEngineScriptOptions(expansion: TypeEngineExpansion, file: File, section: YamlConfiguration): ScriptOptions(file, section) {
+class TypeEngineScriptOptions(expansion: TypeEngineExpansion, file: File, section: YamlConfiguration): ConfigScriptOption(file, section) {
 
     val typeEngineSection = section.getConfigurationSection(section.getLowerCaseNode(expansion.sign))
 

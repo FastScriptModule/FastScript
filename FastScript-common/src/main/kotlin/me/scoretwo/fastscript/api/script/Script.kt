@@ -1,56 +1,36 @@
 package me.scoretwo.fastscript.api.script
 
 import me.scoretwo.fastscript.FastScript
+import me.scoretwo.fastscript.api.expansion.FastScriptExpansion
 import me.scoretwo.utils.sender.GlobalSender
-import java.io.File
 
-open class Script(
+/**
+ * @author Scre2
+ * @date 2021/2/8 13:33
+ *
+ * @project FastScript
+ */
+abstract class Script(
     val description: ScriptDescription,
-    val options: ScriptOptions,
-    var scriptFiles: MutableList<File> = mutableListOf()
+    val option: ScriptOption,
+    // sign, text
+    var texts : MutableMap<String, String> = mutableMapOf()
 ) {
 
     val name = description.name
 
-    // sign, processor
-    val scriptProcessor = mutableMapOf<String, ScriptProcessor>()
-    // sign, mergedText
-    val mergedTexts = mutableMapOf<String, StringBuilder>()
+    val bindExpansions get() =
+        mutableListOf<FastScriptExpansion>().also { expansions -> texts.keys.forEach { expansions.add(FastScript.instance.expansionManager.getExpansionBySign(it) ?: return@forEach) } }
 
-    open fun eval(sign: String, sender: GlobalSender): Any? {
-        if (!scriptProcessor.containsKey(sign)) {
-            return null
-        }
-        return scriptProcessor[sign]!!.eval(sender)
-    }
-    open fun execute(sign: String, sender: GlobalSender, main: String = options.main, args: Array<Any?> = arrayOf()): Any? {
-        if (!scriptProcessor.containsKey(sign)) {
-            return null
-        }
-        return scriptProcessor[sign]!!.execute(sender, main, args)
-    }
+    open fun eval(sign: String, sender: GlobalSender): Any? =
+        eval(FastScript.instance.expansionManager.getExpansionBySign(sign), sender)
 
-    open fun reload() {
-        if (!options.file.exists()) {
-            options.config.save(options.file)
-        }
-    }
+    fun eval(expansion: FastScriptExpansion?, sender: GlobalSender): Any? =
+        expansion?.eval(this, sender)
 
-    fun mergeToTexts() {
-        mergedTexts.clear()
-        FastScript.instance.expansionManager.expansions.forEach {
-            mergeToText(it.sign)
-        }
-    }
+    open fun execute(sign: String, sender: GlobalSender, main: String = option.main, args: Array<Any?> = arrayOf()): Any? =
+        execute(FastScript.instance.expansionManager.getExpansionBySign(sign), sender, main, args)
 
-    fun mergeToText(sign: String) {
-        mergedTexts[sign] = StringBuilder().also {
-            scriptFiles.forEach { file ->
-                if (file.exists() && file.name.endsWith(".$sign")) {
-                    it.append(file.readText()).append("\n")
-                }
-            } }
-
-    }
-
+    fun execute(expansion: FastScriptExpansion?, sender: GlobalSender, main: String = option.main, args: Array<Any?> = arrayOf()): Any? =
+        expansion?.execute(this, sender, main, args)
 }

@@ -35,9 +35,17 @@ class ExpansionManager {
         expansions.remove(expansion)
     }
 
-    fun getExpansion(name: String): FastScriptExpansion? {
+    fun getExpansionByName(name: String): FastScriptExpansion? {
         for (expansion in expansions) {
             if (expansion.name == name)
+                return expansion
+        }
+        return null
+    }
+
+    fun getExpansionBySign(sign: String): FastScriptExpansion? {
+        for (expansion in expansions) {
+            if (expansion.sign == sign)
                 return expansion
         }
         return null

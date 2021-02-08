@@ -2,6 +2,9 @@ package me.scoretwo.fastscript.api.script
 
 import me.scoretwo.fastscript.FastScript
 import me.scoretwo.fastscript.api.format.FormatHeader
+import me.scoretwo.fastscript.api.script.custom.ConfigScriptOption
+import me.scoretwo.fastscript.api.script.custom.CustomScript
+import me.scoretwo.fastscript.api.script.temp.TempScript
 import me.scoretwo.fastscript.api.utils.process.ProcessResult
 import me.scoretwo.fastscript.api.utils.process.ProcessResultType
 import me.scoretwo.fastscript.plugin
@@ -9,32 +12,78 @@ import me.scoretwo.fastscript.sendMessage
 import me.scoretwo.fastscript.settings
 import me.scoretwo.utils.bukkit.configuration.yaml.ConfigurationSection
 import me.scoretwo.utils.bukkit.configuration.yaml.patchs.getLowerCaseNode
+import me.scoretwo.utils.sender.GlobalSender
+import me.scoretwo.utils.syntaxes.save
 import java.io.File
 
 class ScriptManager {
 
     val folders = mutableListOf(File(plugin.dataFolder, "scripts"))
 
-    val scripts = mutableMapOf<String, Script>()
+    val scripts = mutableMapOf<String, CustomScript>()
+
+    init {
+        if (!folders[0].exists()) {
+            """
+                function main() {
+                    sender.sendMessage("&athis is demo.")
+                }
+            """.trimIndent().save(File(folders[0], "example.js"))
+        }
+    }
+
+    val tempScripts = mutableMapOf<String, TempScript>()
 
     fun getScript(name: String) = scripts[name]
+
+    private fun loadGeneralScript(scriptFile: File): Pair<CustomScript?, ProcessResult> {
+        val scriptName = scriptFile.name.substringAfterLast(".")
+        scriptFile.parentFile.listFiles()?.forEach {
+            if (it.name == "$scriptName.yml") {
+                return Pair(null, ProcessResult(ProcessResultType.OTHER, "script option file exists!"))
+            }
+        }
+
+        val file = let {
+            FastScript.instance.expansionManager.expansions.forEach { expansion ->
+                if (!scriptFile.endsWith(expansion.fileSuffix))
+                    return@forEach
+
+                return@let scriptFile
+            }
+        }
+        val script = CustomScript(
+            object : ScriptDescription {
+                override val name: String = scriptName
+                override val main: String = "main"
+                override val version: String? = null
+                override val description: String? = null
+                override val authors: Array<String> = arrayOf("FastScript")
+
+            },
+            object : ConfigScriptOption() {
+
+            }
+        )
+
+    }
 
     /**
      * 仅接受文件后缀为yml的文件或者可用的脚本文件夹才能被处理
      */
-    private fun loadScript(file: File): Pair<Script?, ProcessResult> {
+    private fun loadScript(file: File): Pair<CustomScript?, ProcessResult> {
         if (file.name.contains(" ")) return Pair(null, ProcessResult(ProcessResultType.FAILED, "File name cannot contain spaces!"))
         if (file.isDirectory) {
             return loadFromFolderScript(file)
         }
 
         val scriptName = if (file.name.endsWith(".yml"))
-            file.name.substringBeforeLast(".")
+            file.name.substringAfterLast(".")
         else
-            return Pair(null, ProcessResult(ProcessResultType.OTHER, "The file does not belong to the script, skip reading!"))
+            return loadGeneralScript(file)
 
-        val options = ScriptOptions(file)
-        val script = Script(ScriptDescription.fromSection(options.config), options)
+        val options = ConfigScriptOption(file)
+        val script = CustomScript(ScriptDescription.fromSection(options.config), options)
 
         script.scriptFiles = mutableListOf<File>().also { files ->
             FastScript.instance.expansionManager.expansions.forEach { expansion ->
@@ -45,16 +94,19 @@ class ScriptManager {
             }
         }
 
-        script.scriptProcessor.forEach {
-            if (it.value.needEval)
-                script.eval(it.key, plugin.server.console)
+        script.texts.keys.forEach { sign ->
+            val expansion = FastScript.instance.expansionManager.getExpansionBySign(sign) ?: return@forEach
+
+            if (expansion.needEval) {
+                expansion.eval(sign, plugin.server.console)
+            }
         }
 
         scripts[file.name.substringBeforeLast(".")] = script
         return Pair(script, ProcessResult(ProcessResultType.SUCCESS))
     }
 
-    private fun loadFromFolderScript(folder: File): Pair<Script?, ProcessResult> {
+    private fun loadFromFolderScript(folder: File): Pair<CustomScript?, ProcessResult> {
         val optionsFiles = arrayOf("option.yml", "${folder.name}.yml", "setting.yml")
 
         val optionsFile: File = optionsFiles.let {
@@ -65,20 +117,21 @@ class ScriptManager {
 
             return Pair(null, ProcessResult(ProcessResultType.FAILED, "Option file not found in ${folder.name}."))
         }
-        val options = ScriptOptions(optionsFile)
-        val script = Script(ScriptDescription.fromSection(options.config), options)
+        val options = ConfigScriptOption(optionsFile)
+        val script = CustomScript(ScriptDescription.fromSection(options.config), options)
 
         script.scriptFiles = mutableListOf<File>().also { files ->
             folder.listFiles()?.forEach { file ->
-                script.scriptProcessor.forEach {
-                    if (file.endsWith(it.value.expansion.fileSuffix)) files.add(file)
+                script.bindExpansions.forEach {
+                    if (file.endsWith(it.fileSuffix))
+                        files.add(file)
                 }
             }
         }
 
-        script.scriptProcessor.forEach {
-            if (it.value.needEval)
-                script.eval(it.key, plugin.server.console)
+        script.bindExpansions.forEach {
+            if (it.needEval)
+                script.eval(it.sign, plugin.server.console)
         }
 
         scripts[folder.name] = script
@@ -95,17 +148,14 @@ class ScriptManager {
     @Synchronized
     fun loadScripts() {
         val startTime = System.currentTimeMillis()
-        scripts.clear()
-        folders[0].mkdirs()
-        folders[0].listFiles()?.forEach { loadScript(it) }
-
         var total = 0
         var success = 0
         var fail = 0
+        scripts.clear()
 
-        settings.getStringList(settings.getLowerCaseNode("load-script-files")).forEach {
-            val file = File(it)
+        folders.addAll(mutableListOf<File>().also { files -> settings.getStringList(settings.getLowerCaseNode("load-script-files")).forEach { files.add(File(it)) } })
 
+        folders.forEach { file ->
             if (file.isDirectory && file.exists()) file.listFiles()?.forEach {
                 loadScript(it).also {
                     total++
@@ -127,7 +177,10 @@ class ScriptManager {
         section.isString(section.getLowerCaseNode("main"))
 
 
+    fun eval(script: CustomScript, sign: String, sender: GlobalSender) =
+        script.eval(sign, sender)
 
-
+    fun execute(script: CustomScript, sign: String, sender: GlobalSender, main: String = script.configOption.main, args: Array<Any?> = arrayOf()) =
+        script.execute(sign, sender, main, args)
 
 }

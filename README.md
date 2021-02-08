@@ -7,7 +7,7 @@
 [<img src="https://img.shields.io/bstats/servers/9014?label=BSTATS-SERVERS&style=for-the-badge"/>](https://bstats.org/plugin/bukkit/FastScript/9014)
 ***
 ### About
-FastScript is a Spigot plugin, which can run JavaScript-based scripts more efficiently.
+Support multiple scripting languages, use scripts to change Minecraft!
 
 >At present, the project is still unfinished and cannot be used.
 ***

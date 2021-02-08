@@ -1,7 +1,7 @@
 package me.scoretwo.fastscript.expansion.typeengine
 
 import me.scoretwo.fastscript.api.format.FormatHeader
-import me.scoretwo.fastscript.api.script.Script
+import me.scoretwo.fastscript.api.script.custom.CustomScript
 import me.scoretwo.fastscript.expansion.typeengine.exception.IncludeFormatException
 import me.scoretwo.fastscript.expansion.typeengine.exception.TypeInferenceException
 import me.scoretwo.fastscript.plugin
@@ -32,7 +32,7 @@ class ScriptInclude(
         } else this.type = type
     }
 
-    operator fun get(script: Script): Any? {
+    operator fun get(script: CustomScript): Any? {
         obj ?: throw IncludeFormatException()
         met ?: throw IncludeFormatException()
         val clazz = findClass(script, obj.first) ?: throw ClassNotFoundException()
@@ -68,7 +68,7 @@ class ScriptInclude(
     fun hasMethodArgs() = if (hasMethod()) met!!.second != null else false
 
 
-    fun findClass(script: Script, target: String) = try {
+    fun findClass(script: CustomScript, target: String) = try {
         Class.forName(target)
     } catch (e: ClassNotFoundException) {
         e.printStackTrace()
@@ -76,7 +76,7 @@ class ScriptInclude(
         null
     }
 
-    fun accessMethod(script: Script, `object`: Any?, method: Method) = try {
+    fun accessMethod(script: CustomScript, `object`: Any?, method: Method) = try {
         method.invoke(`object`, obj!!.second)
     } catch (e: Exception) {
         e.printStackTrace()

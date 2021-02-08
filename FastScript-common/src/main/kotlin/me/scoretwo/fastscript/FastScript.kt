@@ -4,7 +4,7 @@ import me.scoretwo.fastscript.api.expansion.ExpansionManager
 import me.scoretwo.fastscript.api.format.FormatHeader
 import me.scoretwo.fastscript.api.language.LanguageManager
 import me.scoretwo.fastscript.api.plugin.ScriptPlugin
-import me.scoretwo.fastscript.api.script.Script
+import me.scoretwo.fastscript.api.script.custom.CustomScript
 import me.scoretwo.fastscript.command.FSCommandNexus
 import me.scoretwo.fastscript.config.SettingConfig
 import me.scoretwo.fastscript.api.script.ScriptManager
@@ -106,7 +106,7 @@ class FastScript(val plugin: ScriptPlugin) {
 var debug = false
 
 lateinit var plugin: ScriptPlugin
-val scripts = mutableListOf<Script>()
+val scripts = mutableListOf<CustomScript>()
 
 lateinit var settings: SettingConfig
 lateinit var languages: LanguageManager
