@@ -7,10 +7,10 @@ import me.scoretwo.utils.bukkit.configuration.yaml.patchs.getLowerCaseNode
 import me.scoretwo.utils.bukkit.configuration.yaml.patchs.loadConfiguration
 import java.io.File
 
-open class ConfigScriptOption(val file: File, val config: YamlConfiguration = file.loadConfiguration()): ScriptOption {
+open class ConfigScriptOption(val file: File? = null, val config: YamlConfiguration = file?.loadConfiguration() ?: YamlConfiguration().also { it.set("main", "main") }): ScriptOption {
     override val main: String = config.getString(config.getLowerCaseNode("main"))
     override val meta = mutableMapOf<String, String>().also { map ->
-        config.getStringList(config.getLowerCaseNode("meta")).forEach {
+        config.getStringList(config.getLowerCaseNode("meta"))?.forEach {
             map[it.substringBefore(":")] = it.substringAfter(":")
         }
     }

@@ -6,6 +6,7 @@ import me.scoretwo.fastscript.command.commands.ScriptCommand
 import me.scoretwo.fastscript.languages
 import me.scoretwo.utils.command.CommandBuilder
 import me.scoretwo.utils.command.CommandNexus
+import me.scoretwo.utils.command.SubCommand
 import me.scoretwo.utils.command.executor.Executors
 import me.scoretwo.utils.command.helper.HelpGenerator
 import me.scoretwo.utils.command.language.CommandLanguage
@@ -25,10 +26,13 @@ class FSCommandNexus: CommandNexus(FastScript.instance.plugin, arrayOf("FastScri
         override val COMMAND_ONLY_PLAYER = languages["COMMAND-TIPS.COMMAND_ONLY_PLAYER"]
         override val COMMAND_UNKNOWN_USAGE = languages["COMMAND-TIPS.COMMAND_UNKNOWN_USAGE"]
     }
-/*
-    override var helpGenerator = object : HelpGenerator {
+/*    override var helpGenerator = object : HelpGenerator {
 
-        override fun translateTexts(parents: MutableList<String>, args: MutableList<String>): MutableList<MutableList<TextComponent>> {
+        override fun translateTexts(
+            command: SubCommand,
+            parents: MutableList<String>,
+            args: MutableList<String>
+        ): MutableList<MutableList<TextComponent>> {
             return mutableListOf()
         }
 

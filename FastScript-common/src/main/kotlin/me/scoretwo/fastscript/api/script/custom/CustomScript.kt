@@ -13,7 +13,7 @@ open class CustomScript(
 ): Script(description, configOption) {
 
     open fun reload() {
-        if (!configOption.file.exists()) {
+        if (configOption.file != null && !configOption.file.exists()) {
             configOption.config.save(configOption.file)
         }
         mergeToTexts()

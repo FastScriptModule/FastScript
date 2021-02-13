@@ -10,6 +10,9 @@ abstract class FastScriptExpansion {
     abstract val fileSuffix: String
 
     abstract val needEval: Boolean
+
+    abstract fun reload(): FastScriptExpansion
+
     abstract fun eval(script: Script, sender: GlobalSender): Any?
     abstract fun eval(text: String, sender: GlobalSender): Any?
     abstract fun execute(script: Script, sender: GlobalSender, main: String = script.option.main, args: Array<Any?> = arrayOf()): Any?

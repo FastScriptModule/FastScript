@@ -24,6 +24,7 @@ class ScriptManager {
 
     init {
         if (!folders[0].exists()) {
+            folders[0].mkdirs()
             """
                 function main() {
                     sender.sendMessage("&athis is demo.")
@@ -51,6 +52,7 @@ class ScriptManager {
 
                 return@let scriptFile
             }
+            return Pair(null, ProcessResult(ProcessResultType.FAILED, "The script file extension is not supported!"))
         }
         val script = CustomScript(
             object : ScriptDescription {
@@ -61,11 +63,12 @@ class ScriptManager {
                 override val authors: Array<String> = arrayOf("FastScript")
 
             },
-            object : ConfigScriptOption() {
-
-            }
+            ConfigScriptOption(),
+            mutableListOf(file)
         )
 
+        scripts[scriptName] = script
+        return Pair(script, ProcessResult(ProcessResultType.SUCCESS))
     }
 
     /**
@@ -138,9 +141,6 @@ class ScriptManager {
 
         return Pair(script, ProcessResult(ProcessResultType.SUCCESS))
     }
-    // {
-    //    scripts.add(CustomScript(file))
-    // }
 
     /**
     * 暂时同步, 异步以后写

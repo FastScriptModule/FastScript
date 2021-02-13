@@ -7,6 +7,7 @@ import me.scoretwo.fastscript.api.script.Script
 import me.scoretwo.fastscript.plugin
 import me.scoretwo.fastscript.sendMessage
 import me.scoretwo.utils.sender.GlobalSender
+import me.scoretwo.utils.server.task.TaskType
 import org.apache.commons.lang3.StringUtils
 import javax.script.Invocable
 import javax.script.ScriptEngine
@@ -14,17 +15,20 @@ import javax.script.ScriptEngineManager
 import javax.script.ScriptException
 
 abstract class TypeEngineExpansion: FastScriptExpansion() {
-
-    val engine: ScriptEngine = ScriptEngineManager(plugin.pluginClassLoader).getEngineByName(sign)
+    abstract val engine: ScriptEngine
     override val needEval = true
 
-    init {
+    val scriptEngineManager = ScriptEngineManager(plugin.pluginClassLoader)
+
+    override fun reload(): TypeEngineExpansion {
         engine.put("server", plugin.server)
         engine.put("expansionmanager", FastScript.instance.expansionManager)
+        return this
     }
 
     override fun eval(script: Script, sender: GlobalSender): Any? {
-        if (!script.texts.keys.contains(sign)) return null
+        if (!script.texts.keys.contains(sign))
+            return null
         if (sender.isPlayer()) sender.toPlayer().let {
             engine.put("player", it)
             engine.put("originalplayer", plugin.toOriginalPlayer(it!!))
@@ -32,7 +36,7 @@ abstract class TypeEngineExpansion: FastScriptExpansion() {
         engine.put("sender", sender)
         engine.put("originalsender", plugin.toOriginalSender(sender))
         return try {
-            engine.eval(script.texts[sign].toString())
+            engine.eval(script.texts[sign])
         } catch (e: ScriptException) {
             plugin.server.console.sendMessage(FormatHeader.ERROR,"脚本 §c${script.description.name} §7解析时出现错误, 请检查脚本格式.")
         }
@@ -55,7 +59,8 @@ abstract class TypeEngineExpansion: FastScriptExpansion() {
     }
 
     override fun execute(script: Script, sender: GlobalSender, main: String, args: Array<Any?>): Any? {
-        if (!script.texts.keys.contains(sign)) return null
+        if (!script.texts.keys.contains(sign))
+            return null
         return try {
             if (engine !is Invocable)
                 eval(script, sender)

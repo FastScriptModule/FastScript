@@ -1,15 +1,12 @@
 package me.scoretwo.fastscript.api.expansion
 
-import me.scoretwo.fastscript.FastScript
 import me.scoretwo.fastscript.api.format.FormatHeader
 import me.scoretwo.fastscript.api.utils.process.ProcessResult
 import me.scoretwo.fastscript.api.utils.process.ProcessResultType
 import me.scoretwo.fastscript.expansion.javascript.JavaScriptExpansion
-import me.scoretwo.fastscript.expansion.typeengine.TypeEngineExpansion
 import me.scoretwo.fastscript.plugin
 import me.scoretwo.fastscript.sendMessage
 import me.scoretwo.utils.bukkit.configuration.yaml.file.YamlConfiguration
-import me.scoretwo.utils.syntaxes.findClass
 import java.io.File
 import java.net.URL
 import java.net.URLClassLoader
@@ -22,8 +19,6 @@ class ExpansionManager {
     val localExpansions = mutableMapOf<ExpansionDescription, FastScriptExpansion>()
 
     init {
-        register(JavaScriptExpansion())
-
         if (!expansionFolder.exists()) expansionFolder.mkdirs()
     }
 
@@ -55,15 +50,14 @@ class ExpansionManager {
     fun reload() {
         val startTime = System.currentTimeMillis()
         expansions.clear()
-
-        register(JavaScriptExpansion())
+        register(JavaScriptExpansion().reload())
 
         if (!expansionFolder.exists())
             expansionFolder.mkdirs()
 
-        var success = 0
+        var success = 1
         var fail = 0
-        var total = 0
+        var total = 1
 
         for (file in expansionFolder.listFiles() ?: arrayOf()) {
             total++
@@ -75,9 +69,10 @@ class ExpansionManager {
             }
 
             try {
-                expansions.add(rawExpansion.second!!)
+                expansions.add(rawExpansion.second!!.reload())
                 success++
             } catch (e: Exception) {
+                fail++
                 e.printStackTrace()
                 plugin.server.console.sendMessage(FormatHeader.ERROR, "An exception occurred when loading extended ${file.name}, reason:\n§8${e.stackTraceToString()}")
             }

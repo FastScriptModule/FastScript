@@ -21,7 +21,7 @@ class TempScript(texts : MutableMap<String, String> = mutableMapOf()): Script(Te
         return null
     }
 
-    override fun execute(sign: String, sender: GlobalSender, main: String = option.main, args: Array<Any?> = arrayOf()): Any? {
+    override fun execute(sign: String, sender: GlobalSender, main: String, args: Array<Any?>): Any? {
         for (expansion in FastScript.instance.expansionManager.expansions) {
             if (expansion.sign != sign)
                 continue

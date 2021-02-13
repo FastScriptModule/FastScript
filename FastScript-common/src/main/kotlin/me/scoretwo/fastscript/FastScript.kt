@@ -106,7 +106,6 @@ class FastScript(val plugin: ScriptPlugin) {
 var debug = false
 
 lateinit var plugin: ScriptPlugin
-val scripts = mutableListOf<CustomScript>()
 
 lateinit var settings: SettingConfig
 lateinit var languages: LanguageManager
