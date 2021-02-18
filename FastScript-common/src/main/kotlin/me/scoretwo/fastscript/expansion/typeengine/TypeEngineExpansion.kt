@@ -35,10 +35,15 @@ abstract class TypeEngineExpansion: FastScriptExpansion() {
         }
         engine.put("sender", sender)
         engine.put("originalsender", plugin.toOriginalSender(sender))
-        return try {
-            engine.eval(script.texts[sign])
-        } catch (e: ScriptException) {
-            plugin.server.console.sendMessage(FormatHeader.ERROR,"脚本 §c${script.description.name} §7解析时出现错误, 请检查脚本格式.")
+        return let {
+            try {
+                engine.eval(script.texts[sign]).also {
+                    if (script.texts[sign]?.contains(it.toString()) == true) return@let "EVALUATED"
+                }
+            } catch (e: ScriptException) {
+                plugin.server.console.sendMessage(FormatHeader.ERROR,"脚本 §c${script.description.name} §7评估时出现错误, 请检查脚本格式.")
+                null
+            }
         }
     }
 
@@ -51,10 +56,15 @@ abstract class TypeEngineExpansion: FastScriptExpansion() {
         }
         engine.put("sender", sender)
         engine.put("originalsender", plugin.toOriginalSender(sender))
-        return try {
-            engine.eval(text)
-        } catch (e: ScriptException) {
-            plugin.server.console.sendMessage(FormatHeader.ERROR,"临时脚本解析时出现错误, 请检查脚本格式.")
+        return let {
+            try {
+                engine.eval(text).also {
+                    if (text.contains(it.toString())) return@let "EVALUATED"
+                }
+            } catch (e: ScriptException) {
+                plugin.server.console.sendMessage(FormatHeader.ERROR,"临时脚本评估时出现错误, 请检查脚本格式.")
+                null
+            }
         }
     }
 
@@ -69,10 +79,8 @@ abstract class TypeEngineExpansion: FastScriptExpansion() {
 
             invocable.invokeFunction(main, *args)
         } catch (e: Exception) {
-            plugin.server.console.sendMessage(
-                FormatHeader.ERROR,
-                "脚本 §c${script.description.name} §7执行函数 §8$main §7时发生错误."
-            )
+            plugin.server.console.sendMessage(FormatHeader.ERROR, "脚本 §c${script.description.name} §7执行函数 §8$main §7时发生错误.")
+            null
         }
     }
 
@@ -88,6 +96,7 @@ abstract class TypeEngineExpansion: FastScriptExpansion() {
             invocable.invokeFunction(main, *args)
         } catch (e: Exception) {
             plugin.server.console.sendMessage(FormatHeader.ERROR, "临时脚本执行函数 §8$main §7时发生错误.")
+            null
         }
     }
 

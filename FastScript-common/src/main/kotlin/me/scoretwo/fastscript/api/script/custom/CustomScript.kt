@@ -4,6 +4,7 @@ import me.scoretwo.fastscript.FastScript
 import me.scoretwo.fastscript.api.expansion.FastScriptExpansion
 import me.scoretwo.fastscript.api.script.Script
 import me.scoretwo.fastscript.api.script.ScriptDescription
+import me.scoretwo.fastscript.plugin
 import java.io.File
 
 open class CustomScript(
@@ -12,7 +13,7 @@ open class CustomScript(
     var scriptFiles: MutableList<File> = mutableListOf()
 ): Script(description, configOption) {
 
-    open fun reload() {
+    open fun reload() = also {
         if (configOption.file != null && !configOption.file.exists()) {
             configOption.config.save(configOption.file)
         }
@@ -32,6 +33,7 @@ open class CustomScript(
                 }
             }
         }.toString()
+        expansion.eval(this, plugin.server.console)
     }
 
 }

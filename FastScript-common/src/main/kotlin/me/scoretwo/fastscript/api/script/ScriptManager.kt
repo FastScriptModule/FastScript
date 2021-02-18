@@ -38,7 +38,7 @@ class ScriptManager {
     fun getScript(name: String) = scripts[name]
 
     private fun loadGeneralScript(scriptFile: File): Pair<CustomScript?, ProcessResult> {
-        val scriptName = scriptFile.name.substringAfterLast(".")
+        val scriptName = scriptFile.name.substringBeforeLast(".")
         scriptFile.parentFile.listFiles()?.forEach {
             if (it.name == "$scriptName.yml") {
                 return Pair(null, ProcessResult(ProcessResultType.OTHER, "script option file exists!"))
@@ -47,7 +47,7 @@ class ScriptManager {
 
         val file = let {
             FastScript.instance.expansionManager.expansions.forEach { expansion ->
-                if (!scriptFile.endsWith(expansion.fileSuffix))
+                if (!scriptFile.name.endsWith(expansion.fileSuffix))
                     return@forEach
 
                 return@let scriptFile
@@ -65,7 +65,7 @@ class ScriptManager {
             },
             ConfigScriptOption(),
             mutableListOf(file)
-        )
+        ).reload()
 
         scripts[scriptName] = script
         return Pair(script, ProcessResult(ProcessResultType.SUCCESS))
@@ -81,12 +81,12 @@ class ScriptManager {
         }
 
         val scriptName = if (file.name.endsWith(".yml"))
-            file.name.substringAfterLast(".")
+            file.name.substringBeforeLast(".")
         else
             return loadGeneralScript(file)
 
         val options = ConfigScriptOption(file)
-        val script = CustomScript(ScriptDescription.fromSection(options.config), options)
+        val script = CustomScript(ScriptDescription.fromSection(options.config), options).reload()
 
         script.scriptFiles = mutableListOf<File>().also { files ->
             FastScript.instance.expansionManager.expansions.forEach { expansion ->
@@ -121,18 +121,18 @@ class ScriptManager {
             return Pair(null, ProcessResult(ProcessResultType.FAILED, "Option file not found in ${folder.name}."))
         }
         val options = ConfigScriptOption(optionsFile)
-        val script = CustomScript(ScriptDescription.fromSection(options.config), options)
+        val script = CustomScript(ScriptDescription.fromSection(options.config), options).reload()
 
         script.scriptFiles = mutableListOf<File>().also { files ->
             folder.listFiles()?.forEach { file ->
-                script.bindExpansions.forEach {
-                    if (file.endsWith(it.fileSuffix))
+                script.bindExpansions().forEach {
+                    if (file.name.endsWith(it.fileSuffix))
                         files.add(file)
                 }
             }
         }
 
-        script.bindExpansions.forEach {
+        script.bindExpansions().forEach {
             if (it.needEval)
                 script.eval(it.sign, plugin.server.console)
         }

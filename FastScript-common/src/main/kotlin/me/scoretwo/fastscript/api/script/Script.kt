@@ -19,8 +19,12 @@ abstract class Script(
 
     val name = description.name
 
-    val bindExpansions get() =
-        mutableListOf<FastScriptExpansion>().also { expansions -> texts.keys.forEach { expansions.add(FastScript.instance.expansionManager.getExpansionBySign(it) ?: return@forEach) } }
+    fun bindExpansions() =
+        mutableListOf<FastScriptExpansion>().also { expansions ->
+            texts.keys.forEach {
+                expansions.add(FastScript.instance.expansionManager.getExpansionBySign(it) ?: return@forEach)
+            }
+        }
 
     open fun eval(sign: String, sender: GlobalSender): Any? =
         eval(FastScript.instance.expansionManager.getExpansionBySign(sign), sender)

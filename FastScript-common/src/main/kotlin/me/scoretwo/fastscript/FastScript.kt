@@ -8,6 +8,7 @@ import me.scoretwo.fastscript.api.script.custom.CustomScript
 import me.scoretwo.fastscript.command.FSCommandNexus
 import me.scoretwo.fastscript.config.SettingConfig
 import me.scoretwo.fastscript.api.script.ScriptManager
+import me.scoretwo.fastscript.command.commands.ScriptCommand
 import me.scoretwo.utils.sender.GlobalPlayer
 import me.scoretwo.utils.sender.GlobalSender
 import net.md_5.bungee.api.ChatColor
@@ -82,6 +83,7 @@ class FastScript(val plugin: ScriptPlugin) {
                 "script" -> {
                     initInternalScripts()
                     scriptManager.loadScripts()
+                    commandNexus.findSubCommand("script")?.also { (it as ScriptCommand).reload() }
                 }
                 "plugin" ->{
                     plugin.reload()
