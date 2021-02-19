@@ -1,6 +1,8 @@
 package me.scoretwo.fastscript.api.expansion
 
+import me.scoretwo.fastscript.FastScript
 import me.scoretwo.fastscript.api.format.FormatHeader
+import me.scoretwo.fastscript.api.utils.ExecType
 import me.scoretwo.fastscript.api.utils.process.ProcessResult
 import me.scoretwo.fastscript.api.utils.process.ProcessResultType
 import me.scoretwo.fastscript.expansion.javascript.JavaScriptExpansion
@@ -77,7 +79,9 @@ class ExpansionManager {
                 plugin.server.console.sendMessage(FormatHeader.ERROR, "An exception occurred when loading extended ${file.name}, reason:\n§8${e.stackTraceToString()}")
             }
         }
-        plugin.server.console.sendMessage(FormatHeader.INFO, "Loaded §b$total §7expansions, §a$success §7successes${if (fail == 0) "" else ", §c$fail §7failures"}.§8(${System.currentTimeMillis() - startTime}ms)")
+        val format = if (FastScript.stats == ExecType.Loaded) FormatHeader.INFO else FormatHeader.TREE
+
+        plugin.server.console.sendMessage(format, "Loaded §b$total §7expansions, §a$success §7successes${if (fail == 0) "" else ", §c$fail §7failures"}.§8(${System.currentTimeMillis() - startTime}ms)")
     }
 
     private fun fromFileExpansion(file: File): Pair<ProcessResult, FastScriptExpansion?> {

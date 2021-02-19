@@ -2,6 +2,7 @@ package me.scoretwo.fastscript.velocity
 
 import me.scoretwo.fastscript.FastScript
 import me.scoretwo.fastscript.api.plugin.ScriptPlugin
+import me.scoretwo.fastscript.api.utils.ExecType
 import me.scoretwo.utils.plugin.GlobalPlugin
 import me.scoretwo.utils.sender.GlobalPlayer
 import me.scoretwo.utils.sender.GlobalSender
@@ -20,6 +21,7 @@ class VelocityPlugin(val plugin: GlobalPlugin): ScriptPlugin(plugin) {
         FastScript.instance.reload("script", "plugin")
 
         FastScript.instance.commandNexus.registerVelocityCommands()
+        FastScript.stats = ExecType.Loaded
     }
 
     override fun setPlaceholder(player: GlobalPlayer, string: String): String {

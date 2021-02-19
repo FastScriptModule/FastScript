@@ -2,6 +2,7 @@ package me.scoretwo.fastscript.bungee
 
 import me.scoretwo.fastscript.FastScript
 import me.scoretwo.fastscript.api.plugin.ScriptPlugin
+import me.scoretwo.fastscript.api.utils.ExecType
 import me.scoretwo.utils.bungee.command.registerBungeeCommands
 import me.scoretwo.utils.bungee.command.toBungeePlayer
 import me.scoretwo.utils.bungee.command.toBungeeSender
@@ -20,6 +21,7 @@ class BungeePlugin(val plugin: GlobalPlugin): ScriptPlugin(plugin) {
         FastScript.instance.reload("script", "plugin")
 
         FastScript.instance.commandNexus.registerBungeeCommands()
+        FastScript.stats = ExecType.Loaded
     }
 
     override fun setPlaceholder(player: GlobalPlayer, string: String): String {

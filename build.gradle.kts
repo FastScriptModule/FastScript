@@ -3,7 +3,6 @@ plugins {
     id("org.jetbrains.dokka") version "1.4.10.2"
     id("org.jlleitschuh.gradle.ktlint") version "9.4.1"
     id("com.github.johnrengelman.shadow") version "6.1.0"
-    id("net.kyori.blossom") version "1.1.0"
     id("maven")
     id("maven-publish")
 }

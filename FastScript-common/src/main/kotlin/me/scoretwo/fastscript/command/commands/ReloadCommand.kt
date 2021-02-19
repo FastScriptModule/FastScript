@@ -16,8 +16,6 @@ class ReloadCommand: SimpleCommand(arrayOf("reload")) {
 
     override var description = "重新载入配置文件或设置."
 
-    override var moreArgs: Array<String>? = arrayOf()
-
     override var customCommands: MutableMap<String, Pair<Array<String>?, String>> = mutableMapOf(
         "all" to Pair(null, "重新载入所有设置."),
         "config" to Pair(null, "重新载入配置文件."),

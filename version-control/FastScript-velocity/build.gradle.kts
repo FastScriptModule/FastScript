@@ -5,15 +5,6 @@ plugins {
     id("com.github.johnrengelman.shadow")
     id("maven")
     id("maven-publish")
-    id("net.kyori.blossom")
-}
-
-blossom {
-    replaceTokenIn("src/main/kotlin/me/scoretwo/fastscript/velocity/VelocityBootStrap.kt")
-    replaceToken("%%id%%", rootProject.name.toLowerCase())
-    replaceToken("%%name%%", rootProject.name)
-    replaceToken("%%version%%", project.version)
-    replaceToken("%%description%%", project.description)
 }
 
 dependencies {

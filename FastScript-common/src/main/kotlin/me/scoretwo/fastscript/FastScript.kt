@@ -4,10 +4,11 @@ import me.scoretwo.fastscript.api.expansion.ExpansionManager
 import me.scoretwo.fastscript.api.format.FormatHeader
 import me.scoretwo.fastscript.api.language.LanguageManager
 import me.scoretwo.fastscript.api.plugin.ScriptPlugin
-import me.scoretwo.fastscript.api.script.custom.CustomScript
 import me.scoretwo.fastscript.command.FSCommandNexus
 import me.scoretwo.fastscript.config.SettingConfig
 import me.scoretwo.fastscript.api.script.ScriptManager
+import me.scoretwo.fastscript.api.utils.ExecType
+import me.scoretwo.fastscript.api.utils.ExecUtils
 import me.scoretwo.fastscript.command.commands.ScriptCommand
 import me.scoretwo.utils.sender.GlobalPlayer
 import me.scoretwo.utils.sender.GlobalSender
@@ -15,9 +16,9 @@ import net.md_5.bungee.api.ChatColor
 
 class FastScript(val plugin: ScriptPlugin) {
 
-    val commandNexus: FSCommandNexus
-    val scriptManager: ScriptManager
-    val expansionManager: ExpansionManager
+    lateinit var commandNexus: FSCommandNexus
+    lateinit var scriptManager: ScriptManager
+    lateinit var expansionManager: ExpansionManager
 
     fun setPlaceholder(player: GlobalPlayer, string: String) = plugin.setPlaceholder(player, string)
 
@@ -42,21 +43,35 @@ class FastScript(val plugin: ScriptPlugin) {
         if (!plugin.dataFolder.exists()) {
             plugin.dataFolder.mkdirs()
         }
-
+        val startTime = System.currentTimeMillis()
         settings = SettingConfig()
         languages = LanguageManager()
-        reload("config")
+        plugin.server.console.sendMessage(FormatHeader.TREE, "Loaded config and language system.§8(${System.currentTimeMillis() - startTime}ms)")
 
-        commandNexus = FSCommandNexus()
-        scriptManager = ScriptManager()
-        expansionManager = ExpansionManager().also {
-            it.reload()
+        ExecUtils.execPeriod(ExecType.Loaded, "configs") {
+            reload("config")
         }
+        ExecUtils.execPeriod(ExecType.Initialized, "script manager") {
+            scriptManager = ScriptManager()
+        }
+
+        ExecUtils.execPeriod(ExecType.Initialized, "expansion manager") {
+            expansionManager = ExpansionManager()
+        }
+        ExecUtils.execPeriod(ExecType.Reloaded, "expansion manager") {
+            expansionManager.reload()
+        }
+
+        ExecUtils.execPeriod(ExecType.Initialized, "CommandNexus") {
+            commandNexus = FSCommandNexus()
+        }
+
+        stats = ExecType.Initialized
     }
 
     fun reloadLanguage() {
         languages.current = languages.languages[settings.getString("Options.Language")] ?: languages.defaultLanguage.also {
-            plugin.server.console.sendMessage(FormatHeader.ERROR, "Language loading failed. The file may not exist. The default language will be used: en_US")
+            plugin.server.console.sendMessage(FormatHeader.ERROR, "Language loading failed. The file may not exist. The default language will be used: ${it.name}")
         }
     }
 
@@ -94,6 +109,7 @@ class FastScript(val plugin: ScriptPlugin) {
 
     companion object {
         lateinit var instance: FastScript
+        var stats = ExecType.Initialize
 
         fun setBootstrap(plugin: ScriptPlugin) {
             if (::instance.isInitialized) {
@@ -120,10 +136,10 @@ fun GlobalSender.sendMessage(format: FormatHeader, text: String, color: Boolean 
     if (format == FormatHeader.DEBUG && !debug)
         return
     if (!color)
-        this.sendMessage("${languages["format-header.${format.name}"]}${text}")
+        this.sendMessage("${format.toLanguageFormat()}${text}")
     else
         this.sendMessage(
-            ChatColor.translateAlternateColorCodes('&', "${languages["format-header.${format.name}"]}${text}"))
+            ChatColor.translateAlternateColorCodes('&', "${format.toLanguageFormat()}${text}"))
 }
 
 
@@ -131,7 +147,7 @@ fun GlobalSender.sendMessage(format: FormatHeader, text: String, color: Boolean 
 fun GlobalSender.sendMessage(format: FormatHeader, text: String, placeholders: Map<String, String>) {
     if (format == FormatHeader.DEBUG && !debug)
         return
-    this.sendMessage("${languages["format-header.${format.name}"]}$text", placeholders)
+    this.sendMessage("${format.toLanguageFormat()}$text", placeholders)
 }
 
 fun GlobalSender.sendMessage(text: String, placeholders: Map<String, String>) {

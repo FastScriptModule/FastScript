@@ -9,11 +9,15 @@ import me.scoretwo.utils.command.executor.CommandExecutor
 import me.scoretwo.utils.command.executor.Executors
 import me.scoretwo.utils.sender.GlobalSender
 
+/**
+ * @author Score2
+ * @date 2021/1/3 21:42
+ *
+ * @project FastScript
+ */
 class ScriptCommand: SimpleCommand(arrayOf("script")) {
 
     override var description = "操作脚本重载/评估/运行."
-
-    override var moreArgs: Array<String>? = arrayOf()
 
     private val runCommand = nextBuilder()
         .alias("run")

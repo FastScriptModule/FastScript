@@ -5,6 +5,7 @@ import me.scoretwo.fastscript.api.format.FormatHeader
 import me.scoretwo.fastscript.api.script.custom.ConfigScriptOption
 import me.scoretwo.fastscript.api.script.custom.CustomScript
 import me.scoretwo.fastscript.api.script.temp.TempScript
+import me.scoretwo.fastscript.api.utils.ExecType
 import me.scoretwo.fastscript.api.utils.process.ProcessResult
 import me.scoretwo.fastscript.api.utils.process.ProcessResultType
 import me.scoretwo.fastscript.plugin
@@ -168,7 +169,8 @@ class ScriptManager {
                 }
             }
         }
-        plugin.server.console.sendMessage(FormatHeader.INFO, "Loaded §b$total §7scripts, §a$success §7successes${if (fail == 0) "" else ", §c$fail §7failures"}.§8(${System.currentTimeMillis() - startTime}ms)")
+        val format = if (FastScript.stats == ExecType.Loaded) FormatHeader.INFO else FormatHeader.TREE
+        plugin.server.console.sendMessage(format, "Loaded §b$total §7scripts, §a$success §7successes${if (fail == 0) "" else ", §c$fail §7failures"}.§8(${System.currentTimeMillis() - startTime}ms)")
     }
 
     fun isConfigScriptOption(section: ConfigurationSection) =
