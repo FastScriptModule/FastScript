@@ -11,6 +11,7 @@ import me.scoretwo.utils.bukkit.configuration.yaml.ConfigurationSection
 import me.scoretwo.utils.bukkit.configuration.yaml.patchs.getLowerCaseNode
 import java.lang.reflect.Method
 
+// 已弃用该类, 现有更好的方法代替它: js: Java.type("xxxx.xxxx")
 class ScriptInclude(
     type: ScriptIncludeType?,
     val obj: Pair<String, List<Any?>?>?,
@@ -49,7 +50,6 @@ class ScriptInclude(
                     constructor.isAccessible = true
                     constructor.newInstance(*obj.second!!.toTypedArray())
                 } catch (e: Exception) {
-                    e.printStackTrace()
                     plugin.server.console.sendMessage(FormatHeader.ERROR, "脚本 §c${script.description.name} §7执行初始化时发生错误, 错误如下:\n§8${e.stackTraceToString()}")
                     null
                 }
@@ -71,7 +71,6 @@ class ScriptInclude(
     fun findClass(script: CustomScript, target: String) = try {
         Class.forName(target)
     } catch (e: ClassNotFoundException) {
-        e.printStackTrace()
         plugin.server.console.sendMessage(FormatHeader.ERROR, "脚本 §c${script.description.name} §7没有找到类 §c${target}§7, 错误如下:\n§8${e.stackTraceToString()}")
         null
     }
@@ -79,7 +78,6 @@ class ScriptInclude(
     fun accessMethod(script: CustomScript, `object`: Any?, method: Method) = try {
         method.invoke(`object`, obj!!.second)
     } catch (e: Exception) {
-        e.printStackTrace()
         plugin.server.console.sendMessage(FormatHeader.ERROR, "脚本 §c${script.description.name} §7访问方法 §c${method.name} §7时发生错误, 错误如下:\n§8${e.stackTraceToString()}")
         null
     }

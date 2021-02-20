@@ -8,6 +8,8 @@ import com.velocitypowered.api.event.proxy.ProxyShutdownEvent
 import com.velocitypowered.api.plugin.Plugin
 import com.velocitypowered.api.plugin.annotation.DataDirectory
 import com.velocitypowered.api.proxy.ProxyServer
+import me.scoretwo.fastscript.FastScript
+import me.scoretwo.fastscript.api.plugin.ScriptPluginState
 import me.scoretwo.utils.velocity.plugin.toGlobalPlugin
 import java.nio.file.Path
 import java.util.logging.Logger
@@ -29,10 +31,12 @@ class VelocityBootStrap {
         velocityPlugin = VelocityPlugin(plugin.toGlobalPlugin(proxy))
         velocityPlugin.load()
         velocityPlugin.enable()
+        FastScript.stats = ScriptPluginState.RUNNING
     }
 
     @Subscribe(order = PostOrder.NORMAL)
     fun onDisable(e: ProxyShutdownEvent) {
         velocityPlugin.disable()
+        FastScript.stats = ScriptPluginState.DISABLE
     }
 }

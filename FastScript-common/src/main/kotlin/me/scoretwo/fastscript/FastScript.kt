@@ -4,6 +4,7 @@ import me.scoretwo.fastscript.api.expansion.ExpansionManager
 import me.scoretwo.fastscript.api.format.FormatHeader
 import me.scoretwo.fastscript.api.language.LanguageManager
 import me.scoretwo.fastscript.api.plugin.ScriptPlugin
+import me.scoretwo.fastscript.api.plugin.ScriptPluginState
 import me.scoretwo.fastscript.command.FSCommandNexus
 import me.scoretwo.fastscript.config.SettingConfig
 import me.scoretwo.fastscript.api.script.ScriptManager
@@ -58,15 +59,11 @@ class FastScript(val plugin: ScriptPlugin) {
         ExecUtils.execPeriod(ExecType.Initialized, "expansion manager") {
             expansionManager = ExpansionManager()
         }
-        ExecUtils.execPeriod(ExecType.Reloaded, "expansion manager") {
-            expansionManager.reload()
-        }
+        expansionManager.reload()
 
         ExecUtils.execPeriod(ExecType.Initialized, "CommandNexus") {
             commandNexus = FSCommandNexus()
         }
-
-        stats = ExecType.Initialized
     }
 
     fun reloadLanguage() {
@@ -109,7 +106,7 @@ class FastScript(val plugin: ScriptPlugin) {
 
     companion object {
         lateinit var instance: FastScript
-        var stats = ExecType.Initialize
+        var stats = ScriptPluginState.INITIALIZING
 
         fun setBootstrap(plugin: ScriptPlugin) {
             if (::instance.isInitialized) {

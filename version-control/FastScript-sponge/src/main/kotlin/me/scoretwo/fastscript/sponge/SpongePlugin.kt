@@ -25,7 +25,6 @@ class SpongePlugin(val plugin: GlobalPlugin): ScriptPlugin(plugin) {
         PlaceholderAPIHook.initializePlaceholder()
 
         FastScript.instance.commandNexus.registerSpongeCommands()
-        FastScript.stats = ExecType.Loaded
     }
 
     override fun setPlaceholder(player: GlobalPlayer, string: String): String {

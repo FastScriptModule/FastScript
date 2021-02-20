@@ -26,11 +26,13 @@ class ScriptManager {
     init {
         if (!folders[0].exists()) {
             folders[0].mkdirs()
-            """
+            File(folders[0], "example.js").writeText(
+                """
                 function main() {
-                    sender.sendMessage("&athis is demo.")
+                    sender.sendMessage("§athis is demo.")
                 }
-            """.trimIndent().save(File(folders[0], "example.js"))
+                """.trimIndent()
+            )
         }
     }
 
@@ -61,7 +63,7 @@ class ScriptManager {
                 override val main: String = "main"
                 override val version: String? = null
                 override val description: String? = null
-                override val authors: Array<String> = arrayOf("FastScript")
+                override val authors: Array<String> = arrayOf()
 
             },
             ConfigScriptOption(),
@@ -169,8 +171,7 @@ class ScriptManager {
                 }
             }
         }
-        val format = if (FastScript.stats == ExecType.Loaded) FormatHeader.INFO else FormatHeader.TREE
-        plugin.server.console.sendMessage(format, "Loaded §b$total §7scripts, §a$success §7successes${if (fail == 0) "" else ", §c$fail §7failures"}.§8(${System.currentTimeMillis() - startTime}ms)")
+        plugin.server.console.sendMessage(FormatHeader.INFO, "Loaded §b$total §7scripts, §a$success §7successes${if (fail == 0) "" else ", §c$fail §7failures"}.§8(${System.currentTimeMillis() - startTime}ms)")
     }
 
     fun isConfigScriptOption(section: ConfigurationSection) =

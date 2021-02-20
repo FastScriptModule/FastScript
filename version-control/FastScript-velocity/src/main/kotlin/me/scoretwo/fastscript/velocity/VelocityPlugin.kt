@@ -21,7 +21,6 @@ class VelocityPlugin(val plugin: GlobalPlugin): ScriptPlugin(plugin) {
         FastScript.instance.reload("script", "plugin")
 
         FastScript.instance.commandNexus.registerVelocityCommands()
-        FastScript.stats = ExecType.Loaded
     }
 
     override fun setPlaceholder(player: GlobalPlayer, string: String): String {

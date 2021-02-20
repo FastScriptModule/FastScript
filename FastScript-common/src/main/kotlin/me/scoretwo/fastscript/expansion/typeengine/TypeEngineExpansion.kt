@@ -7,8 +7,7 @@ import me.scoretwo.fastscript.api.script.Script
 import me.scoretwo.fastscript.plugin
 import me.scoretwo.fastscript.sendMessage
 import me.scoretwo.utils.sender.GlobalSender
-import me.scoretwo.utils.server.task.TaskType
-import org.apache.commons.lang3.StringUtils
+import org.apache.commons.lang.StringUtils
 import javax.script.Invocable
 import javax.script.ScriptEngine
 import javax.script.ScriptEngineManager
@@ -21,8 +20,10 @@ abstract class TypeEngineExpansion: FastScriptExpansion() {
     val scriptEngineManager = ScriptEngineManager(plugin.pluginClassLoader)
 
     override fun reload(): TypeEngineExpansion {
-        engine.put("server", plugin.server)
-        engine.put("expansionmanager", FastScript.instance.expansionManager)
+        engine.put("server", plugin.toOriginalServer())
+        engine.put("globalServer", plugin.server)
+        engine.put("scriptManager", FastScript.instance.scriptManager)
+        engine.put("expansionManager", FastScript.instance.expansionManager)
         return this
     }
 
@@ -30,18 +31,19 @@ abstract class TypeEngineExpansion: FastScriptExpansion() {
         if (!script.texts.keys.contains(sign))
             return null
         if (sender.isPlayer()) sender.toPlayer().let {
-            engine.put("player", it)
-            engine.put("originalplayer", plugin.toOriginalPlayer(it!!))
+            engine.put("globalPlayer", it)
+            engine.put("player", plugin.toOriginalPlayer(it!!))
         }
-        engine.put("sender", sender)
-        engine.put("originalsender", plugin.toOriginalSender(sender))
+        engine.put("globalSender", sender)
+        engine.put("sender", plugin.toOriginalSender(sender))
         return let {
             try {
                 engine.eval(script.texts[sign]).also {
-                    if (script.texts[sign]?.contains(it.toString()) == true) return@let "EVALUATED"
+                    if (script.texts[sign]?.contains(it?.toString() ?: "") == true) return@let "EVALUATED"
                 }
             } catch (e: ScriptException) {
                 plugin.server.console.sendMessage(FormatHeader.ERROR,"脚本 §c${script.description.name} §7评估时出现错误, 请检查脚本格式.")
+                e.printStackTrace()
                 null
             }
         }
@@ -51,15 +53,15 @@ abstract class TypeEngineExpansion: FastScriptExpansion() {
         if (StringUtils.isBlank(text))
             return null
         if (sender.isPlayer()) sender.toPlayer().let {
-            engine.put("player", it)
-            engine.put("originalplayer", plugin.toOriginalPlayer(it!!))
+            engine.put("globalPlayer", it)
+            engine.put("player", plugin.toOriginalPlayer(it!!))
         }
-        engine.put("sender", sender)
-        engine.put("originalsender", plugin.toOriginalSender(sender))
+        engine.put("globalSender", sender)
+        engine.put("sender", plugin.toOriginalSender(sender))
         return let {
             try {
                 engine.eval(text).also {
-                    if (text.contains(it.toString())) return@let "EVALUATED"
+                    if (text.contains(it?.toString() ?: "")) return@let "EVALUATED"
                 }
             } catch (e: ScriptException) {
                 plugin.server.console.sendMessage(FormatHeader.ERROR,"临时脚本评估时出现错误, 请检查脚本格式.")
@@ -78,9 +80,16 @@ abstract class TypeEngineExpansion: FastScriptExpansion() {
             val invocable = engine as Invocable
 
             invocable.invokeFunction(main, *args)
-        } catch (e: Exception) {
+        } catch (e: ScriptException) {
             plugin.server.console.sendMessage(FormatHeader.ERROR, "脚本 §c${script.description.name} §7执行函数 §8$main §7时发生错误.")
             null
+        } catch (e: NoSuchMethodException) {
+            if (main == "init") {
+                null
+            } else {
+                plugin.server.console.sendMessage(FormatHeader.ERROR, "临时脚本执行函数 §8$main §7时发生错误, 函数不存在!")
+                null
+            }
         }
     }
 
@@ -94,9 +103,16 @@ abstract class TypeEngineExpansion: FastScriptExpansion() {
             val invocable = engine as Invocable
 
             invocable.invokeFunction(main, *args)
-        } catch (e: Exception) {
+        } catch (e: ScriptException) {
             plugin.server.console.sendMessage(FormatHeader.ERROR, "临时脚本执行函数 §8$main §7时发生错误.")
             null
+        } catch (e: NoSuchMethodException) {
+            if (main == "init") {
+                null
+            } else {
+                plugin.server.console.sendMessage(FormatHeader.ERROR, "临时脚本执行函数 §8$main §7时发生错误, 函数不存在!")
+                null
+            }
         }
     }
 

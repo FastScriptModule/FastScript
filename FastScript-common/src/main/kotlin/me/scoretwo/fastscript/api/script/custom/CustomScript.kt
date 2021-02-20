@@ -34,6 +34,7 @@ open class CustomScript(
             }
         }.toString()
         expansion.eval(this, plugin.server.console)
+        expansion.execute(this, plugin.server.console, "init")
     }
 
 }

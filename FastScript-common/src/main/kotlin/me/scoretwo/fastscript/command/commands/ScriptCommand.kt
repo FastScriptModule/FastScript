@@ -8,6 +8,11 @@ import me.scoretwo.utils.command.SubCommand
 import me.scoretwo.utils.command.executor.CommandExecutor
 import me.scoretwo.utils.command.executor.Executors
 import me.scoretwo.utils.sender.GlobalSender
+import net.md_5.bungee.api.chat.ClickEvent
+import net.md_5.bungee.api.chat.HoverEvent
+import net.md_5.bungee.api.chat.TextComponent
+import net.md_5.bungee.api.chat.hover.content.Text
+import org.jetbrains.kotlin.utils.sure
 
 /**
  * @author Score2
@@ -20,7 +25,7 @@ class ScriptCommand: SimpleCommand(arrayOf("script")) {
     override var description = "操作脚本重载/评估/运行."
 
     private val runCommand = nextBuilder()
-        .alias("run")
+        .alias("execute", "run")
         .description("执行这个脚本并得到返回值(:s 加在最后不返回消息)")
         .executor(object : Executors {
             override fun execute(sender: GlobalSender, parents: Array<String>, args: Array<String>): Boolean {
@@ -54,19 +59,33 @@ class ScriptCommand: SimpleCommand(arrayOf("script")) {
                 }
 
                 if (!noReturn) {
-                    sender.sendMessage(FormatHeader.INFO, "脚本 §b${script.name} §7的运行结果: §b${result}")
+                    sender.sendMessage(FormatHeader.INFO, "脚本 §b${script.name} §7使用拓展 §6${FastScript.instance.expansionManager.getExpansionBySign(sign)?.name ?: "Unknown"} §7的运行结果: §b${result}")
                 }
 
                 return true
             }
 
-            override fun tabComplete(sender: GlobalSender, parents: Array<String>, args: Array<String>) = mutableListOf(":s")
+            override fun tabComplete(sender: GlobalSender, parents: Array<String>, args: Array<String>): MutableList<String> {
+                val scriptName = parents[parents.size - 2]
+                if (args.size < 2) {
+                    return findKeywordIndex(args[0], mutableListOf<String>().also { list -> FastScript.instance.expansionManager.expansions.forEach { list.add(it.sign) } })
+                } else if (args.size < 3) {
+                    val script = FastScript.instance.scriptManager.getScript(scriptName) ?: return findKeywordIndex(args[0], mutableListOf(":s"))
+                    return findKeywordIndex(args[0], mutableListOf(script.option.main))
+                }
+                return findKeywordIndex(args[0], mutableListOf(":s"))
+            }
         })
         .build()
 
     private val evaluateCommand = nextBuilder()
-        .alias("eval")
+        .alias("evaluate", "eval")
         .description("评估这个脚本并获得返回值(:s 加在最后不返回消息)")
+        .also { builder ->
+            FastScript.instance.expansionManager.expansions.forEach {
+                builder.customCommand(it.sign, arrayOf(), "expansion sign")
+            }
+        }
         .executor(object : Executors {
             override fun execute(sender: GlobalSender, parents: Array<String>, args: Array<String>): Boolean {
                 val noReturn = if (args.isEmpty()) false else args[args.size - 1] == ":s"
@@ -89,13 +108,18 @@ class ScriptCommand: SimpleCommand(arrayOf("script")) {
                 val result = script.eval(sign, sender)
 
                 if (!noReturn) {
-                    sender.sendMessage(FormatHeader.INFO, "脚本 §b${script.name} §7的评估结果: §b${result}")
+                    sender.sendMessage(FormatHeader.INFO, "脚本 §b${script.name} §7使用拓展 §6${FastScript.instance.expansionManager.getExpansionBySign(sign)?.name ?: "Unknown"} §7的评估结果: §b${result}")
                 }
 
                 return true
             }
 
-            override fun tabComplete(sender: GlobalSender, parents: Array<String>, args: Array<String>) = mutableListOf(":s")
+            override fun tabComplete(sender: GlobalSender, parents: Array<String>, args: Array<String>): MutableList<String> {
+                if (args.size < 2) {
+                    return findKeywordIndex(args[0], mutableListOf<String>().also { list -> FastScript.instance.expansionManager.expansions.forEach { list.add(it.sign) } })
+                }
+                return findKeywordIndex(args[0], mutableListOf(":s"))
+            }
         })
         .build()
 
@@ -128,27 +152,36 @@ class ScriptCommand: SimpleCommand(arrayOf("script")) {
                     return true
                 }
 
-                sender.sendMessage(FormatHeader.INFO, StringBuilder("脚本 §b${script.name} §7的相关信息:\n").also { builder ->
-                    script.description.version?.also {
-                        builder.append("  §3§l* §7版本: §2$it\n")
-                    }
-                    script.description.authors.let {
-                        if (it.isEmpty())
-                            return@let
-                        builder.append("  §3§l* §7编写者: §3${it.joinToString("§7, §3")}\n")
-                    }
-                    script.description.description?.also {
-                        builder.append("  §3§l* §7描述: §f$it\n")
-                    }
-                    builder.append("  §3§l* §7主函数: §a${script.description.main}\n")
-                    script.bindExpansions().let { expansions ->
-                        if (expansions.isEmpty())
-                            return@let
-                        val signs = mutableListOf<String>().also { signs -> expansions.forEach { expansion -> signs.add(expansion.sign) } }
+                val displayParents = parents.joinToString(" ")
 
-                        builder.append("  §3§l* §7拓展: §6${signs.joinToString("§7, §6")}\n")
-                    }
-                }.toString())
+                sender.sendMessage(FormatHeader.INFO, "脚本 §b${script.name} §7的相关信息:")
+                script.description.version?.also {
+                    sender.sendMessage("  §3§l* §7版本: §2$it")
+                }
+                script.description.authors.let {
+                    if (it.isEmpty())
+                        return@let
+                    sender.sendMessage("  §3§l* §7编写者: §3${it.joinToString("§7, §3")}")
+                }
+                script.description.description?.also {
+                    sender.sendMessage("  §3§l* §7描述: §f$it")
+                }
+                sender.sendMessage("  §3§l* §7主函数: §a${script.description.main}")
+                script.bindExpansions().let { expansions ->
+                    if (expansions.isEmpty())
+                        return@let
+                    val signs = mutableListOf<String>().also { signs -> expansions.forEach { expansion -> signs.add(expansion.sign) } }
+
+                    sender.sendMessage("  §3§l* §7拓展: §6${signs.joinToString("§7, §6")}")
+                }
+                sender.sendMessage("")
+                sender.sendMessage("  §7查看脚本 §f${script.name} §7的更多帮助请输入:")
+                sender.sendMessage(TextComponent("    "), TextComponent("§7/$displayParents §fhelp").also {
+                    it.hoverEvent = HoverEvent(HoverEvent.Action.SHOW_TEXT, Text("§7点击自动补全命令: §f$displayParents help"))
+                    it.clickEvent = ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, "/$displayParents help ")
+                })
+                sender.sendMessage("")
+
                 return true
             }
         })

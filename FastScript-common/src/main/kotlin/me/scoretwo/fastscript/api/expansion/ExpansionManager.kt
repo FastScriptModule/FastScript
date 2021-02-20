@@ -2,6 +2,7 @@ package me.scoretwo.fastscript.api.expansion
 
 import me.scoretwo.fastscript.FastScript
 import me.scoretwo.fastscript.api.format.FormatHeader
+import me.scoretwo.fastscript.api.plugin.ScriptPluginState
 import me.scoretwo.fastscript.api.utils.ExecType
 import me.scoretwo.fastscript.api.utils.process.ProcessResult
 import me.scoretwo.fastscript.api.utils.process.ProcessResultType
@@ -34,7 +35,7 @@ class ExpansionManager {
 
     fun getExpansionByName(name: String): FastScriptExpansion? {
         for (expansion in expansions) {
-            if (expansion.name == name)
+            if (expansion.name.equals(name, ignoreCase = true))
                 return expansion
         }
         return null
@@ -42,7 +43,7 @@ class ExpansionManager {
 
     fun getExpansionBySign(sign: String): FastScriptExpansion? {
         for (expansion in expansions) {
-            if (expansion.sign == sign)
+            if (expansion.sign.equals(sign, ignoreCase = true))
                 return expansion
         }
         return null
@@ -75,11 +76,10 @@ class ExpansionManager {
                 success++
             } catch (e: Exception) {
                 fail++
-                e.printStackTrace()
                 plugin.server.console.sendMessage(FormatHeader.ERROR, "An exception occurred when loading extended ${file.name}, reason:\n§8${e.stackTraceToString()}")
             }
         }
-        val format = if (FastScript.stats == ExecType.Loaded) FormatHeader.INFO else FormatHeader.TREE
+        val format = if (FastScript.stats == ScriptPluginState.RUNNING) FormatHeader.INFO else FormatHeader.TREE
 
         plugin.server.console.sendMessage(format, "Loaded §b$total §7expansions, §a$success §7successes${if (fail == 0) "" else ", §c$fail §7failures"}.§8(${System.currentTimeMillis() - startTime}ms)")
     }
@@ -96,14 +96,12 @@ class ExpansionManager {
             description = try {
                 ExpansionDescription.readConfig(YamlConfiguration().also { it.load(jarFile.getInputStream(jarFile.getJarEntry("expansion.yml")).reader()) })
             } catch (e: Exception) {
-                e.printStackTrace()
                 plugin.server.console.sendMessage(FormatHeader.ERROR, "An error occurred while loading the expansion '${file.name}' description file, reason:\n§8${e.stackTraceToString()}")
                 return Pair(ProcessResult(ProcessResultType.FAILED), null)
             }
             val clazz = try {
                 Class.forName(description.main)
             } catch (e: Exception) {
-                e.printStackTrace()
                 plugin.server.console.sendMessage(FormatHeader.ERROR, "An error occurred while loading the main class ${description.main} of expansion '${file.name}', reason:\n§8${e.stackTraceToString()}")
                 return Pair(ProcessResult(ProcessResultType.FAILED), null)
             }
@@ -111,7 +109,6 @@ class ExpansionManager {
             val instance = try {
                 clazz.newInstance()
             } catch (e: Exception) {
-                e.printStackTrace()
                 plugin.server.console.sendMessage(FormatHeader.ERROR, "An error occurred while loading the main class ${description.main} of expansion '${file.name}', reason:\n§8${e.stackTraceToString()}")
                 return Pair(ProcessResult(ProcessResultType.FAILED), null)
             }
@@ -123,7 +120,6 @@ class ExpansionManager {
 
             clazz.asSubclass(FastScriptExpansion::class.java)
         } catch (e: Exception) {
-            e.printStackTrace()
             plugin.server.console.sendMessage(FormatHeader.ERROR, "An exception occurred when loading extended '${file.name}', reason:\n§8${e.stackTraceToString()}")
             return Pair(ProcessResult(ProcessResultType.FAILED), null)
         }
