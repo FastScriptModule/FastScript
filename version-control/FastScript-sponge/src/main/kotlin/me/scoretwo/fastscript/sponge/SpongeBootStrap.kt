@@ -3,6 +3,7 @@ package me.scoretwo.fastscript.sponge
 import com.google.inject.Inject
 import me.scoretwo.fastscript.FastScript
 import me.scoretwo.fastscript.api.plugin.ScriptPluginState
+import me.scoretwo.fastscript.plugin
 import me.scoretwo.utils.sponge.plugin.toGlobalPlugin
 import org.spongepowered.api.event.Listener
 import org.spongepowered.api.event.game.state.GameInitializationEvent
@@ -31,6 +32,7 @@ class SpongeBootStrap @Inject constructor(val pluginContainer: PluginContainer) 
     @Listener
     fun onEnable(e: GameInitializationEvent) {
         spongePlugin.enable()
+        spongePlugin.reload()
         FastScript.stats = ScriptPluginState.RUNNING
     }
 

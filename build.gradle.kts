@@ -24,11 +24,13 @@ allprojects {
         mavenCentral()
         mavenLocal()
         maven("http://repo.iroselle.com/snapshots/")
+        maven("http://repo.iroselle.com/public/")
         maven("https://nexus.velocitypowered.com/repository/velocity-artifacts-snapshots/")
         maven("https://repo.spongepowered.org/maven")
         maven("https://jitpack.io")
         maven("https://hub.spigotmc.org/nexus/content/repositories/sonatype-nexus-snapshots/")
         maven("https://repo.codemc.io/repository/maven-snapshots/")
+        maven("https://repo.codemc.io/repository/maven-public/")
         maven("https://hub.spigotmc.org/nexus/content/repositories/snapshots/")
     }
 
@@ -55,6 +57,9 @@ dependencies {
 
     implementation("net.md-5:bungeecord-chat:1.16-R0.4-SNAPSHOT")
     implementation("org.bstats:bstats-bukkit:1.7")
+    implementation("com.iroselle:cstats-bukkit:1.8")
+    implementation("org.bstats:bstats-bungeecord:1.8")
+    implementation("com.iroselle:cstats-bungeecord:1.7")
     implementation("commons-io:commons-io:2.7")
     implementation("commons-lang:commons-lang:2.6")
 
@@ -81,7 +86,10 @@ tasks.withType<com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar> {
         include(dependency("me.scoretwo:commons-bukkit-plugin:${rootProject.extra.get("commonsVersion")}"))
 
         include(dependency("net.md-5:bungeecord-chat:1.16-R0.4-SNAPSHOT"))
-        include(dependency("org.bstats:bstats-bukkit:1.7"))
+        include(dependency("org.bstats:bstats-bukkit:1.8"))
+        include(dependency("com.iroselle:cstats-bukkit:1.7"))
+        include(dependency("org.bstats:bstats-bungeecord:1.8"))
+        include(dependency("com.iroselle:cstats-bungeecord:1.7"))
 
         include(dependency("commons-io:commons-io:2.7"))
         include(dependency("commons-lang:commons-lang:2.6"))
@@ -94,6 +102,7 @@ tasks.withType<com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar> {
     relocate("kotlin", "me.scoretwo.utils.shaded.kotlin")
     relocate("org.apache","me.scoretwo.utils.shaded.org.apache")
     relocate("org.bstats","me.scoretwo.utils.shaded.org.bstats")
+    relocate("com.iroselle.cstats","me.scoretwo.utils.shaded.com.iroselle.cstats")
 
     exclude("META-INF/versions/9/module-info.class")
     exclude("META-INF/*.kotlin_module")

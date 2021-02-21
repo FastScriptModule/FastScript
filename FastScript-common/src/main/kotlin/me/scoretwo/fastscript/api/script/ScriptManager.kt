@@ -23,6 +23,12 @@ class ScriptManager {
 
     val scripts = mutableMapOf<String, CustomScript>()
 
+    // bStats
+    var evaluateCount = 0
+    var executeCount = 0
+
+    var operationCount = 0
+
     init {
         if (!folders[0].exists()) {
             folders[0].mkdirs()
@@ -181,9 +187,9 @@ class ScriptManager {
 
 
     fun eval(script: CustomScript, sign: String, sender: GlobalSender) =
-        script.eval(sign, sender)
+        script.eval(sign, sender).also { evaluateCount += 1; operationCount += 1 }
 
     fun execute(script: CustomScript, sign: String, sender: GlobalSender, main: String = script.configOption.main, args: Array<Any?> = arrayOf()) =
-        script.execute(sign, sender, main, args)
+        script.execute(sign, sender, main, args).also { executeCount += 1; operationCount += 1 }
 
 }

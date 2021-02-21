@@ -31,6 +31,7 @@ class VelocityBootStrap {
         velocityPlugin = VelocityPlugin(plugin.toGlobalPlugin(proxy))
         velocityPlugin.load()
         velocityPlugin.enable()
+        velocityPlugin.reload()
         FastScript.stats = ScriptPluginState.RUNNING
     }
 
