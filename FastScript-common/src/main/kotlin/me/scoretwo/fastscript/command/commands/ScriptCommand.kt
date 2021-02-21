@@ -37,17 +37,17 @@ class ScriptCommand: SimpleCommand(arrayOf("script")) {
                     return true
                 }
                 if (args.isEmpty()) {
-                    sender.sendMessage(FormatHeader.ERROR, "正确用法: /${parents.joinToString(" ")} §f<${script.texts.keys.joinToString("/")}> §7<${script.option.main}> <args...>")
+                    sender.sendMessage(FormatHeader.ERROR, "正确用法: /${parents.joinToString(" ")} §f<${script.texts.keys.joinToString("/")}> §7<${script.option.main}> <args...> §8:s")
                     return true
                 }
                 val sign = args[0]
                 if (!script.texts.keys.contains(sign)) {
-                    sender.sendMessage(FormatHeader.ERROR, "指定的拓展标识 §6$sign §7不正确! 正确用法: /${parents.joinToString(" ")} §f<${script.texts.keys.joinToString("/")}> §7<${script.option.main}> <args...>")
+                    sender.sendMessage(FormatHeader.ERROR, "指定的拓展标识 §6$sign §7不正确! 正确用法: /${parents.joinToString(" ")} §f<${script.texts.keys.joinToString("/")}> §7<${script.option.main}> <args...> §8:s")
                     return true
                 }
 
                 val args0: Array<Any?> = when {
-                    args.size < 2 -> arrayOf()
+                    args.size < 3 -> arrayOf()
                     noReturn -> arrayOf(*args.sliceArray(2..args.size - 2))
                     else -> arrayOf(*args.sliceArray(2 until args.size))
                 }
@@ -96,7 +96,7 @@ class ScriptCommand: SimpleCommand(arrayOf("script")) {
                     return true
                 }
                 if (args.isEmpty()) {
-                    sender.sendMessage(FormatHeader.ERROR, "正确用法: /${parents.joinToString(" ")} §f<${script.texts.keys.joinToString("/")}>")
+                    sender.sendMessage(FormatHeader.ERROR, "正确用法: /${parents.joinToString(" ")} §f<${script.texts.keys.joinToString("/")}> §7<args> §8:s")
                     return true
                 }
                 val sign = args[0]
@@ -104,8 +104,13 @@ class ScriptCommand: SimpleCommand(arrayOf("script")) {
                     sender.sendMessage(FormatHeader.ERROR, "指定的拓展标识 §6$sign §7不正确! 正确用法: /${parents.joinToString(" ")} §f<${script.texts.keys.joinToString("/")}>")
                     return true
                 }
+                val args0: Array<String> = when {
+                    args.size < 2 -> arrayOf()
+                    noReturn -> arrayOf(*args.sliceArray(1..args.size - 2))
+                    else -> arrayOf(*args.sliceArray(1 until args.size))
+                }
 
-                val result = script.eval(sign, sender)
+                val result = script.eval(sign, sender, *args0)
 
                 if (!noReturn) {
                     sender.sendMessage(FormatHeader.INFO, "脚本 §b${script.name} §7使用拓展 §6${FastScript.instance.expansionManager.getExpansionBySign(sign)?.name ?: "Unknown"} §7的评估结果: §b${result}")
@@ -152,7 +157,7 @@ class ScriptCommand: SimpleCommand(arrayOf("script")) {
                     return true
                 }
 
-                val displayParents = parents.joinToString(" ")
+                val displayParents = parents.slice(0..parents.size - 2).joinToString(" ")
 
                 sender.sendMessage(FormatHeader.INFO, "脚本 §b${script.name} §7的相关信息:")
                 script.description.version?.also {

@@ -109,9 +109,10 @@ class ScriptManager {
         script.texts.keys.forEach { sign ->
             val expansion = FastScript.instance.expansionManager.getExpansionBySign(sign) ?: return@forEach
 
-            if (expansion.needEval) {
+/*            if (expansion.needEval) {
                 expansion.eval(sign, plugin.server.console)
             }
+*/
         }
 
         scripts[file.name.substringBeforeLast(".")] = script
@@ -141,10 +142,12 @@ class ScriptManager {
             }
         }
 
+/*
         script.bindExpansions().forEach {
             if (it.needEval)
                 script.eval(it.sign, plugin.server.console)
         }
+*/
 
         scripts[folder.name] = script
 
@@ -186,8 +189,8 @@ class ScriptManager {
         section.isString(section.getLowerCaseNode("main"))
 
 
-    fun eval(script: CustomScript, sign: String, sender: GlobalSender) =
-        script.eval(sign, sender).also { evaluateCount += 1; operationCount += 1 }
+    fun eval(script: CustomScript, sign: String, sender: GlobalSender, vararg args: String) =
+        script.eval(sign, sender, *args).also { evaluateCount += 1; operationCount += 1 }
 
     fun execute(script: CustomScript, sign: String, sender: GlobalSender, main: String = script.configOption.main, args: Array<Any?> = arrayOf()) =
         script.execute(sign, sender, main, args).also { executeCount += 1; operationCount += 1 }

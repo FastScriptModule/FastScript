@@ -26,11 +26,11 @@ abstract class Script(
             }
         }
 
-    open fun eval(sign: String, sender: GlobalSender): Any? =
-        eval(FastScript.instance.expansionManager.getExpansionBySign(sign), sender)
+    open fun eval(sign: String, sender: GlobalSender, vararg args: String): Any? =
+        eval(FastScript.instance.expansionManager.getExpansionBySign(sign), sender, *args)
 
-    fun eval(expansion: FastScriptExpansion?, sender: GlobalSender): Any? =
-        expansion?.eval(this, sender)
+    fun eval(expansion: FastScriptExpansion?, sender: GlobalSender, vararg args: String): Any? =
+        expansion?.eval(this, sender, *args)
 
     open fun execute(sign: String, sender: GlobalSender, main: String = option.main, args: Array<Any?> = arrayOf()): Any? =
         execute(FastScript.instance.expansionManager.getExpansionBySign(sign), sender, main, args)

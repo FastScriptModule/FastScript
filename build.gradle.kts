@@ -56,8 +56,8 @@ dependencies {
     implementation("me.scoretwo:commons-velocity-plugin:${rootProject.extra.get("commonsVersion")}")
 
     implementation("net.md-5:bungeecord-chat:1.16-R0.4-SNAPSHOT")
-    implementation("org.bstats:bstats-bukkit:1.7")
-    implementation("com.iroselle:cstats-bukkit:1.8")
+    implementation("org.bstats:bstats-bukkit:1.8")
+    implementation("com.iroselle:cstats-bukkit:1.7")
     implementation("org.bstats:bstats-bungeecord:1.8")
     implementation("com.iroselle:cstats-bungeecord:1.7")
     implementation("commons-io:commons-io:2.7")

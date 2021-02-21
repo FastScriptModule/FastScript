@@ -21,44 +21,44 @@ class BukkitBootStrap: JavaPlugin() {
         bukkitPlugin.enable()
         bukkitPlugin.reload()
         org.bstats.bukkit.Metrics(this, 9014).also { metrics ->
-            metrics.addCustomChart(org.bstats.bukkit.Metrics.SingleLineChart("Scripts") {
+            metrics.addCustomChart(org.bstats.bukkit.Metrics.SingleLineChart("scripts") {
                 FastScript.instance.scriptManager.scripts.size
             })
-            metrics.addCustomChart(org.bstats.bukkit.Metrics.SingleLineChart("Evaluate and Execute Counts") {
+            metrics.addCustomChart(org.bstats.bukkit.Metrics.SingleLineChart("evaluate_and_execute_counts") {
                 val count = FastScript.instance.scriptManager.operationCount
                 FastScript.instance.scriptManager.operationCount = 0
                 count
             })
-            metrics.addCustomChart(org.bstats.bukkit.Metrics.AdvancedPie("Operation Modes") {
+            metrics.addCustomChart(org.bstats.bukkit.Metrics.AdvancedPie("operation_modes") {
                 mutableMapOf<String, Int>().also {
-                    it["Evaluate"] = FastScript.instance.scriptManager.evaluateCount
+                    it["evaluate"] = FastScript.instance.scriptManager.evaluateCount
                     FastScript.instance.scriptManager.evaluateCount = 0
-                    it["Execute"] = FastScript.instance.scriptManager.executeCount
+                    it["execute"] = FastScript.instance.scriptManager.executeCount
                     FastScript.instance.scriptManager.executeCount = 0
                 }
             })
-            metrics.addCustomChart(org.bstats.bukkit.Metrics.SimplePie("Server Brand") {
+            metrics.addCustomChart(org.bstats.bukkit.Metrics.SimplePie("server_brand") {
                 plugin.server.brand.name
             })
         }
         com.iroselle.cstats.bukkit.Metrics(this).also {  metrics ->
-            metrics.addCustomChart(com.iroselle.cstats.bukkit.Metrics.SingleLineChart("Scripts") {
+            metrics.addCustomChart(com.iroselle.cstats.bukkit.Metrics.SingleLineChart("scripts") {
                 FastScript.instance.scriptManager.scripts.size
             })
-            metrics.addCustomChart(com.iroselle.cstats.bukkit.Metrics.SingleLineChart("Evaluate and Execute Counts") {
+            metrics.addCustomChart(com.iroselle.cstats.bukkit.Metrics.SingleLineChart("evaluate_and_execute_counts") {
                 val count = FastScript.instance.scriptManager.operationCount
                 FastScript.instance.scriptManager.operationCount = 0
                 count
             })
-            metrics.addCustomChart(com.iroselle.cstats.bukkit.Metrics.AdvancedPie("Operation Modes") {
+            metrics.addCustomChart(com.iroselle.cstats.bukkit.Metrics.AdvancedPie("operation_modes") {
                 mutableMapOf<String, Int>().also {
-                    it["Evaluate"] = FastScript.instance.scriptManager.evaluateCount
+                    it["evaluate"] = FastScript.instance.scriptManager.evaluateCount
                     FastScript.instance.scriptManager.evaluateCount = 0
-                    it["Execute"] = FastScript.instance.scriptManager.executeCount
+                    it["execute"] = FastScript.instance.scriptManager.executeCount
                     FastScript.instance.scriptManager.executeCount = 0
                 }
             })
-            metrics.addCustomChart(com.iroselle.cstats.bukkit.Metrics.SimplePie("Server Brand") {
+            metrics.addCustomChart(com.iroselle.cstats.bukkit.Metrics.SimplePie("server_brand") {
                 plugin.server.brand.name
             })
         }

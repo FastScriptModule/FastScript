@@ -67,7 +67,7 @@ class ExpansionCommand: SimpleCommand(arrayOf("expansion")) {
                     return true
                 }
 
-                val displayParents = parents.joinToString(" ")
+                val displayParents = parents.slice(0..parents.size - 2).joinToString(" ")
 
                 val bindScripts = mutableListOf<CustomScript>().also { list -> FastScript.instance.scriptManager.scripts.forEach { if (it.value.texts.keys.contains(expansion.sign)) list.add(it.value) } }
 
@@ -78,7 +78,7 @@ class ExpansionCommand: SimpleCommand(arrayOf("expansion")) {
                 sender.sendMessage("")
                 sender.sendMessage("  §7查看脚本 §f${expansion.name} §7的更多帮助请输入:")
                 sender.sendMessage(TextComponent("    "), TextComponent("§7/$displayParents §fhelp").also {
-                    it.hoverEvent = HoverEvent(HoverEvent.Action.SHOW_TEXT, Text("§7点击自动补全命令: §f$displayParents help"))
+                    it.hoverEvent = HoverEvent(HoverEvent.Action.SHOW_TEXT, Text("§7点击自动补全命令: §f/$displayParents help"))
                     it.clickEvent = ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, "/$displayParents help ")
                 })
                 sender.sendMessage("")

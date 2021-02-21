@@ -12,11 +12,11 @@ import me.scoretwo.utils.sender.GlobalSender
  */
 class TempScript(texts : MutableMap<String, String> = mutableMapOf()): Script(TempScriptDescription(), TempScriptOption(), texts) {
 
-    override fun eval(sign: String, sender: GlobalSender): Any? {
+    override fun eval(sign: String, sender: GlobalSender, vararg args: String): Any? {
         for (expansion in FastScript.instance.expansionManager.expansions) {
             if (expansion.sign != sign)
                 continue
-            return expansion.eval(texts[sign] ?: "", sender)
+            return expansion.eval(texts[sign] ?: "", sender, *args)
         }
         return null
     }

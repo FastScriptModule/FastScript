@@ -27,15 +27,21 @@ abstract class TypeEngineExpansion: FastScriptExpansion() {
         return this
     }
 
-    override fun eval(script: Script, sender: GlobalSender): Any? {
+    override fun eval(script: Script, sender: GlobalSender, vararg args: String): Any? {
         if (!script.texts.keys.contains(sign))
             return null
-        if (sender.isPlayer()) sender.toPlayer().let {
-            engine.put("globalPlayer", it)
-            engine.put("player", plugin.toOriginalPlayer(it!!))
+        if (sender.isPlayer()) {
+            sender.toPlayer().let {
+                engine.put("globalPlayer", it)
+                engine.put("player", plugin.toOriginalPlayer(it!!))
+            }
+        } else {
+            engine.put("globalPlayer", null)
+            engine.put("player", null)
         }
         engine.put("globalSender", sender)
         engine.put("sender", plugin.toOriginalSender(sender))
+        engine.put("args", args)
         return let {
             try {
                 engine.eval(script.texts[sign]).also {
@@ -49,15 +55,21 @@ abstract class TypeEngineExpansion: FastScriptExpansion() {
         }
     }
 
-    override fun eval(text: String, sender: GlobalSender): Any? {
+    override fun eval(text: String, sender: GlobalSender, vararg args: String): Any? {
         if (StringUtils.isBlank(text))
             return null
-        if (sender.isPlayer()) sender.toPlayer().let {
-            engine.put("globalPlayer", it)
-            engine.put("player", plugin.toOriginalPlayer(it!!))
+        if (sender.isPlayer()) {
+            sender.toPlayer().let {
+                engine.put("globalPlayer", it)
+                engine.put("player", plugin.toOriginalPlayer(it!!))
+            }
+        } else {
+            engine.put("globalPlayer", null)
+            engine.put("player", null)
         }
         engine.put("globalSender", sender)
         engine.put("sender", plugin.toOriginalSender(sender))
+        engine.put("args", args)
         return let {
             try {
                 engine.eval(text).also {
@@ -74,7 +86,7 @@ abstract class TypeEngineExpansion: FastScriptExpansion() {
         if (!script.texts.keys.contains(sign))
             return null
         return try {
-            if (engine !is Invocable)
+            if (needEval)
                 eval(script, sender)
 
             val invocable = engine as Invocable
@@ -97,7 +109,7 @@ abstract class TypeEngineExpansion: FastScriptExpansion() {
         if (StringUtils.isBlank(text))
             return null
         return try {
-            if (engine !is Invocable)
+            if (needEval)
                 eval(text, sender)
 
             val invocable = engine as Invocable
