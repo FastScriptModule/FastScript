@@ -3,8 +3,9 @@ package me.scoretwo.fastscript.command.commands
 import me.scoretwo.fastscript.FastScript
 import me.scoretwo.fastscript.api.format.FormatHeader
 import me.scoretwo.fastscript.command.SimpleCommand
+import me.scoretwo.fastscript.languages
 import me.scoretwo.fastscript.sendMessage
-import me.scoretwo.utils.command.SubCommand
+import me.scoretwo.fastscript.setPlaceholder
 import me.scoretwo.utils.command.executor.CommandExecutor
 import me.scoretwo.utils.command.executor.Executors
 import me.scoretwo.utils.sender.GlobalSender
@@ -12,7 +13,7 @@ import net.md_5.bungee.api.chat.ClickEvent
 import net.md_5.bungee.api.chat.HoverEvent
 import net.md_5.bungee.api.chat.TextComponent
 import net.md_5.bungee.api.chat.hover.content.Text
-import org.jetbrains.kotlin.utils.sure
+import org.jetbrains.kotlin.util.capitalizeDecapitalize.capitalizeFirstWord
 
 /**
  * @author Score2
@@ -22,27 +23,28 @@ import org.jetbrains.kotlin.utils.sure
  */
 class ScriptCommand: SimpleCommand(arrayOf("script")) {
 
-    override var description = "操作脚本重载/评估/运行."
+    override var description = languages["COMMAND-NEXUS.COMMANDS.SCRIPT.DESCRIPTION"]
 
     private val runCommand = nextBuilder()
         .alias("execute", "run")
-        .description("执行这个脚本并得到返回值(:s 加在最后不返回消息)")
+        .description(languages["COMMAND-NEXUS.COMMANDS.SCRIPT.EXECUTE.DESCRIPTION"])
         .executor(object : Executors {
             override fun execute(sender: GlobalSender, parents: Array<String>, args: Array<String>): Boolean {
                 val noReturn = if (args.isEmpty()) false else args[args.size - 1] == ":s"
 
                 val script = FastScript.instance.scriptManager.scripts[parents[parents.size - 2]] ?: let {
                     // 似乎不会发生?
-                    sender.sendMessage(FormatHeader.WARN, "没有找到目标脚本 §c${parents[parents.size - 2]}§7! 请检查名称.")
+                    sender.sendMessage(FormatHeader.WARN, languages["COMMAND-NEXUS.COMMANDS.SCRIPT.NOT-FOUND-SCRIPT"].setPlaceholder(
+                        mapOf("script_name" to parents[parents.size - 2])))
                     return true
                 }
                 if (args.isEmpty()) {
-                    sender.sendMessage(FormatHeader.ERROR, "正确用法: /${parents.joinToString(" ")} §f<${script.texts.keys.joinToString("/")}> §7<${script.option.main}> <args...> §8:s")
+                    sender.sendMessage(FormatHeader.ERROR, "${languages["SUBSTANTIVE.USAGE"].capitalizeFirstWord()}: /${parents.joinToString(" ")} §f<${script.texts.keys.joinToString("/")}> §7<${script.option.main}> <args...> §8:s")
                     return true
                 }
                 val sign = args[0]
                 if (!script.texts.keys.contains(sign)) {
-                    sender.sendMessage(FormatHeader.ERROR, "指定的拓展标识 §6$sign §7不正确! 正确用法: /${parents.joinToString(" ")} §f<${script.texts.keys.joinToString("/")}> §7<${script.option.main}> <args...> §8:s")
+                    sender.sendMessage(FormatHeader.ERROR, "${languages["SUBSTANTIVE.USAGE"].capitalizeFirstWord()}: /${parents.joinToString(" ")} §f<${script.texts.keys.joinToString("/")}> §7<${script.option.main}> <args...> §8:s")
                     return true
                 }
 
@@ -59,7 +61,12 @@ class ScriptCommand: SimpleCommand(arrayOf("script")) {
                 }
 
                 if (!noReturn) {
-                    sender.sendMessage(FormatHeader.INFO, "脚本 §b${script.name} §7使用拓展 §6${FastScript.instance.expansionManager.getExpansionBySign(sign)?.name ?: "Unknown"} §7的运行结果: §b${result}")
+                    sender.sendMessage(FormatHeader.INFO, languages["COMMAND-NEXUS.COMMANDS.SCRIPT.EXECUTE.DESCRIPTION"].setPlaceholder(
+                        mapOf(
+                            "script_name" to script.name,
+                            "expansion_name" to (FastScript.instance.expansionManager.getExpansionBySign(sign)?.name ?: "Unknown"),
+                            "result" to result.toString()
+                        )))
                 }
 
                 return true
@@ -80,7 +87,7 @@ class ScriptCommand: SimpleCommand(arrayOf("script")) {
 
     private val evaluateCommand = nextBuilder()
         .alias("evaluate", "eval")
-        .description("评估这个脚本并获得返回值(:s 加在最后不返回消息)")
+        .description(languages["COMMAND-NEXUS.COMMANDS.SCRIPT.EVALUATE.DESCRIPTION"])
         .also { builder ->
             FastScript.instance.expansionManager.expansions.forEach {
                 builder.customCommand(it.sign, arrayOf(), "expansion sign")
@@ -92,16 +99,17 @@ class ScriptCommand: SimpleCommand(arrayOf("script")) {
 
                 val script = FastScript.instance.scriptManager.scripts[parents[parents.size - 2]] ?: let {
                     // 似乎不会发生?
-                    sender.sendMessage(FormatHeader.WARN, "没有找到目标脚本 §c${parents[parents.size - 2]}§7! 请检查名称.")
+                    sender.sendMessage(FormatHeader.WARN, languages["COMMAND-NEXUS.COMMANDS.SCRIPT.NOT-FOUND-SCRIPT"].setPlaceholder(
+                        mapOf("script_name" to parents[parents.size - 2])))
                     return true
                 }
                 if (args.isEmpty()) {
-                    sender.sendMessage(FormatHeader.ERROR, "正确用法: /${parents.joinToString(" ")} §f<${script.texts.keys.joinToString("/")}> §7<args> §8:s")
+                    sender.sendMessage(FormatHeader.ERROR, "${languages["SUBSTANTIVE.USAGE"].capitalizeFirstWord()}: /${parents.joinToString(" ")} §f<${script.texts.keys.joinToString("/")}> §7<args> §8:s")
                     return true
                 }
                 val sign = args[0]
                 if (!script.texts.keys.contains(sign)) {
-                    sender.sendMessage(FormatHeader.ERROR, "指定的拓展标识 §6$sign §7不正确! 正确用法: /${parents.joinToString(" ")} §f<${script.texts.keys.joinToString("/")}>")
+                    sender.sendMessage(FormatHeader.ERROR, "${languages["SUBSTANTIVE.USAGE"].capitalizeFirstWord()}: /${parents.joinToString(" ")} §f<${script.texts.keys.joinToString("/")}>")
                     return true
                 }
                 val args0: Array<String> = when {
@@ -113,7 +121,12 @@ class ScriptCommand: SimpleCommand(arrayOf("script")) {
                 val result = script.eval(sign, sender, *args0)
 
                 if (!noReturn) {
-                    sender.sendMessage(FormatHeader.INFO, "脚本 §b${script.name} §7使用拓展 §6${FastScript.instance.expansionManager.getExpansionBySign(sign)?.name ?: "Unknown"} §7的评估结果: §b${result}")
+                    sender.sendMessage(FormatHeader.INFO, languages["COMMAND-NEXUS.COMMANDS.SCRIPT.EVALUATE.DESCRIPTION"].setPlaceholder(
+                        mapOf(
+                            "script_name" to script.name,
+                            "expansion_name" to (FastScript.instance.expansionManager.getExpansionBySign(sign)?.name ?: "Unknown"),
+                            "result" to result.toString()
+                        )))
                 }
 
                 return true
@@ -130,17 +143,18 @@ class ScriptCommand: SimpleCommand(arrayOf("script")) {
 
     private val reloadCommand = nextBuilder()
         .alias("reload")
-        .description("重新载入这个脚本")
+        .description(languages["COMMAND-NEXUS.COMMANDS.SCRIPT.RELOAD.DESCRIPTION"])
         .execute(object : CommandExecutor {
             override fun execute(sender: GlobalSender, parents: Array<String>, args: Array<String>): Boolean {
                 val script = FastScript.instance.scriptManager.scripts[parents[parents.size - 2]] ?: let {
                     // 似乎不会发生?
-                    sender.sendMessage(FormatHeader.WARN, "没有找到目标脚本 §c${parents[parents.size - 2]}§7! 请检查名称.")
+                    sender.sendMessage(FormatHeader.WARN, languages["COMMAND-NEXUS.COMMANDS.SCRIPT.NOT-FOUND-SCRIPT"].setPlaceholder(
+                        mapOf("script_name" to parents[parents.size - 2])))
                     return true
                 }
 
                 script.reload()
-                sender.sendMessage(FormatHeader.INFO, "脚本 §b${script.name} §7的配置文件重新载入完成.")
+                sender.sendMessage(FormatHeader.INFO, languages["COMMAND-NEXUS.COMMANDS.SCRIPT.RELOAD.RELOADED-SCRIPT"])
                 return true
             }
         })
@@ -148,41 +162,53 @@ class ScriptCommand: SimpleCommand(arrayOf("script")) {
 
     private val infoCommand = nextBuilder()
         .alias("info")
-        .description("显示有关这个脚本的信息")
+        .description(languages["COMMAND-NEXUS.COMMANDS.SCRIPT.INFO.DESCRIPTION"])
         .execute(object : CommandExecutor {
             override fun execute(sender: GlobalSender, parents: Array<String>, args: Array<String>): Boolean {
                 val script = FastScript.instance.scriptManager.scripts[parents[parents.size - 2]] ?: let {
                     // 似乎不会发生?
-                    sender.sendMessage(FormatHeader.WARN, "没有找到目标脚本 §c${parents[parents.size - 2]}§7! 请检查名称.")
+                    sender.sendMessage(FormatHeader.WARN, languages["COMMAND-NEXUS.COMMANDS.SCRIPT.NOT-FOUND-SCRIPT"].setPlaceholder(
+                        mapOf("script_name" to parents[parents.size - 2])))
                     return true
                 }
 
                 val displayParents = parents.slice(0..parents.size - 2).joinToString(" ")
 
-                sender.sendMessage(FormatHeader.INFO, "脚本 §b${script.name} §7的相关信息:")
+                sender.sendMessage(FormatHeader.INFO, languages["COMMAND-NEXUS.COMMANDS.SCRIPT.INFO.TITLE"].setPlaceholder(
+                    mapOf("script_name" to script.name)))
+
+                val rawList = mutableListOf<String>()
+                val originList = languages.getList("COMMAND-NEXUS.COMMANDS.SCRIPT.INFO.TITLE")
+                fun decide(placeholder: String, replacer: String) = originList.forEach { if (it.contains(placeholder)) { rawList.add(it.setPlaceholder(mapOf(placeholder to replacer))) } }
+
                 script.description.version?.also {
-                    sender.sendMessage("  §3§l* §7版本: §2$it")
+                    decide("script_version", it)
                 }
                 script.description.authors.let {
                     if (it.isEmpty())
                         return@let
-                    sender.sendMessage("  §3§l* §7编写者: §3${it.joinToString("§7, §3")}")
+                    decide("script_authors", it.joinToString(", "))
                 }
                 script.description.description?.also {
-                    sender.sendMessage("  §3§l* §7描述: §f$it")
+                    decide("script_description", it)
                 }
-                sender.sendMessage("  §3§l* §7主函数: §a${script.description.main}")
+                decide("script_main", script.description.main)
                 script.bindExpansions().let { expansions ->
                     if (expansions.isEmpty())
                         return@let
                     val signs = mutableListOf<String>().also { signs -> expansions.forEach { expansion -> signs.add(expansion.sign) } }
 
-                    sender.sendMessage("  §3§l* §7拓展: §6${signs.joinToString("§7, §6")}")
+                    decide("script_bind_expansions", signs.joinToString(", "))
                 }
-                sender.sendMessage("")
-                sender.sendMessage("  §7查看脚本 §f${script.name} §7的更多帮助请输入:")
+                rawList.add("")
+                decide("script_name", script.name)
+                rawList.forEach {
+                    sender.sendMessage(it)
+                }
                 sender.sendMessage(TextComponent("    "), TextComponent("§7/$displayParents §fhelp").also {
-                    it.hoverEvent = HoverEvent(HoverEvent.Action.SHOW_TEXT, Text("§7点击自动补全命令: §f$displayParents help"))
+                    it.hoverEvent = HoverEvent(HoverEvent.Action.SHOW_TEXT, Text(languages["COMMAND-NEXUS.HELPER.CLICK-INSERT-COMMAND"].setPlaceholder(
+                        mapOf("command" to "$displayParents help")
+                    )))
                     it.clickEvent = ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, "/$displayParents help ")
                 })
                 sender.sendMessage("")
@@ -197,7 +223,7 @@ class ScriptCommand: SimpleCommand(arrayOf("script")) {
         FastScript.instance.scriptManager.scripts.forEach {
             val subCommand = nextBuilder()
                 .alias(it.value.description.name)
-                .description("一个自定义脚本")
+                .description(languages["COMMAND-NEXUS.COMMANDS.SCRIPT.SUB-SCRIPT-DESCRIPTION"])
                 .execute(object : CommandExecutor {
                     override fun execute(sender: GlobalSender, parents: Array<String>, args: Array<String>): Boolean {
                         if (args.isEmpty()) {

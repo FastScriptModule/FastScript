@@ -3,7 +3,7 @@ package me.scoretwo.fastscript.api.language
 import net.md_5.bungee.api.ChatColor
 
 class LanguageManager {
-    val version = 1
+    val version = "1"
     val defaultLanguage = Language()
     val languages = mutableMapOf<String, Language>().also {
         it["en_US"] = defaultLanguage

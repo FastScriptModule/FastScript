@@ -157,8 +157,8 @@ fun GlobalSender.sendMessage(text: String, placeholders: Map<String, String>) {
 
 fun String.setPlaceholder(player: GlobalPlayer) = FastScript.instance.setPlaceholder(player, this)
 
-fun String.setPlaceholder(placeholders: Map<String, String>): String {
-    var rawText = this
+fun String.setPlaceholder(placeholders: Map<String, String>, player: GlobalPlayer? = null): String {
+    var rawText = if (player == null) this else setPlaceholder(player)
     placeholders.forEach {
         rawText = rawText.replace("{${it.key}}", it.value)
     }

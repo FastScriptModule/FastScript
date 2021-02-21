@@ -53,14 +53,14 @@ class FSCommandNexus: CommandNexus(FastScript.instance.plugin, arrayOf("FastScri
 
                 val displayArgs =
                     if (subCommand.subCommands.isEmpty() && subCommand.customCommands.isNotEmpty())
-                        "§7<${languages["COMMAND-NEXUS.SUBSTANTIVE.ARGS"]}...> "
+                        "§7<${languages["SUBSTANTIVE.ARGS"]}...> "
                     else if (subCommand.subCommands.isNotEmpty()) {
                         subCommand.subCommands.joinToString("/", "§7<", "§7> ", 5, "§8...") { it.alias[0] }
                     } else
                         ""
 
                 texts.add(arrayOf(TextComponent("§7/$displayParents §f$displayAlia$displayAlias §7$displayArgs§8§l- §7${subCommand.description}").also {
-                    it.hoverEvent = HoverEvent(HoverEvent.Action.SHOW_TEXT, Text(languages["COMMAND-NEXUS.HELP-GENERATION.CLICK-INSERT-COMMAND"].setPlaceholder(
+                    it.hoverEvent = HoverEvent(HoverEvent.Action.SHOW_TEXT, Text(languages["COMMAND-NEXUS.HELPER.CLICK-INSERT-COMMAND"].setPlaceholder(
                         mapOf("command" to "$displayParents $displayAlia"))))
                     it.clickEvent = ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, "/$displayParents $displayAlia ")
                 }))
@@ -70,15 +70,15 @@ class FSCommandNexus: CommandNexus(FastScript.instance.plugin, arrayOf("FastScri
                 val displayAlia = it.key
                 val displayArgs = it.value.first?.joinToString("/", "§7<", "§7> ", 5, "§8...") ?: ""
                 texts.add(arrayOf(TextComponent("§7/$displayParents §f$displayAlia §7$displayArgs§8§l- §7${it.value.second}").also {
-                    it.hoverEvent = HoverEvent(HoverEvent.Action.SHOW_TEXT, Text(languages["COMMAND-NEXUS.HELP-GENERATION.CLICK-INSERT-COMMAND"].setPlaceholder(
+                    it.hoverEvent = HoverEvent(HoverEvent.Action.SHOW_TEXT, Text(languages["COMMAND-NEXUS.HELPER.CLICK-INSERT-COMMAND"].setPlaceholder(
                         mapOf("command" to "$displayParents $displayAlia"))))
                     it.clickEvent = ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, "/$displayParents $displayAlia ")
                 }))
             }
 
             if (upperModule.size == texts.size) {
-                texts.add(arrayOf(TextComponent(languages["COMMAND-NEXUS.HELP-GENERATION.NOT-FOUND-COMMANDS"]).also {
-                    it.hoverEvent = HoverEvent(HoverEvent.Action.SHOW_TEXT, Text(languages["COMMAND-NEXUS.HELP-GENERATION.NOT-FOUND-COMMANDS"]))
+                texts.add(arrayOf(TextComponent(languages["COMMAND-NEXUS.HELPER.NOT-FOUND-COMMANDS"]).also {
+                    it.hoverEvent = HoverEvent(HoverEvent.Action.SHOW_TEXT, Text(languages["COMMAND-NEXUS.HELPER.NOT-FOUND-COMMANDS"]))
                 }))
             }
 
@@ -91,7 +91,7 @@ class FSCommandNexus: CommandNexus(FastScript.instance.plugin, arrayOf("FastScri
             arrayOf(
                 TextComponent(" §3${plugin.description.name} §7v${plugin.description.version}").also {
                     it.hoverEvent = HoverEvent(
-                        HoverEvent.Action.SHOW_TEXT, Text(languages["COMMAND-NEXUS.HELP-GENERATION.CLICK-TO-GO-URL"].setPlaceholder(
+                        HoverEvent.Action.SHOW_TEXT, Text(languages["COMMAND-NEXUS.HELPER.CLICK-TO-GO-URL"].setPlaceholder(
                             mapOf("url" to "https://github.com/FastScriptModule/FastScript")))
                     )
                     it.clickEvent = ClickEvent(ClickEvent.Action.OPEN_URL, "https://github.com/FastScriptModule/FastScript")

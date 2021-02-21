@@ -1,11 +1,9 @@
 package me.scoretwo.fastscript.expansion.typeengine
 
-import me.scoretwo.fastscript.FastScript
+import me.scoretwo.fastscript.*
 import me.scoretwo.fastscript.api.expansion.FastScriptExpansion
 import me.scoretwo.fastscript.api.format.FormatHeader
 import me.scoretwo.fastscript.api.script.Script
-import me.scoretwo.fastscript.plugin
-import me.scoretwo.fastscript.sendMessage
 import me.scoretwo.utils.sender.GlobalSender
 import org.apache.commons.lang.StringUtils
 import javax.script.Invocable
@@ -48,8 +46,9 @@ abstract class TypeEngineExpansion: FastScriptExpansion() {
                     if (script.texts[sign]?.contains(it?.toString() ?: "") == true) return@let "EVALUATED"
                 }
             } catch (e: ScriptException) {
-                plugin.server.console.sendMessage(FormatHeader.ERROR,"脚本 §c${script.description.name} §7评估时出现错误, 请检查脚本格式.")
-                e.printStackTrace()
+                plugin.server.console.sendMessage(FormatHeader.ERROR, languages["EXPANSION.TYPE-ENGINE.EVALUATE-SCRIPT-ERROR"].setPlaceholder(
+                    mapOf("script_name" to script.name))
+                )
                 null
             }
         }
@@ -76,7 +75,7 @@ abstract class TypeEngineExpansion: FastScriptExpansion() {
                     if (text.contains(it?.toString() ?: "")) return@let "EVALUATED"
                 }
             } catch (e: ScriptException) {
-                plugin.server.console.sendMessage(FormatHeader.ERROR,"临时脚本评估时出现错误, 请检查脚本格式.")
+                plugin.server.console.sendMessage(FormatHeader.ERROR, languages["EXPANSION.TYPE-ENGINE.EVALUATE-TEMP-SCRIPT-ERROR"])
                 null
             }
         }
@@ -93,13 +92,23 @@ abstract class TypeEngineExpansion: FastScriptExpansion() {
 
             invocable.invokeFunction(main, *args)
         } catch (e: ScriptException) {
-            plugin.server.console.sendMessage(FormatHeader.ERROR, "脚本 §c${script.description.name} §7执行函数 §8$main §7时发生错误.")
+            plugin.server.console.sendMessage(FormatHeader.ERROR, languages["EXPANSION.TYPE-ENGINE.EXECUTE-SCRIPT-ERROR"].setPlaceholder(
+                mapOf(
+                    "script_name" to script.name,
+                    "execute_main" to main
+                ))
+            )
             null
         } catch (e: NoSuchMethodException) {
             if (main == "init") {
                 null
             } else {
-                plugin.server.console.sendMessage(FormatHeader.ERROR, "临时脚本执行函数 §8$main §7时发生错误, 函数不存在!")
+                plugin.server.console.sendMessage(FormatHeader.ERROR, languages["EXPANSION.TYPE-ENGINE.EXECUTE-SCRIPT-FUNCTION-NOT-FOUND-ERROR"].setPlaceholder(
+                    mapOf(
+                        "script_name" to script.name,
+                        "execute_main" to main
+                    ))
+                )
                 null
             }
         }
@@ -116,13 +125,17 @@ abstract class TypeEngineExpansion: FastScriptExpansion() {
 
             invocable.invokeFunction(main, *args)
         } catch (e: ScriptException) {
-            plugin.server.console.sendMessage(FormatHeader.ERROR, "临时脚本执行函数 §8$main §7时发生错误.")
+            plugin.server.console.sendMessage(FormatHeader.ERROR, languages["EXPANSION.TYPE-ENGINE.EXECUTE-TEMP-SCRIPT-ERROR"].setPlaceholder(
+                mapOf("execute_main" to main))
+            )
             null
         } catch (e: NoSuchMethodException) {
             if (main == "init") {
                 null
             } else {
-                plugin.server.console.sendMessage(FormatHeader.ERROR, "临时脚本执行函数 §8$main §7时发生错误, 函数不存在!")
+                plugin.server.console.sendMessage(FormatHeader.ERROR, languages["EXPANSION.TYPE-ENGINE.EXECUTE-TEMP-SCRIPT-FUNCTION-NOT-FOUND-ERROR"].setPlaceholder(
+                    mapOf("execute_main" to main))
+                )
                 null
             }
         }

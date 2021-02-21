@@ -4,7 +4,9 @@ import me.scoretwo.fastscript.FastScript
 import me.scoretwo.fastscript.api.format.FormatHeader
 import me.scoretwo.fastscript.api.script.custom.CustomScript
 import me.scoretwo.fastscript.command.SimpleCommand
+import me.scoretwo.fastscript.languages
 import me.scoretwo.fastscript.sendMessage
+import me.scoretwo.fastscript.setPlaceholder
 import me.scoretwo.utils.command.executor.CommandExecutor
 import me.scoretwo.utils.command.executor.Executors
 import me.scoretwo.utils.sender.GlobalSender
@@ -12,6 +14,8 @@ import net.md_5.bungee.api.chat.ClickEvent
 import net.md_5.bungee.api.chat.HoverEvent
 import net.md_5.bungee.api.chat.TextComponent
 import net.md_5.bungee.api.chat.hover.content.Text
+import org.apache.commons.lang.StringUtils
+import org.jetbrains.kotlin.util.capitalizeDecapitalize.capitalizeFirstWord
 
 /**
  * @author Score2
@@ -21,22 +25,26 @@ import net.md_5.bungee.api.chat.hover.content.Text
  */
 class ExpansionCommand: SimpleCommand(arrayOf("expansion")) {
 
-    override var description = "有关拓展的设置."
+    override var description = languages["COMMAND-NEXUS.COMMANDS.EXPANSION.DESCRIPTION"]
 
     private val evaluateCommand = nextBuilder()
         .alias("evaluate", "eval")
-        .description("评估指定内容获得返回值(:s 加在最后不返回消息)")
+        .description(languages["COMMAND-NEXUS.COMMANDS.EXPANSION.EVALUATE.DESCRIPTION"])
         .executor(object : Executors {
             override fun execute(sender: GlobalSender, parents: Array<String>, args: Array<String>): Boolean {
                 if (args.isEmpty()) {
-                    sender.sendMessage(FormatHeader.ERROR, "正确用法: /${parents.joinToString(" ")} §f<text...> §8:s")
+                    sender.sendMessage(FormatHeader.ERROR, "${languages["SUBSTANTIVE.USAGE"].capitalizeFirstWord()}: /${parents.joinToString(" ")} §f<text...> §8:s")
                     return true
                 }
                 val noReturn = if (args.isEmpty()) false else args[args.size - 1] == ":s"
 
                 val expansion = FastScript.instance.expansionManager.getExpansionByName(parents[parents.size - 2]) ?: FastScript.instance.expansionManager.getExpansionBySign(parents[parents.size - 2]) ?: let {
-                    sender.sendMessage(FormatHeader.WARN, "找不到拓展名称或标识 §c${parents[parents.size - 2]}§7! 请检查名称.")
-                    sender.sendMessage(FormatHeader.INFO, "目前可用的拓展有: §6${FastScript.instance.expansionManager.expansions.joinToString(", ") { it.name }}")
+                    sender.sendMessage(FormatHeader.WARN, languages["COMMAND-NEXUS.COMMANDS.EXPANSION.NOT-FOUND-NAME-OR-SIGN"].setPlaceholder(
+                        mapOf("expansion_name" to parents[parents.size - 2])
+                    ))
+                    sender.sendMessage(FormatHeader.INFO, languages["COMMAND-NEXUS.COMMANDS.EXPANSION.LOADED-EXPANSIONS"].setPlaceholder(
+                        mapOf("expansions" to FastScript.instance.expansionManager.expansions.joinToString(", ") { it.name })
+                    ))
                     return true
                 }
 
@@ -45,7 +53,12 @@ class ExpansionCommand: SimpleCommand(arrayOf("expansion")) {
                 val result = expansion.eval(text, sender)
 
                 if (!noReturn) {
-                    sender.sendMessage(FormatHeader.INFO, "使用拓展 §6${expansion.name} §7评估该内容的结果: ${result.toString()}")
+                    sender.sendMessage(FormatHeader.INFO, languages["COMMAND-NEXUS.COMMANDS.EXPANSION.EVALUATE.EVALUATE-RESULT"].setPlaceholder(
+                        mapOf(
+                            "expansion_name" to expansion.name,
+                            "result" to result.toString()
+                        )
+                    ))
                 }
 
                 return true
@@ -58,12 +71,16 @@ class ExpansionCommand: SimpleCommand(arrayOf("expansion")) {
 
     private val infoCommand = nextBuilder()
         .alias("info")
-        .description("显示有关这个脚本的信息")
+        .description(languages["COMMAND-NEXUS.COMMANDS.EXPANSION.INFO.DESCRIPTION"])
         .execute(object : CommandExecutor {
             override fun execute(sender: GlobalSender, parents: Array<String>, args: Array<String>): Boolean {
                 val expansion = FastScript.instance.expansionManager.getExpansionByName(parents[parents.size - 2]) ?: FastScript.instance.expansionManager.getExpansionBySign(parents[parents.size - 2]) ?: let {
-                    sender.sendMessage(FormatHeader.WARN, "找不到拓展名称或标识 §c${parents[parents.size - 2]}§7! 请检查名称.")
-                    sender.sendMessage(FormatHeader.INFO, "目前可用的拓展有: §6${FastScript.instance.expansionManager.expansions.joinToString(", ") { it.name }}")
+                    sender.sendMessage(FormatHeader.WARN, languages["COMMAND-NEXUS.COMMANDS.EXPANSION.NOT-FOUND-NAME-OR-SIGN"].setPlaceholder(
+                        mapOf("expansion_name" to parents[parents.size - 2])
+                    ))
+                    sender.sendMessage(FormatHeader.INFO, languages["COMMAND-NEXUS.COMMANDS.EXPANSION.LOADED-EXPANSIONS"].setPlaceholder(
+                        mapOf("expansions" to FastScript.instance.expansionManager.expansions.joinToString(", ") { it.name })
+                    ))
                     return true
                 }
 
@@ -71,14 +88,20 @@ class ExpansionCommand: SimpleCommand(arrayOf("expansion")) {
 
                 val bindScripts = mutableListOf<CustomScript>().also { list -> FastScript.instance.scriptManager.scripts.forEach { if (it.value.texts.keys.contains(expansion.sign)) list.add(it.value) } }
 
-                sender.sendMessage(FormatHeader.INFO, "拓展 §6${expansion.name} §7的相关信息:")
-                sender.sendMessage("  §3§l* §7标识: §a${expansion.sign}")
-                sender.sendMessage("  §3§l* §7文件后缀: §a${expansion.fileSuffix}")
-                sender.sendMessage("  §3§l* §7绑定的脚本: §f${bindScripts.joinToString { it.name }}")
-                sender.sendMessage("")
-                sender.sendMessage("  §7查看脚本 §f${expansion.name} §7的更多帮助请输入:")
+                sender.sendMessage(FormatHeader.INFO, languages["COMMAND-NEXUS.COMMANDS.EXPANSION.INFO.TITLE"].setPlaceholder(
+                    mapOf("expansion_name" to expansion.name)))
+                languages.getList("COMMAND-NEXUS.COMMANDS.EXPANSION.INFO.TEXTS").forEach {
+                    sender.sendMessage(it.setPlaceholder(mapOf(
+                        "expansion_name" to expansion.name,
+                        "expansion_sign" to expansion.sign,
+                        "expansion_file_suffix" to expansion.fileSuffix,
+                        "expansion_bind_scripts" to bindScripts.joinToString { it.name }
+                    )))
+                }
                 sender.sendMessage(TextComponent("    "), TextComponent("§7/$displayParents §fhelp").also {
-                    it.hoverEvent = HoverEvent(HoverEvent.Action.SHOW_TEXT, Text("§7点击自动补全命令: §f/$displayParents help"))
+                    it.hoverEvent = HoverEvent(HoverEvent.Action.SHOW_TEXT, Text(languages["COMMAND-NEXUS.HELPER.CLICK-INSERT-COMMAND"].setPlaceholder(
+                        mapOf("command" to "$displayParents help")
+                    )))
                     it.clickEvent = ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, "/$displayParents help ")
                 })
                 sender.sendMessage("")
@@ -93,7 +116,7 @@ class ExpansionCommand: SimpleCommand(arrayOf("expansion")) {
         FastScript.instance.expansionManager.expansions.forEach {
             val subCommand = nextBuilder()
                 .alias(it.name.toLowerCase(), it.sign.toLowerCase())
-                .description("有关 ${it.name} 的命令")
+                .description(languages["COMMAND-NEXUS.COMMANDS.EXPANSION.SUB-EXPANSION-DESCRIPTION"].setPlaceholder(mapOf("expansion_name" to it.name)))
                 .execute(object : CommandExecutor {
                     override fun execute(sender: GlobalSender, parents: Array<String>, args: Array<String>): Boolean {
                         if (args.isEmpty()) {

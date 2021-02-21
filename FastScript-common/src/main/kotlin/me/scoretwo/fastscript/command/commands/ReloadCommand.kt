@@ -4,6 +4,7 @@ import me.scoretwo.fastscript.sendMessage
 import me.scoretwo.fastscript.FastScript
 import me.scoretwo.fastscript.api.format.FormatHeader
 import me.scoretwo.fastscript.command.SimpleCommand
+import me.scoretwo.fastscript.languages
 import me.scoretwo.utils.sender.GlobalSender
 
 /**
@@ -14,13 +15,13 @@ import me.scoretwo.utils.sender.GlobalSender
  */
 class ReloadCommand: SimpleCommand(arrayOf("reload")) {
 
-    override var description = "重新载入配置文件或设置."
+    override var description = languages["COMMAND-NEXUS.COMMANDS.RELOAD.DESCRIPTION"]
 
     override var customCommands: MutableMap<String, Pair<Array<String>?, String>> = mutableMapOf(
-        "all" to Pair(null, "重新载入所有设置."),
-        "config" to Pair(null, "重新载入配置文件."),
-        "script" to Pair(null, "重新载入脚本设置."),
-        "plugin" to Pair(null, "重新载入插件设置."),
+        "all" to Pair(null, languages["COMMAND-NEXUS.COMMANDS.RELOAD.MODE.ALL"]),
+        "config" to Pair(null, languages["COMMAND-NEXUS.COMMANDS.RELOAD.MODE.CONFIG"]),
+        "script" to Pair(null, languages["COMMAND-NEXUS.COMMANDS.RELOAD.MODE.SCRIPT"]),
+        "plugin" to Pair(null, languages["COMMAND-NEXUS.COMMANDS.RELOAD.MODE.PLUGIN"]),
     )
 
     override fun execute(sender: GlobalSender, parents: Array<String>, args: Array<String>): Boolean {
@@ -31,14 +32,14 @@ class ReloadCommand: SimpleCommand(arrayOf("reload")) {
 
         if (mode == "all") {
             FastScript.instance.reloadAll()
-            sender.sendMessage(FormatHeader.INFO, "成功载入所有设置.")
+            sender.sendMessage(FormatHeader.INFO, languages["COMMAND-NEXUS.COMMANDS.RELOAD.LOADED-ALL"])
             return true
         }
         FastScript.instance.reload(mode)
         when (mode) {
-            "config" -> sender.sendMessage(FormatHeader.INFO, "成功载入配置文件.")
-            "script" -> sender.sendMessage(FormatHeader.INFO, "成功载入脚本设置.")
-            "plugin" -> sender.sendMessage(FormatHeader.INFO, "成功载入插件设置.")
+            "config" -> sender.sendMessage(FormatHeader.INFO, languages["COMMAND-NEXUS.COMMANDS.RELOAD.LOADED-CONFIG"])
+            "script" -> sender.sendMessage(FormatHeader.INFO, languages["COMMAND-NEXUS.COMMANDS.RELOAD.LOADED-SCRIPT"])
+            "plugin" -> sender.sendMessage(FormatHeader.INFO, languages["COMMAND-NEXUS.COMMANDS.RELOAD.LOADED-PLUGIN"])
         }
 
         return true

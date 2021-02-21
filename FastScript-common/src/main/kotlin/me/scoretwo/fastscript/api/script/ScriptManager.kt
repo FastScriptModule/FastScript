@@ -1,6 +1,6 @@
 package me.scoretwo.fastscript.api.script
 
-import me.scoretwo.fastscript.FastScript
+import me.scoretwo.fastscript.*
 import me.scoretwo.fastscript.api.format.FormatHeader
 import me.scoretwo.fastscript.api.script.custom.ConfigScriptOption
 import me.scoretwo.fastscript.api.script.custom.CustomScript
@@ -8,9 +8,6 @@ import me.scoretwo.fastscript.api.script.temp.TempScript
 import me.scoretwo.fastscript.api.utils.ExecType
 import me.scoretwo.fastscript.api.utils.process.ProcessResult
 import me.scoretwo.fastscript.api.utils.process.ProcessResultType
-import me.scoretwo.fastscript.plugin
-import me.scoretwo.fastscript.sendMessage
-import me.scoretwo.fastscript.settings
 import me.scoretwo.utils.bukkit.configuration.yaml.ConfigurationSection
 import me.scoretwo.utils.bukkit.configuration.yaml.patchs.getLowerCaseNode
 import me.scoretwo.utils.sender.GlobalSender
@@ -50,7 +47,7 @@ class ScriptManager {
         val scriptName = scriptFile.name.substringBeforeLast(".")
         scriptFile.parentFile.listFiles()?.forEach {
             if (it.name == "$scriptName.yml") {
-                return Pair(null, ProcessResult(ProcessResultType.OTHER, "script option file exists!"))
+                return Pair(null, ProcessResult(ProcessResultType.OTHER, languages["SCRIPT-MANAGER.PROCESS-RESULT.SCRIPT-OPTION-FILE-NOT-EXISTS"]))
             }
         }
 
@@ -61,7 +58,7 @@ class ScriptManager {
 
                 return@let scriptFile
             }
-            return Pair(null, ProcessResult(ProcessResultType.FAILED, "The script file extension is not supported!"))
+            return Pair(null, ProcessResult(ProcessResultType.FAILED, languages["SCRIPT-MANAGER.PROCESS-RESULT.SCRIPT-TYPE-NOT-SUPPORTED"]))
         }
         val script = CustomScript(
             object : ScriptDescription {
@@ -84,7 +81,7 @@ class ScriptManager {
      * 仅接受文件后缀为yml的文件或者可用的脚本文件夹才能被处理
      */
     private fun loadScript(file: File): Pair<CustomScript?, ProcessResult> {
-        if (file.name.contains(" ")) return Pair(null, ProcessResult(ProcessResultType.FAILED, "File name cannot contain spaces!"))
+        if (file.name.contains(" ")) return Pair(null, ProcessResult(ProcessResultType.FAILED, languages["SCRIPT-MANAGER.PROCESS-RESULT.SCRIPT-FILE-NAME-CANNOT-SPACES"]))
         if (file.isDirectory) {
             return loadFromFolderScript(file)
         }
@@ -173,7 +170,9 @@ class ScriptManager {
                     total++
                     if (it.second.type == ProcessResultType.FAILED || it.first == null) {
                         fail++
-                        plugin.server.console.sendMessage(FormatHeader.ERROR, "An error occurred while loading script ${file.name}, reason: §8${it.second.message}")
+                        plugin.server.console.sendMessage(FormatHeader.ERROR, languages["SCRIPT-MANAGER.SCRIPT-FAILED-LOAD-BY-PROCESS-RESULT"].setPlaceholder(
+                            mapOf("file_name" to file.name, "reason" to it.second.message)
+                        ))
                     }
                     else if (it.second.type == ProcessResultType.SUCCESS)
                         success++
