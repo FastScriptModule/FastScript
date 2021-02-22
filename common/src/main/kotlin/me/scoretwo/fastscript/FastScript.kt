@@ -67,7 +67,7 @@ class FastScript(val plugin: ScriptPlugin) {
     }
 
     fun reloadLanguage() {
-        languages.current = languages.languages[settings.getString("Options.Language")] ?: languages.defaultLanguage.also {
+        languages.current = languages.languages[settings.getString("Options.Language")]?.reload() ?: languages.defaultLanguage.reload().also {
             plugin.server.console.sendMessage(FormatHeader.ERROR, "Language loading failed. The file may not exist. The default language will be used: ${it.name}")
         }
     }

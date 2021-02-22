@@ -4,7 +4,7 @@ import net.md_5.bungee.api.ChatColor
 
 class LanguageManager {
     val version = "1"
-    val defaultLanguage = Language()
+    val defaultLanguage = Language(version).reload()
     val languages = mutableMapOf<String, Language>().also {
         it["en_US"] = defaultLanguage
     }

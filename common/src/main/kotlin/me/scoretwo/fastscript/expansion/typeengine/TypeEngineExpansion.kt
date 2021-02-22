@@ -47,8 +47,11 @@ abstract class TypeEngineExpansion: FastScriptExpansion() {
                 }
             } catch (e: ScriptException) {
                 plugin.server.console.sendMessage(FormatHeader.ERROR, languages["EXPANSION.TYPE-ENGINE.EVALUATE-SCRIPT-ERROR"].setPlaceholder(
-                    mapOf("script_name" to script.name))
-                )
+                    mapOf(
+                        "script_name" to script.name,
+                        "reason" to e.stackTraceToString()
+                    )
+                ))
                 null
             }
         }
@@ -75,7 +78,9 @@ abstract class TypeEngineExpansion: FastScriptExpansion() {
                     if (text.contains(it?.toString() ?: "")) return@let "EVALUATED"
                 }
             } catch (e: ScriptException) {
-                plugin.server.console.sendMessage(FormatHeader.ERROR, languages["EXPANSION.TYPE-ENGINE.EVALUATE-TEMP-SCRIPT-ERROR"])
+                plugin.server.console.sendMessage(FormatHeader.ERROR, languages["EXPANSION.TYPE-ENGINE.EVALUATE-TEMP-SCRIPT-ERROR"].setPlaceholder(
+                    mapOf("reason" to e.stackTraceToString())
+                ))
                 null
             }
         }
@@ -95,7 +100,8 @@ abstract class TypeEngineExpansion: FastScriptExpansion() {
             plugin.server.console.sendMessage(FormatHeader.ERROR, languages["EXPANSION.TYPE-ENGINE.EXECUTE-SCRIPT-ERROR"].setPlaceholder(
                 mapOf(
                     "script_name" to script.name,
-                    "execute_main" to main
+                    "execute_main" to main,
+                    "reason" to e.stackTraceToString()
                 ))
             )
             null
@@ -126,7 +132,10 @@ abstract class TypeEngineExpansion: FastScriptExpansion() {
             invocable.invokeFunction(main, *args)
         } catch (e: ScriptException) {
             plugin.server.console.sendMessage(FormatHeader.ERROR, languages["EXPANSION.TYPE-ENGINE.EXECUTE-TEMP-SCRIPT-ERROR"].setPlaceholder(
-                mapOf("execute_main" to main))
+                mapOf(
+                    "execute_main" to main,
+                    "reason" to e.stackTraceToString()
+                ))
             )
             null
         } catch (e: NoSuchMethodException) {

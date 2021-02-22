@@ -51,7 +51,13 @@ class MergeBuilder {
         return MergeBuilder(nodes, addNodes)
     }
 }
-include("FastScript-common")
+inline fun setupSubproject(name: String, block: ProjectDescriptor.() -> Unit) {
+    include(name)
+    project(":$name").apply(block)
+}
+setupSubproject("FastScript-common") {
+    projectDir = file("common")
+}
 
 MergeBuilder("version-control").also {
     it.add("FastScript-bukkit")

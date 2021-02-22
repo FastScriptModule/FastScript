@@ -47,7 +47,7 @@ class ScriptManager {
         val scriptName = scriptFile.name.substringBeforeLast(".")
         scriptFile.parentFile.listFiles()?.forEach {
             if (it.name == "$scriptName.yml") {
-                return Pair(null, ProcessResult(ProcessResultType.OTHER, languages["SCRIPT-MANAGER.PROCESS-RESULT.SCRIPT-OPTION-FILE-NOT-EXISTS"]))
+                return Pair(null, ProcessResult(ProcessResultType.OTHER, languages["SCRIPT.PROCESS-RESULT.SCRIPT-OPTION-FILE-NOT-EXISTS"]))
             }
         }
 
@@ -58,7 +58,7 @@ class ScriptManager {
 
                 return@let scriptFile
             }
-            return Pair(null, ProcessResult(ProcessResultType.FAILED, languages["SCRIPT-MANAGER.PROCESS-RESULT.SCRIPT-TYPE-NOT-SUPPORTED"]))
+            return Pair(null, ProcessResult(ProcessResultType.FAILED, languages["SCRIPT.PROCESS-RESULT.SCRIPT-TYPE-NOT-SUPPORTED"]))
         }
         val script = CustomScript(
             object : ScriptDescription {
@@ -81,7 +81,7 @@ class ScriptManager {
      * 仅接受文件后缀为yml的文件或者可用的脚本文件夹才能被处理
      */
     private fun loadScript(file: File): Pair<CustomScript?, ProcessResult> {
-        if (file.name.contains(" ")) return Pair(null, ProcessResult(ProcessResultType.FAILED, languages["SCRIPT-MANAGER.PROCESS-RESULT.SCRIPT-FILE-NAME-CANNOT-SPACES"]))
+        if (file.name.contains(" ")) return Pair(null, ProcessResult(ProcessResultType.FAILED, languages["SCRIPT.PROCESS-RESULT.SCRIPT-FILE-NAME-CANNOT-SPACES"]))
         if (file.isDirectory) {
             return loadFromFolderScript(file)
         }
@@ -170,7 +170,7 @@ class ScriptManager {
                     total++
                     if (it.second.type == ProcessResultType.FAILED || it.first == null) {
                         fail++
-                        plugin.server.console.sendMessage(FormatHeader.ERROR, languages["SCRIPT-MANAGER.SCRIPT-FAILED-LOAD-BY-PROCESS-RESULT"].setPlaceholder(
+                        plugin.server.console.sendMessage(FormatHeader.ERROR, languages["SCRIPT.SCRIPT-FAILED-LOAD-BY-PROCESS-RESULT"].setPlaceholder(
                             mapOf("file_name" to file.name, "reason" to it.second.message)
                         ))
                     }
@@ -179,7 +179,18 @@ class ScriptManager {
                 }
             }
         }
-        plugin.server.console.sendMessage(FormatHeader.INFO, "Loaded §b$total §7scripts, §a$success §7successes${if (fail == 0) "" else ", §c$fail §7failures"}.§8(${System.currentTimeMillis() - startTime}ms)")
+
+        val placeholders = mapOf(
+            "id" to "scripts",
+            "total" to "$total",
+            "success" to "$success",
+            "fail" to "$fail",
+            "millisecond" to "${System.currentTimeMillis() - startTime}"
+        )
+        if (fail == 0)
+            plugin.server.console.sendMessage(FormatHeader.INFO, languages["LOADED-COUNTS-PROCESS-SUCCESS"].setPlaceholder(placeholders))
+        else
+            plugin.server.console.sendMessage(FormatHeader.INFO, languages["LOADED-COUNTS-PROCESS-HAS-FAILED"].setPlaceholder(placeholders))
     }
 
     fun isConfigScriptOption(section: ConfigurationSection) =

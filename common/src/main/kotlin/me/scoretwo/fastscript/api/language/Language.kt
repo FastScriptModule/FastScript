@@ -1,51 +1,26 @@
 package me.scoretwo.fastscript.api.language
 
-import me.scoretwo.fastscript.FastScript
 import me.scoretwo.fastscript.languages
 import me.scoretwo.fastscript.plugin
 import me.scoretwo.utils.bukkit.configuration.yaml.file.YamlConfiguration
 import me.scoretwo.utils.bukkit.configuration.yaml.patchs.getLowerCaseNode
 import me.scoretwo.utils.bukkit.configuration.yaml.patchs.saveConfiguration
+import me.scoretwo.utils.server.task.TaskType
 import java.io.File
+import java.util.concurrent.TimeUnit
 
-class Language {
+class Language(val version: String, val name: String = "en_US") {
 
-    val name: String
-    val file: File
+    val file: File = File(plugin.dataFolder, "language/$name.yml")
 
-    constructor(name: String = "en_US") {
-        this.name = name
-        this.file = File(plugin.dataFolder, "language/$name.yml")
-        if (!file.exists()) {
-            file.saveConfiguration(config)
-        } else {
-            config.load(file)
-            val version = config.getString(config.getLowerCaseNode("version"))
-
-            if (version == null || languages.version != version) {
-                languages.defaultLanguage.config.getKeys(true).forEach { if (!config.contains(it)) { config.set(it, languages.defaultLanguage.config[it]) } }
-                config.save(file)
-            }
-
-        }
-    }
-
-    constructor(file: File) {
-        this.name = file.name.substringBeforeLast(".")
-        this.file = file
-        if (!file.exists()) {
-            file.saveConfiguration(config)
-        }
-    }
-
-    val config = YamlConfiguration().also {
+    val defaultConfig = YamlConfiguration().also {
         it["FORMAT-HEADER"] = YamlConfiguration().also {
-            it.set("INFO", "&7[&3Fast&bScript&7] &bINFO &8| &7")
-            it.set("WARN", "&7[&3Fast&bScript&7] &eWARN &8| &7")
-            it.set("ERROR", "&7[&3Fast&bScript&7] &cERROR &8| &7")
-            it.set("TIPS", "&7[&3Fast&bScript&7] &2TIPS &8| &7")
-            it.set("HOOKED", "&7[&3Fast&bScript&7] &6HOOKED &8| &7")
-            it.set("DEBUG", "&7[&3Fast&bScript&7] &3DEBUG &8| &7")
+            it["INFO"] = "&7[&3Fast&bScript&7] &bINFO &8| &7"
+            it["WARN"] = "&7[&3Fast&bScript&7] &eWARN &8| &7"
+            it["ERROR"] = "&7[&3Fast&bScript&7] &cERROR &8| &7"
+            it["TIPS"] = "&7[&3Fast&bScript&7] &2TIPS &8| &7"
+            it["HOOKED"] = "&7[&3Fast&bScript&7] &6HOOKED &8| &7"
+            it["DEBUG"] = "&7[&3Fast&bScript&7] &3DEBUG &8| &7"
         }
         it["SUBSTANTIVE"] = YamlConfiguration().also {
             it["ARGS"] = "args"
@@ -66,7 +41,7 @@ class Language {
             }
             it["COMMANDS"] = YamlConfiguration().also {
                 it["EXPANSION"] = YamlConfiguration().also {
-                    it["NOT-FOUND-NAME-OR-SIGN"] = "Cannot find the extension name or sign §c{expansion_name}§7! Please check the name."
+                    it["NOT-FOUND-NAME-OR-SIGN"] = "Cannot find the extension name or sign &c{expansion_name}&7! Please check the name."
                     it["LOADED-EXPANSIONS"] = "Currently available extensions: &6{expansions}"
                     it["DESCRIPTION"] = "View all expansions or operations."
                     it["SUB-EXPANSION-DESCRIPTION"] = "About {expansion_name} commands."
@@ -142,33 +117,69 @@ class Language {
         }
         it["EXPANSION"] = YamlConfiguration().also {
             it["TYPE-ENGINE"] = YamlConfiguration().also {
-                it["EVALUATE-SCRIPT-ERROR"] = "An error occurred during script {script_name} evaluation, please check the script format."
-                it["EVALUATE-TEMP-SCRIPT-ERROR"] = "An error occurred during temp script evaluation, please check the script format."
-                it["EXECUTE-SCRIPT-ERROR"] = "An error occurred when the script {script_name} executes the function {execute_main}, please check the script format."
+                it["EVALUATE-SCRIPT-ERROR"] = "An error occurred during script {script_name} evaluation, please check the script format.\n&8{reason}"
+                it["EVALUATE-TEMP-SCRIPT-ERROR"] = "An error occurred during temp script evaluation, please check the script format.\n&8{reason}"
+                it["EXECUTE-SCRIPT-ERROR"] = "An error occurred when the script {script_name} executes the function {execute_main}, please check the script format.\n&8{reason}"
                 it["EXECUTE-SCRIPT-FUNCTION-NOT-FOUND-ERROR"] = "An error occurred when the script {script_name} executes the function {execute_main}, this function not found!"
-                it["EXECUTE-TEMP-SCRIPT-ERROR"] = "An error occurred when the temp script executes the function {execute_main}, please check the script format."
+                it["EXECUTE-TEMP-SCRIPT-ERROR"] = "An error occurred when the temp script executes the function {execute_main}, please check the script format, reason:\n&8{reason}"
                 it["EXECUTE-SCRIPT-FUNCTION-NOT-FOUND-ERROR"] = "An error occurred when the temp script executes the function {execute_main}, this function not found!"
             }
+            it["ERROR-BY-CAUSE"] = YamlConfiguration().also {
+                it["LOAD-ERROR"] = "An exception occurred while loading expansion {file_name}, reason:\n&8{reason}"
+                it["LOAD-DESCRIPTION-FILE-ERROR"] = "An error occurred while loading the expansion '{file_name}' description file, reason:\n&8{reason}"
+                it["LOAD-MAIN-CLASS-ERROR"] = "An error occurred while loading the main class {description_main} of expansion '{file_name}', reason:\n&8{reason}"
+                it["LOAD-MAIN-CLASS-MAIN-NOT-DEPEND"] = "An error occurred while loading the main class {description_main} of expansion '{file_name}', reason: &cThe main class does not depend on FastScriptExpansion."
+                it["CAN-NOT-LOAD-MAIN-CLASS"] = "Unable to load the extension '{file_name}' because it has no FastScriptExpansion class available!"
+            }
+
         }
-        it["SCRIPT-MANAGER"] = YamlConfiguration().also {
+        it["SCRIPT"] = YamlConfiguration().also {
             it["PROCESS-RESULT"] = YamlConfiguration().also {
                 it["SCRIPT-OPTION-FILE-NOT-EXISTS"] = "Script option file exists!"
                 it["SCRIPT-TYPE-NOT-SUPPORTED"] = "The script file extension is not supported!"
                 it["SCRIPT-FILE-NAME-CANNOT-SPACES"] = "File name cannot contain spaces!"
             }
-            it["SCRIPT-FAILED-LOAD-BY-PROCESS-RESULT"] = "An error occurred while loading script {file_name}, reason: &8{reason}"
+            it["SCRIPT-FAILED-LOAD-BY-PROCESS-RESULT"] = "An error occurred while loading script {file_name}, reason:&8{reason}"
         }
-        it["LOADED-PROCESS-SUCCESS"] = "Loaded &b{total} &7{id}, &a{success} &7successes.&8({millisecond}ms)"
-        it["LOADED-PROCESS-HAS-FAILED"] = "Loaded &b{total} &7{id}, &a{success} &7successes, &c{fail} &7failures.&8({millisecond}ms)"
+        it["LOADED-COUNTS-PROCESS-SUCCESS"] = "Loaded &b{total} &7{id}, &a{success} &7successes.&8({millisecond}ms)"
+        it["LOADED-COUNTS-PROCESS-SUCCESS-HAS-FAILED"] = "Loaded &b{total} &7{id}, &a{success} &7successes, &c{fail} &7failures.&8({millisecond}ms)"
 
-        it["VERSION"] = languages.version
+
+        it["INVOKE"] = YamlConfiguration().also {
+            it["ASYNC-SUCCESS"] = "Async {exec_type} {exec_name}.&8({millisecond}ms)"
+            it["ASYNC-SUCCESS-HAS-DESCRIPTION"] = "Async {exec_type} {exec_name}, {exec_description}.&8({millisecond}ms)"
+            it["ASYNC-FAILED"] = "&cAsync failed to invoke {exec_name}, reason:\n&8{reason}"
+
+            it["SUCCESS"] = "{exec_type} {exec_name}.&8({millisecond}ms)"
+            it["SUCCESS-HAS-DESCRIPTION"] = "{exec_type} {exec_name}, {exec_description}.&8({millisecond}ms)"
+            it["FAILED"] = "&cFailed to invoke {exec_name}, reason:\n&8{reason}"
+        }
+
+        it["VERSION"] = version
 
     }
 
+    val config = YamlConfiguration()
+
     operator fun set(node: String, any: Any?) = config.set(node.toUpperCase(), any)
 
-    operator fun get(node: String) = config.getString(node.toUpperCase())!!
+    operator fun get(node: String) = config.getString(node.toUpperCase()) ?: defaultConfig.getString(node.toUpperCase())!!
 
     fun getList(node: String): MutableList<String> = config.getStringList(node.toUpperCase())!!
+
+    fun reload() = this.also {
+        if (!file.exists()) {
+            file.saveConfiguration(defaultConfig)
+        } else {
+            config.load(file)
+            val configVersion = config.getString(config.getLowerCaseNode("version"))
+
+            if (configVersion == null || version != configVersion) {
+                defaultConfig.getKeys(true).forEach { if (!config.contains(it)) { config.set(it, defaultConfig[it]) } }
+                config.save(file)
+            }
+
+        }
+    }
 
 }

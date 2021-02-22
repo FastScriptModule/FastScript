@@ -223,7 +223,7 @@ class ScriptCommand: SimpleCommand(arrayOf("script")) {
         FastScript.instance.scriptManager.scripts.forEach {
             val subCommand = nextBuilder()
                 .alias(it.value.description.name)
-                .description(languages["COMMAND-NEXUS.COMMANDS.SCRIPT.SUB-SCRIPT-DESCRIPTION"])
+                .description(languages["COMMAND-NEXUS.COMMANDS.SCRIPT.SUB-SCRIPT-DESCRIPTION"].setPlaceholder(mapOf("script_name" to it.key)))
                 .execute(object : CommandExecutor {
                     override fun execute(sender: GlobalSender, parents: Array<String>, args: Array<String>): Boolean {
                         if (args.isEmpty()) {
