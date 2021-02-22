@@ -15,6 +15,7 @@ dependencies {
 
     implementation("org.bstats:bstats-bukkit:1.8")
     implementation("com.iroselle:cstats-bukkit:1.7")
+    implementation("org.apache.commons:commons-lang3:3.10")
 
     implementation("me.scoretwo:commons-bukkit-plugin:${rootProject.extra.get("commonsVersion")}")
 }

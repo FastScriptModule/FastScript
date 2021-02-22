@@ -104,7 +104,7 @@ class ExpansionCommand: SimpleCommand(arrayOf("expansion")) {
                     )))
                     it.clickEvent = ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, "/$displayParents help ")
                 })
-                sender.sendMessage("")
+                sender.sendMessage()
 
                 return true
             }

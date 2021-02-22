@@ -61,7 +61,7 @@ class ScriptCommand: SimpleCommand(arrayOf("script")) {
                 }
 
                 if (!noReturn) {
-                    sender.sendMessage(FormatHeader.INFO, languages["COMMAND-NEXUS.COMMANDS.SCRIPT.EXECUTE.DESCRIPTION"].setPlaceholder(
+                    sender.sendMessage(FormatHeader.INFO, languages["COMMAND-NEXUS.COMMANDS.SCRIPT.EXECUTE.EXECUTE-RESULT"].setPlaceholder(
                         mapOf(
                             "script_name" to script.name,
                             "expansion_name" to (FastScript.instance.expansionManager.getExpansionBySign(sign)?.name ?: "Unknown"),
@@ -75,12 +75,12 @@ class ScriptCommand: SimpleCommand(arrayOf("script")) {
             override fun tabComplete(sender: GlobalSender, parents: Array<String>, args: Array<String>): MutableList<String> {
                 val scriptName = parents[parents.size - 2]
                 if (args.size < 2) {
-                    return findKeywordIndex(args[0], mutableListOf<String>().also { list -> FastScript.instance.expansionManager.expansions.forEach { list.add(it.sign) } })
+                    return findKeywordIndex(args[args.size - 1], mutableListOf<String>().also { list -> FastScript.instance.expansionManager.expansions.forEach { list.add(it.sign) } })
                 } else if (args.size < 3) {
-                    val script = FastScript.instance.scriptManager.getScript(scriptName) ?: return findKeywordIndex(args[0], mutableListOf(":s"))
-                    return findKeywordIndex(args[0], mutableListOf(script.option.main))
+                    val script = FastScript.instance.scriptManager.getScript(scriptName) ?: return findKeywordIndex(args[args.size - 1], mutableListOf(":s"))
+                    return findKeywordIndex(args[args.size - 1], mutableListOf(script.option.main))
                 }
-                return findKeywordIndex(args[0], mutableListOf(":s"))
+                return findKeywordIndex(args[args.size - 1], mutableListOf(":s"))
             }
         })
         .build()
@@ -121,7 +121,7 @@ class ScriptCommand: SimpleCommand(arrayOf("script")) {
                 val result = script.eval(sign, sender, *args0)
 
                 if (!noReturn) {
-                    sender.sendMessage(FormatHeader.INFO, languages["COMMAND-NEXUS.COMMANDS.SCRIPT.EVALUATE.DESCRIPTION"].setPlaceholder(
+                    sender.sendMessage(FormatHeader.INFO, languages["COMMAND-NEXUS.COMMANDS.SCRIPT.EVALUATE.EXECUTE-RESULT"].setPlaceholder(
                         mapOf(
                             "script_name" to script.name,
                             "expansion_name" to (FastScript.instance.expansionManager.getExpansionBySign(sign)?.name ?: "Unknown"),
@@ -136,7 +136,7 @@ class ScriptCommand: SimpleCommand(arrayOf("script")) {
                 if (args.size < 2) {
                     return findKeywordIndex(args[0], mutableListOf<String>().also { list -> FastScript.instance.expansionManager.expansions.forEach { list.add(it.sign) } })
                 }
-                return findKeywordIndex(args[0], mutableListOf(":s"))
+                return findKeywordIndex(args[args.size - 1], mutableListOf(":s"))
             }
         })
         .build()
@@ -177,41 +177,28 @@ class ScriptCommand: SimpleCommand(arrayOf("script")) {
                 sender.sendMessage(FormatHeader.INFO, languages["COMMAND-NEXUS.COMMANDS.SCRIPT.INFO.TITLE"].setPlaceholder(
                     mapOf("script_name" to script.name)))
 
-                val rawList = mutableListOf<String>()
-                val originList = languages.getList("COMMAND-NEXUS.COMMANDS.SCRIPT.INFO.TITLE")
-                fun decide(placeholder: String, replacer: String) = originList.forEach { if (it.contains(placeholder)) { rawList.add(it.setPlaceholder(mapOf(placeholder to replacer))) } }
+                languages.getList("COMMAND-NEXUS.COMMANDS.SCRIPT.INFO.TITLE").forEach { string ->
+                    string.setPlaceholder(mapOf(
+                        "script_name" to script.name,
+                        "script_version" to (script.description.version ?: "1.0"),
+                        "script_authors" to (if (script.description.authors.isEmpty()) "..." else script.description.authors.joinToString(", ")),
+                        "script_description" to (script.description.description ?: "Not more..."),
+                        "script_main" to script.description.main,
+                        "script_bind_expansions" to script.bindExpansions().let { expansions ->
+                            if (expansions.isEmpty())
+                                return@let "Not more..."
+                            mutableListOf<String>().also { signs -> expansions.forEach { expansion -> signs.add(expansion.sign) } }.joinToString()
+                        }
+                    ))
+                }
 
-                script.description.version?.also {
-                    decide("script_version", it)
-                }
-                script.description.authors.let {
-                    if (it.isEmpty())
-                        return@let
-                    decide("script_authors", it.joinToString(", "))
-                }
-                script.description.description?.also {
-                    decide("script_description", it)
-                }
-                decide("script_main", script.description.main)
-                script.bindExpansions().let { expansions ->
-                    if (expansions.isEmpty())
-                        return@let
-                    val signs = mutableListOf<String>().also { signs -> expansions.forEach { expansion -> signs.add(expansion.sign) } }
-
-                    decide("script_bind_expansions", signs.joinToString(", "))
-                }
-                rawList.add("")
-                decide("script_name", script.name)
-                rawList.forEach {
-                    sender.sendMessage(it)
-                }
                 sender.sendMessage(TextComponent("    "), TextComponent("§7/$displayParents §fhelp").also {
                     it.hoverEvent = HoverEvent(HoverEvent.Action.SHOW_TEXT, Text(languages["COMMAND-NEXUS.HELPER.CLICK-INSERT-COMMAND"].setPlaceholder(
                         mapOf("command" to "$displayParents help")
                     )))
                     it.clickEvent = ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, "/$displayParents help ")
                 })
-                sender.sendMessage("")
+                sender.sendMessage()
 
                 return true
             }

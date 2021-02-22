@@ -1,9 +1,7 @@
 package me.scoretwo.fastscript.command
 
 import me.scoretwo.fastscript.FastScript
-import me.scoretwo.fastscript.command.commands.ExpansionCommand
-import me.scoretwo.fastscript.command.commands.ReloadCommand
-import me.scoretwo.fastscript.command.commands.ScriptCommand
+import me.scoretwo.fastscript.command.commands.*
 import me.scoretwo.fastscript.languages
 import me.scoretwo.fastscript.setPlaceholder
 import me.scoretwo.utils.command.CommandBuilder
@@ -21,9 +19,11 @@ import net.md_5.bungee.api.chat.hover.content.Text
 class FSCommandNexus: CommandNexus(FastScript.instance.plugin, arrayOf("FastScript", "script", "fs")) {
 
     init {
-        register(ReloadCommand())
         register(ScriptCommand())
         register(ExpansionCommand())
+        register(ToolsCommand())
+        register(ReloadCommand())
+        register(DebugCommand())
     }
 
     override var language = object : CommandLanguage {

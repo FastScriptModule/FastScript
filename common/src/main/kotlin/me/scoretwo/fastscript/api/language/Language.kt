@@ -38,6 +38,7 @@ class Language(val version: String, val name: String = "en_US") {
                 it["NOT-FOUND-COMMANDS"] = "&7No command data available."
                 it["CLICK-INSERT-COMMAND"] = "&7Click insert command: &f/{command}"
                 it["CLICK-TO-GO-URL"] = "&7Click to go to url: &f{url}"
+                it["PLAYER-IS-OFFLINE"] = "&7Player &a{player_name} &7is not online"
             }
             it["COMMANDS"] = YamlConfiguration().also {
                 it["EXPANSION"] = YamlConfiguration().also {
@@ -112,8 +113,23 @@ class Language(val version: String, val name: String = "en_US") {
                     it["LOADED-SCRIPT"] = "Loaded script file successful."
                     it["LOADED-PLUGIN"] = "Loaded plugin settings successful."
                 }
-            }
+                it["TOOLS"] = YamlConfiguration().also {
+                    it["DESCRIPTION"] = "Some useful tool libraries."
 
+                    it["COMMAND"] = YamlConfiguration().also {
+                        it["DESCRIPTION"] = "Send a command as sender('@CONSOLE' means console)."
+                    }
+
+                    it["BUKKIT"] = YamlConfiguration().also {
+                        it["SOUNDS"] = YamlConfiguration().also {
+                            it["DESCRIPTION"] = "Play Sound to the player."
+                        }
+                    }
+                }
+                it["DEBUG"] = YamlConfiguration().also {
+                    it["DESCRIPTION"] = "Used to start debugging or view some debugging information."
+                }
+            }
         }
         it["EXPANSION"] = YamlConfiguration().also {
             it["TYPE-ENGINE"] = YamlConfiguration().also {

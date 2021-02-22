@@ -190,7 +190,7 @@ class ScriptManager {
         if (fail == 0)
             plugin.server.console.sendMessage(FormatHeader.INFO, languages["LOADED-COUNTS-PROCESS-SUCCESS"].setPlaceholder(placeholders))
         else
-            plugin.server.console.sendMessage(FormatHeader.INFO, languages["LOADED-COUNTS-PROCESS-HAS-FAILED"].setPlaceholder(placeholders))
+            plugin.server.console.sendMessage(FormatHeader.INFO, languages["LOADED-COUNTS-PROCESS-SUCCESS-HAS-FAILED"].setPlaceholder(placeholders))
     }
 
     fun isConfigScriptOption(section: ConfigurationSection) =

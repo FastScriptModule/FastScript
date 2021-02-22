@@ -89,7 +89,7 @@ class ExpansionManager {
         if (fail == 0)
             plugin.server.console.sendMessage(format, languages["LOADED-COUNTS-PROCESS-SUCCESS"].setPlaceholder(placeholders))
         else
-            plugin.server.console.sendMessage(format, languages["LOADED-COUNTS-PROCESS-HAS-FAILED"].setPlaceholder(placeholders))
+            plugin.server.console.sendMessage(format, languages["LOADED-COUNTS-PROCESS-SUCCESS-HAS-FAILED"].setPlaceholder(placeholders))
     }
 
     private fun fromFileExpansion(file: File): Pair<ProcessResult, FastScriptExpansion?> {

@@ -58,7 +58,7 @@ abstract class TypeEngineExpansion: FastScriptExpansion() {
     }
 
     override fun eval(text: String, sender: GlobalSender, vararg args: String): Any? {
-        if (StringUtils.isBlank(text))
+        if (text.isBlank())
             return null
         if (sender.isPlayer()) {
             sender.toPlayer().let {
@@ -121,7 +121,7 @@ abstract class TypeEngineExpansion: FastScriptExpansion() {
     }
 
     override fun execute(text: String, sender: GlobalSender, main: String, args: Array<Any?>): Any? {
-        if (StringUtils.isBlank(text))
+        if (text.isBlank())
             return null
         return try {
             if (needEval)
