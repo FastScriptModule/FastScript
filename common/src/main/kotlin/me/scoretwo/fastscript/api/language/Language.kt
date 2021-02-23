@@ -25,7 +25,7 @@ class Language(val version: String, val name: String = "en_US") {
         it["SUBSTANTIVE"] = YamlConfiguration().also {
             it["ARGS"] = "args"
             it["USAGE"] = "usage"
-            it["EVALUATED"] = "EVALUATED"
+            it["EVALUATED"] = "evaluated"
         }
         it["COMMAND-NEXUS"] = YamlConfiguration().also {
             it["TIPS"] = YamlConfiguration().also {
@@ -72,12 +72,12 @@ class Language(val version: String, val name: String = "en_US") {
                     it["EXECUTE"] = YamlConfiguration().also {
                         it["DESCRIPTION"] = "Execute the specified content to get the return value (':s' added at the end does not return a message)"
 
-                        it["EXECUTE-RESULT"] = "Execute script &b{script_name} &7used expansion &6{expansion_name} to return result: {result}"
+                        it["EXECUTE-RESULT"] = "Execute script &b{script_name} &7used expansion &6{expansion_name} &7to return result: {result}"
                     }
                     it["EVALUATE"] = YamlConfiguration().also {
                         it["DESCRIPTION"] = "Evaluate the specified content to get the return value (':s' added at the end does not return a message)"
 
-                        it["EXECUTE-RESULT"] = "Evaluate script &b{script_name} &7used expansion &6{expansion_name} to return result: {result}"
+                        it["EXECUTE-RESULT"] = "Evaluate script &b{script_name} &7used expansion &6{expansion_name} &7to return result: {result}"
                     }
                     it["RELOAD"] = YamlConfiguration().also {
                         it["DESCRIPTION"] = "Reload this script."

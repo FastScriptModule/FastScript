@@ -30,45 +30,41 @@ class BukkitPlugin(val plugin: GlobalPlugin): ScriptPlugin(plugin) {
             toolsCommand.register(
                 toolsCommand.nextBuilder().alias("sounds", "sound")
                     .description(languages["COMMAND-NEXUS.COMMANDS.TOOLS.BUKKIT.SOUNDS.DESCRIPTION"])
-                    .customCommand("sound", arrayOf("volume", "pitch", "player"), "Not more...")
+                    .customCommand("<player>", arrayOf("[sound]", "[volume]", "[pitch]"), languages["COMMAND-NEXUS.COMMANDS.TOOLS.BUKKIT.SOUNDS.DESCRIPTION"])
                     .executor(object : Executors {
                         override fun execute(sender: GlobalSender, parents: Array<String>, args: Array<String>): Boolean {
                             if (args.size < 3) {
                                 return false
                             }
-                            val target = if (args.size < 4) {
-                                plugin.server.getPlayer(args[3]).let {
-                                    if (it.isPresent)
-                                        return@let it.get()
-                                    else {
-                                        sender.sendMessage(languages["COMMAND-NEXUS.HELPER.PLAYER-IS-OFFLINE"].setPlaceholder("player_name" to args[3]))
-                                        return true
-                                    }
+                            val target = plugin.server.getPlayer(args[0]).let {
+                                if (it.isPresent) {
+                                    it.get()
+                                } else {
+                                    sender.sendMessage(FormatHeader.ERROR, languages["COMMAND-NEXUS.HELPER.PLAYER-IS-OFFLINE"].setPlaceholder("player_name" to args[0]))
+                                    return true
                                 }
-                            } else {
-                                if (sender.isPlayer())
-                                    sender.toPlayer()
-                                else
-                                    return false
                             }
-                            val sound = Sound.valueOf(args[0])
-                            val volume: Float = if (StringUtils.isNumeric(args[1])) args[1].toFloat() else 1.0F
-                            val pitch: Float = if (StringUtils.isNumeric(args[2])) args[2].toFloat() else 1.0F
+                            val sound = Sound.valueOf(args[1])
+                            val volume: Float = if (StringUtils.isNumeric(args[2])) args[2].toFloat() else 1.0F
+                            val pitch: Float = if (StringUtils.isNumeric(args[3])) args[3].toFloat() else 1.0F
 
-                            target?.toBukkitPlayer().also { it?.playSound(it.location, sound, volume, pitch) }
+                            target.toBukkitPlayer().also { it.playSound(it.location, sound, volume, pitch) }
                             return true
                         }
 
                         override fun tabComplete(sender: GlobalSender, parents: Array<String>, args: Array<String>): MutableList<String>? {
                             when {
                                 args.size < 2 -> {
-                                    return toolsCommand.findKeywordIndex(args[0], mutableListOf<String>().also { list -> Sound.values().forEach { list.add(it.name) } })
+                                    return mutableListOf<String>().also { list -> plugin.server.getOnlinePlayers().forEach { list.add(it.name) } }
                                 }
                                 args.size < 3 -> {
-                                    return toolsCommand.findKeywordIndex(args[1], mutableListOf("1.0"))
+                                    return mutableListOf<String>().also { list -> Sound.values().forEach { list.add(it.name) } }
                                 }
                                 args.size < 4 -> {
-                                    return toolsCommand.findKeywordIndex(args[2], mutableListOf("1.0"))
+                                    return mutableListOf("1.0")
+                                }
+                                args.size < 5 -> {
+                                    return mutableListOf("1.0")
                                 }
                             }
 

@@ -43,7 +43,7 @@ abstract class TypeEngineExpansion: FastScriptExpansion() {
         return let {
             try {
                 engine.eval(script.texts[sign]).also {
-                    if (script.texts[sign]?.contains(it?.toString() ?: "") == true) return@let "EVALUATED"
+                    if (script.texts[sign]?.contains(it?.toString() ?: "") == true) return@let languages["SUBSTANTIVE.EVALUATED"].toUpperCase()
                 }
             } catch (e: ScriptException) {
                 plugin.server.console.sendMessage(FormatHeader.ERROR, languages["EXPANSION.TYPE-ENGINE.EVALUATE-SCRIPT-ERROR"].setPlaceholder(
@@ -75,7 +75,7 @@ abstract class TypeEngineExpansion: FastScriptExpansion() {
         return let {
             try {
                 engine.eval(text).also {
-                    if (text.contains(it?.toString() ?: "")) return@let "EVALUATED"
+                    if (text.contains(it?.toString() ?: "")) return@let languages["SUBSTANTIVE.EVALUATED"].toUpperCase()
                 }
             } catch (e: ScriptException) {
                 plugin.server.console.sendMessage(FormatHeader.ERROR, languages["EXPANSION.TYPE-ENGINE.EVALUATE-TEMP-SCRIPT-ERROR"].setPlaceholder(

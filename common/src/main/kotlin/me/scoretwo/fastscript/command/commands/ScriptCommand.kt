@@ -75,12 +75,12 @@ class ScriptCommand: SimpleCommand(arrayOf("script")) {
             override fun tabComplete(sender: GlobalSender, parents: Array<String>, args: Array<String>): MutableList<String> {
                 val scriptName = parents[parents.size - 2]
                 if (args.size < 2) {
-                    return findKeywordIndex(args[args.size - 1], mutableListOf<String>().also { list -> FastScript.instance.expansionManager.expansions.forEach { list.add(it.sign) } })
+                    return mutableListOf<String>().also { list -> FastScript.instance.expansionManager.expansions.forEach { list.add(it.sign) } }
                 } else if (args.size < 3) {
-                    val script = FastScript.instance.scriptManager.getScript(scriptName) ?: return findKeywordIndex(args[args.size - 1], mutableListOf(":s"))
-                    return findKeywordIndex(args[args.size - 1], mutableListOf(script.option.main))
+                    val script = FastScript.instance.scriptManager.getScript(scriptName) ?: return mutableListOf(":s")
+                    return mutableListOf(script.option.main)
                 }
-                return findKeywordIndex(args[args.size - 1], mutableListOf(":s"))
+                return mutableListOf(":s")
             }
         })
         .build()
@@ -134,9 +134,9 @@ class ScriptCommand: SimpleCommand(arrayOf("script")) {
 
             override fun tabComplete(sender: GlobalSender, parents: Array<String>, args: Array<String>): MutableList<String> {
                 if (args.size < 2) {
-                    return findKeywordIndex(args[0], mutableListOf<String>().also { list -> FastScript.instance.expansionManager.expansions.forEach { list.add(it.sign) } })
+                    return mutableListOf<String>().also { list -> FastScript.instance.expansionManager.expansions.forEach { list.add(it.sign) } }
                 }
-                return findKeywordIndex(args[args.size - 1], mutableListOf(":s"))
+                return mutableListOf(":s")
             }
         })
         .build()

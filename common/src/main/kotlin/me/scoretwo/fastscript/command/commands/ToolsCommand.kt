@@ -1,7 +1,9 @@
 package me.scoretwo.fastscript.command.commands
 
+import me.scoretwo.fastscript.api.format.FormatHeader
 import me.scoretwo.fastscript.command.SimpleCommand
 import me.scoretwo.fastscript.languages
+import me.scoretwo.fastscript.sendMessage
 import me.scoretwo.fastscript.setPlaceholder
 import me.scoretwo.utils.command.SubCommand
 import me.scoretwo.utils.command.executor.Executors
@@ -29,7 +31,7 @@ class ToolsCommand: SimpleCommand(arrayOf("tools", "tool", "utils", "util")) {
                         if (it.isPresent) {
                             it.get()
                         } else {
-                            sender.sendMessage(languages["COMMAND-NEXUS.HELPER.PLAYER-IS-OFFLINE"].setPlaceholder("player_name" to args[0]))
+                            sender.sendMessage(FormatHeader.ERROR, languages["COMMAND-NEXUS.HELPER.PLAYER-IS-OFFLINE"].setPlaceholder("player_name" to args[0]))
                             return true
                         }
                     }
@@ -39,7 +41,7 @@ class ToolsCommand: SimpleCommand(arrayOf("tools", "tool", "utils", "util")) {
                 }
 
                 override fun tabComplete(sender: GlobalSender, parents: Array<String>, args: Array<String>) =
-                    findKeywordIndex(args[args.size - 1], mutableListOf("@CONSOLE").also { list -> plugin.server.getOnlinePlayers().forEach { list.add(it.name) } })
+                    mutableListOf("@CONSOLE").also { list -> plugin.server.getOnlinePlayers().forEach { list.add(it.name) } }
             })
             .build()
     )

@@ -45,7 +45,8 @@ class ReloadCommand: SimpleCommand(arrayOf("reload")) {
         return true
     }
 
-    override fun tabComplete(sender: GlobalSender, parents: Array<String>, args: Array<String>) = mutableListOf("config", "script", "plugin", "all")
+    override fun tabComplete(sender: GlobalSender, parents: Array<String>, args: Array<String>) =
+        if (args.size < 2) mutableListOf("config", "script", "plugin", "all") else null
 
 
 }
