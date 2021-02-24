@@ -47,7 +47,7 @@ class ScriptManager {
         val scriptName = scriptFile.name.substringBeforeLast(".")
         scriptFile.parentFile.listFiles()?.forEach {
             if (it.name == "$scriptName.yml") {
-                return Pair(null, ProcessResult(ProcessResultType.OTHER, languages["SCRIPT.PROCESS-RESULT.SCRIPT-OPTION-FILE-NOT-EXISTS"]))
+                return Pair(null, ProcessResult(ProcessResultType.OTHER, languages["SCRIPT.PROCESS-RESULT.SCRIPT-OPTION-FILE-NOT-EXISTS"], "file" to scriptFile.name))
             }
         }
 
@@ -58,7 +58,7 @@ class ScriptManager {
 
                 return@let scriptFile
             }
-            return Pair(null, ProcessResult(ProcessResultType.FAILED, languages["SCRIPT.PROCESS-RESULT.SCRIPT-TYPE-NOT-SUPPORTED"]))
+            return Pair(null, ProcessResult(ProcessResultType.FAILED, languages["SCRIPT.PROCESS-RESULT.SCRIPT-TYPE-NOT-SUPPORTED"], "file" to scriptFile.name))
         }
         val script = CustomScript(
             object : ScriptDescription {
@@ -171,7 +171,7 @@ class ScriptManager {
                     if (it.second.type == ProcessResultType.FAILED || it.first == null) {
                         fail++
                         plugin.server.console.sendMessage(FormatHeader.ERROR, languages["SCRIPT.SCRIPT-FAILED-LOAD-BY-PROCESS-RESULT"].setPlaceholder(
-                            mapOf("file_name" to file.name, "reason" to it.second.message)
+                            mapOf("file_name" to (it.second.infos["file"] ?: "Unknown"), "reason" to it.second.message)
                         ))
                     }
                     else if (it.second.type == ProcessResultType.SUCCESS)

@@ -11,6 +11,8 @@ import me.scoretwo.fastscript.api.script.ScriptManager
 import me.scoretwo.fastscript.api.utils.ExecType
 import me.scoretwo.fastscript.api.utils.ExecUtils
 import me.scoretwo.fastscript.command.commands.ScriptCommand
+import me.scoretwo.fastscript.utils.Assist
+import me.scoretwo.fastscript.utils.assist
 import me.scoretwo.utils.sender.GlobalPlayer
 import me.scoretwo.utils.sender.GlobalSender
 import net.md_5.bungee.api.ChatColor
@@ -64,6 +66,7 @@ class FastScript(val plugin: ScriptPlugin) {
         ExecUtils.execPeriod(ExecType.Initialized, "CommandNexus") {
             commandNexus = FSCommandNexus()
         }
+        assist = Assist()
     }
 
     fun reloadLanguage() {

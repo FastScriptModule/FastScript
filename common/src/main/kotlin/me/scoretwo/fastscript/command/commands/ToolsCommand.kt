@@ -27,6 +27,12 @@ class ToolsCommand: SimpleCommand(arrayOf("tools", "tool", "utils", "util")) {
                     if (args.isEmpty()) {
                         return false
                     }
+                    val command = args.sliceArray(1 until args.size).joinToString(" ")
+                    if (args[0].toLowerCase() == "@all") {
+                        plugin.server.getOnlinePlayers().forEach { plugin.server.dispatchCommand(it, command) }
+                        return true
+                    }
+
                     val target = if (args[0].toLowerCase() == "@console") plugin.server.console else plugin.server.getPlayer(args[0]).let {
                         if (it.isPresent) {
                             it.get()
@@ -35,13 +41,12 @@ class ToolsCommand: SimpleCommand(arrayOf("tools", "tool", "utils", "util")) {
                             return true
                         }
                     }
-                    val command = args.sliceArray(1 until args.size).joinToString(" ")
                     plugin.server.dispatchCommand(target, command)
                     return true
                 }
 
                 override fun tabComplete(sender: GlobalSender, parents: Array<String>, args: Array<String>) =
-                    mutableListOf("@CONSOLE").also { list -> plugin.server.getOnlinePlayers().forEach { list.add(it.name) } }
+                    mutableListOf("@CONSOLE", "@ALL").also { list -> plugin.server.getOnlinePlayers().forEach { list.add(it.name) } }
             })
             .build()
     )

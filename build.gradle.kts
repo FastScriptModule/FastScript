@@ -64,7 +64,6 @@ dependencies {
     implementation("commons-lang:commons-lang:2.6")
 
     implementation("me.scoretwo:commons-syntaxes:${rootProject.extra.get("commonsVersion")}")
-    implementation("me.scoretwo:commons-command:${rootProject.extra.get("commonsVersion")}")
     implementation("me.scoretwo:commons-server:${rootProject.extra.get("commonsVersion")}")
     implementation("me.scoretwo:commons-bukkit-configuration:${rootProject.extra.get("commonsVersion")}")
 }
@@ -95,7 +94,6 @@ tasks.withType<com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar> {
         include(dependency("commons-lang:commons-lang:2.6"))
 
         include(dependency("me.scoretwo:commons-syntaxes:${rootProject.extra.get("commonsVersion")}"))
-        include(dependency("me.scoretwo:commons-command:${rootProject.extra.get("commonsVersion")}"))
         include(dependency("me.scoretwo:commons-server:${rootProject.extra.get("commonsVersion")}"))
         include(dependency("me.scoretwo:commons-bukkit-configuration:${rootProject.extra.get("commonsVersion")}"))
     }

@@ -21,6 +21,7 @@ class FSCommandNexus: CommandNexus(FastScript.instance.plugin, arrayOf("FastScri
     init {
         register(ScriptCommand())
         register(ExpansionCommand())
+        register(MigrateCommand())
         register(ToolsCommand())
         register(ReloadCommand())
         register(DebugCommand())

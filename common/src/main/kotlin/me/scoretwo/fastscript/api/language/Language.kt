@@ -27,11 +27,12 @@ class Language(val version: String, val name: String = "en_US") {
             it["USAGE"] = "usage"
             it["EVALUATED"] = "evaluated"
         }
+        it["HOOKED-PLUGIN"] = "Hook to the plugin &e{plugin_name} &7successfully, now you can use the relevant functions of this plugin!"
         it["COMMAND-NEXUS"] = YamlConfiguration().also {
             it["TIPS"] = YamlConfiguration().also {
-                it["ONLY-CONSOLE"] = "This command can only be executed on the console."
-                it["ONLY-PLAYER"] = "This command can only be executed by the player."
-                it["NO-PERMISSION"] = "You do not have permission to execute the command."
+                it["ONLY-CONSOLE"] = "&cThis command can only be executed on the console."
+                it["ONLY-PLAYER"] = "&cThis command can only be executed by the player."
+                it["NO-PERMISSION"] = "&cYou do not have permission to execute the command."
                 it["UNKNOWN-USAGE"] = "&cUsage &e{usage_error} &cis incorrect, you may want to use &e{usage_guess}&c."
             }
             it["HELPER"] = YamlConfiguration().also {
@@ -41,6 +42,12 @@ class Language(val version: String, val name: String = "en_US") {
                 it["PLAYER-IS-OFFLINE"] = "&7Player &a{player_name} &7is not online"
             }
             it["COMMANDS"] = YamlConfiguration().also {
+                it["MIGRATE"] = YamlConfiguration().also {
+                    it["DESCRIPTION"] = "Migrate from other plugins."
+
+                    it["UNKNOWN-ACTION"] = "No action found {action_name}"
+                }
+
                 it["EXPANSION"] = YamlConfiguration().also {
                     it["NOT-FOUND-NAME-OR-SIGN"] = "Cannot find the extension name or sign &c{expansion_name}&7! Please check the name."
                     it["LOADED-EXPANSIONS"] = "Currently available extensions: &6{expansions}"
@@ -123,6 +130,7 @@ class Language(val version: String, val name: String = "en_US") {
                     it["BUKKIT"] = YamlConfiguration().also {
                         it["SOUNDS"] = YamlConfiguration().also {
                             it["DESCRIPTION"] = "Play Sound to the player."
+                            it["NOT-FOUND-SOUND"] = "Sound {sound_name} not found."
                         }
                     }
                 }
@@ -155,7 +163,7 @@ class Language(val version: String, val name: String = "en_US") {
                 it["SCRIPT-TYPE-NOT-SUPPORTED"] = "The script file extension is not supported!"
                 it["SCRIPT-FILE-NAME-CANNOT-SPACES"] = "File name cannot contain spaces!"
             }
-            it["SCRIPT-FAILED-LOAD-BY-PROCESS-RESULT"] = "An error occurred while loading script {file_name}, reason:&8{reason}"
+            it["SCRIPT-FAILED-LOAD-BY-PROCESS-RESULT"] = "An error occurred while loading script &3{file_name}&7, reason: &8{reason}"
         }
         it["LOADED-COUNTS-PROCESS-SUCCESS"] = "Loaded &b{total} &7{id}, &a{success} &7successes.&8({millisecond}ms)"
         it["LOADED-COUNTS-PROCESS-SUCCESS-HAS-FAILED"] = "Loaded &b{total} &7{id}, &a{success} &7successes, &c{fail} &7failures.&8({millisecond}ms)"

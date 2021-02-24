@@ -19,7 +19,7 @@ object ExecUtils {
                 "exec_description" to (description ?: ""),
                 "millisecond" to "${System.currentTimeMillis() - start}"
             )
-            plugin.server.schedule.task(plugin, taskType) {
+            plugin.server.schedule.task(plugin, taskType, Runnable {
                 try {
                     unit.invoke()
                     if (description == null)
@@ -30,7 +30,7 @@ object ExecUtils {
                     plugin.server.console.sendMessage(FormatHeader.TREE, languages["INVOKE.ASYNC-FAILED"].setPlaceholder(placeholders.also { it["reason"] = t.stackTraceToString() }))
                     t.printStackTrace()
                 }
-            }
+            })
             return ProcessResult(ProcessResultType.SUCCESS)
         } else {
             val placeholders = mutableMapOf(
@@ -47,7 +47,7 @@ object ExecUtils {
                     plugin.server.console.sendMessage(FormatHeader.TREE, languages["INVOKE.SUCCESS-HAS-DESCRIPTION"].setPlaceholder(placeholders))
                 ProcessResult(ProcessResultType.SUCCESS)
             } catch (t: Throwable) {
-                plugin.server.console.sendMessage(FormatHeader.TREE, languages["INVOKE.SUCCESS-FAILED"].setPlaceholder(placeholders.also { it["reason"] = t.stackTraceToString() }))
+                plugin.server.console.sendMessage(FormatHeader.TREE, languages["INVOKE.FAILED"].setPlaceholder(placeholders.also { it["reason"] = t.stackTraceToString() }))
                 ProcessResult(ProcessResultType.FAILED)
             }
         }

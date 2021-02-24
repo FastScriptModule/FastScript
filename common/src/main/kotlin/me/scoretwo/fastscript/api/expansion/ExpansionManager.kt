@@ -51,14 +51,24 @@ class ExpansionManager {
     fun reload() {
         val startTime = System.currentTimeMillis()
         expansions.clear()
-        register(JavaScriptExpansion().reload())
+        var success = 1
+        var fail = 0
+        var total = 1
+        try {
+            register(JavaScriptExpansion().reload())
+        } catch (t: Throwable) {
+            fail++
+            plugin.server.console.sendMessage(FormatHeader.ERROR, languages["EXPANSION.ERROR-BY-CAUSE.LOAD-ERROR"].setPlaceholder(
+                mapOf(
+                    "file_name" to "JavaScript",
+                    "reason" to t.stackTraceToString()
+                )
+            ))
+        }
 
         if (!expansionFolder.exists())
             expansionFolder.mkdirs()
 
-        var success = 1
-        var fail = 0
-        var total = 1
 
         for (file in expansionFolder.listFiles() ?: arrayOf()) {
             total++

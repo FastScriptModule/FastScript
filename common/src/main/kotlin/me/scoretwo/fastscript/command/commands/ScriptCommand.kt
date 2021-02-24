@@ -154,7 +154,7 @@ class ScriptCommand: SimpleCommand(arrayOf("script")) {
                 }
 
                 script.reload()
-                sender.sendMessage(FormatHeader.INFO, languages["COMMAND-NEXUS.COMMANDS.SCRIPT.RELOAD.RELOADED-SCRIPT"])
+                sender.sendMessage(FormatHeader.INFO, languages["COMMAND-NEXUS.COMMANDS.SCRIPT.RELOAD.RELOADED-SCRIPT"].setPlaceholder("script_name" to script.name))
                 return true
             }
         })

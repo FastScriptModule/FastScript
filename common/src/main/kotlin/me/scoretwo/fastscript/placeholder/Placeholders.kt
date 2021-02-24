@@ -25,18 +25,18 @@ object Placeholders {
                     ?: return "Not found script: ${args[1]}"
                 val expansion = FastScript.instance.expansionManager.getExpansionBySign(args[3]) ?: FastScript.instance.expansionManager.getExpansionByName(args[3])
                     ?: return "Not found expansion sign: ${args[3]}"
-                when (args[2]) {
+                return when (args[2]) {
                     "eval", "evaluate" -> {
                         val args0 = if (args.size >= 4) args.slice(4 until args.size).toTypedArray() else arrayOf()
-                        expansion.eval(script, player, *args0)
+                        expansion.eval(script, player, *args0).toString()
                     }
                     "run", "execute" -> {
                         val main = if (args.size >= 4) args[4] else script.option.main
                         val args0: Array<Any?> = if (args.size >= 5) args.slice(5 until args.size).toTypedArray() else arrayOf()
-                        expansion.execute(script, player, main, args0)
+                        expansion.execute(script, player, main, args0).toString()
                     }
                     else -> {
-                        return "Not found action: ${args[2]}"
+                        "Not found action: ${args[2]}"
                     }
                 }
 
@@ -50,13 +50,13 @@ object Placeholders {
                 val expansion = FastScript.instance.expansionManager.getExpansionBySign(args[1]) ?: FastScript.instance.expansionManager.getExpansionByName(args[1])
                     ?: return "Not found expansion sign: ${args[1]}"
 
-                when (args[2]) {
+                return when (args[2]) {
                     "evaluate", "eval" -> {
                         val text = if (args.size >= 3) args.slice(3 until args.size).joinToString("_") else ""
-                        expansion.eval(text, player)
+                        expansion.eval(text, player).toString()
                     }
                     else -> {
-                        return "Not found action: ${args[2]}"
+                        "Not found action: ${args[2]}"
                     }
                 }
 

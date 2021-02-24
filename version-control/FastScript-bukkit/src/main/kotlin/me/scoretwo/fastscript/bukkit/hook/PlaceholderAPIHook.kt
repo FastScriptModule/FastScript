@@ -9,6 +9,10 @@ import org.bukkit.plugin.Plugin
 
 class PlaceholderAPIHook(val plugin: Plugin): PlaceholderExpansion() {
 
+    init {
+        register()
+    }
+
     override fun persist(): Boolean {
         return true
     }

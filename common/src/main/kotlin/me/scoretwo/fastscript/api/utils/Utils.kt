@@ -5,6 +5,8 @@ import me.scoretwo.fastscript.api.format.FormatHeader
 import me.scoretwo.fastscript.config.SettingConfig
 import me.scoretwo.fastscript.plugin
 import me.scoretwo.utils.bukkit.configuration.yaml.patchs.getLowerCaseNode
+import me.scoretwo.utils.command.CommandBuilder
+import me.scoretwo.utils.command.CommandNexus
 import me.scoretwo.utils.sender.GlobalPlayer
 import me.scoretwo.utils.sender.GlobalSender
 import me.scoretwo.utils.syntaxes.FileUtils
@@ -28,6 +30,16 @@ object Utils {
     }
 
 }
+
+class Assist {
+
+    fun createCommandNexus(vararg alias: String) = CommandNexus(plugin, arrayOf(*alias))
+
+    fun createCommandBuilder() = CommandBuilder()
+
+}
+lateinit var assist: Assist
+
 fun String.subStringWithEscape(from: Int, to: Int, escapes: List<Int>): String {
     val builder = StringBuilder()
     if (escapes.isEmpty())
