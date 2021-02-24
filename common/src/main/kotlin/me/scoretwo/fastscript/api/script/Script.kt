@@ -30,7 +30,7 @@ abstract class Script(
         eval(FastScript.instance.expansionManager.getExpansionBySign(sign), sender, *args)
 
     fun eval(expansion: FastScriptExpansion?, sender: GlobalSender, vararg args: String): Any? =
-        expansion?.eval(this, sender, *args)
+        expansion?.eval(this, sender, arrayOf(*args))
 
     open fun execute(sign: String, sender: GlobalSender, main: String = option.main, args: Array<Any?> = arrayOf()): Any? =
         execute(FastScript.instance.expansionManager.getExpansionBySign(sign), sender, main, args)

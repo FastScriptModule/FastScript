@@ -28,7 +28,7 @@ object Placeholders {
                 return when (args[2]) {
                     "eval", "evaluate" -> {
                         val args0 = if (args.size >= 4) args.slice(4 until args.size).toTypedArray() else arrayOf()
-                        expansion.eval(script, player, *args0).toString()
+                        expansion.eval(script, player, arrayOf(*args0)).toString()
                     }
                     "run", "execute" -> {
                         val main = if (args.size >= 4) args[4] else script.option.main

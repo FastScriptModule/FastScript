@@ -12,14 +12,13 @@ dependencies {
     compileOnly("org.slf4j:slf4j-log4j12:1.7.30")
     compileOnly("net.md-5:bungeecord-chat:1.16-R0.5-SNAPSHOT")
 
-    implementation("org.jetbrains.kotlin:kotlin-script-util:${rootProject.extra.get("kotlinVersion")}")
-    implementation("org.jetbrains.kotlin:kotlin-compiler:${rootProject.extra.get("kotlinVersion")}")
-
-    implementation("commons-lang:commons-lang:2.6")
-    implementation("commons-io:commons-io:2.7")
+    compileOnly("commons-lang:commons-lang:2.6")
+    compileOnly("commons-io:commons-io:2.7")
+    compileOnly("me.scoretwo:commons-bukkit-configuration:${rootProject.extra.get("commonsVersion")}")
+    compileOnly("org.jetbrains.kotlin:kotlin-script-util:${rootProject.extra.get("kotlinVersion")}")
+    compileOnly("org.jetbrains.kotlin:kotlin-compiler:${rootProject.extra.get("kotlinVersion")}")
     implementation("me.scoretwo:commons-syntaxes:${rootProject.extra.get("commonsVersion")}")
     implementation("me.scoretwo:commons-server:${rootProject.extra.get("commonsVersion")}")
-    implementation("me.scoretwo:commons-bukkit-configuration:${rootProject.extra.get("commonsVersion")}")
 }
 
 tasks.withType<com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar> {
@@ -28,11 +27,12 @@ tasks.withType<com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar> {
         exclude(dependency("org.jetbrains.kotlin:kotlin-stdlib-common"))
 
         exclude(dependency("commons-io:commons-io:2.7"))
-        include(dependency("commons-lang:commons-lang:2.6"))
+        exclude(dependency("commons-lang:commons-lang:2.6"))
+
+        exclude(dependency("me.scoretwo:commons-bukkit-configuration:${rootProject.extra.get("commonsVersion")}"))
 
         include(dependency("me.scoretwo:commons-syntaxes:${rootProject.extra.get("commonsVersion")}"))
         include(dependency("me.scoretwo:commons-server:${rootProject.extra.get("commonsVersion")}"))
-        include(dependency("me.scoretwo:commons-bukkit-configuration:${rootProject.extra.get("commonsVersion")}"))
     }
     relocate("org.apache","me.scoretwo.utils.libs.org.apache")
 

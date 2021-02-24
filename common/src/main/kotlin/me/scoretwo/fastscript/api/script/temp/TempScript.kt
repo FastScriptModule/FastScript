@@ -16,7 +16,7 @@ class TempScript(texts : MutableMap<String, String> = mutableMapOf()): Script(Te
         for (expansion in FastScript.instance.expansionManager.expansions) {
             if (expansion.sign != sign)
                 continue
-            return expansion.eval(texts[sign] ?: "", sender, *args)
+            return expansion.eval(texts[sign] ?: "", sender, arrayOf(*args))
         }
         return null
     }

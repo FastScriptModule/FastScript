@@ -30,7 +30,7 @@ abstract class TypeEngineExpansion: FastScriptExpansion() {
         return this
     }
 
-    override fun eval(script: Script, sender: GlobalSender, vararg args: String): Any? {
+    override fun eval(script: Script, sender: GlobalSender, args: Array<Any?>, otherBindings: MutableMap<String, Any?>): Any? {
         val newEngine = engine.factory.scriptEngine
         if (!script.texts.keys.contains(sign))
             return null
@@ -48,6 +48,7 @@ abstract class TypeEngineExpansion: FastScriptExpansion() {
         newEngine.put("args", args)
         newEngine.put("utils", assist)
         newEngine.put("util", assist)
+        otherBindings.forEach { newEngine.put(it.key, it.value) }
 
         engineScripts[script] = newEngine
         return let {
@@ -67,7 +68,7 @@ abstract class TypeEngineExpansion: FastScriptExpansion() {
         }
     }
 
-    override fun eval(text: String, sender: GlobalSender, vararg args: String): Any? {
+    override fun eval(text: String, sender: GlobalSender, args: Array<Any?>, otherBindings: MutableMap<String, Any?>): Any? {
         val newEngine = engine.factory.scriptEngine
         if (text.isBlank())
             return null
@@ -85,6 +86,7 @@ abstract class TypeEngineExpansion: FastScriptExpansion() {
         newEngine.put("args", args)
         newEngine.put("utils", assist)
         newEngine.put("util", assist)
+        otherBindings.forEach { newEngine.put(it.key, it.value) }
         return let {
             try {
                 newEngine.eval(text).also {
@@ -99,12 +101,12 @@ abstract class TypeEngineExpansion: FastScriptExpansion() {
         }
     }
 
-    override fun execute(script: Script, sender: GlobalSender, main: String, args: Array<Any?>): Any? {
+    override fun execute(script: Script, sender: GlobalSender, main: String, args: Array<Any?>, otherBindings: MutableMap<String, Any?>): Any? {
         if (!script.texts.keys.contains(sign))
             return null
         return try {
             if (needEval)
-                eval(script, sender)
+                eval(script, sender, arrayOf(), otherBindings)
 
             val invocable = engineScripts[script] as Invocable
 
@@ -133,12 +135,12 @@ abstract class TypeEngineExpansion: FastScriptExpansion() {
         }
     }
 
-    override fun execute(text: String, sender: GlobalSender, main: String, args: Array<Any?>): Any? {
+    override fun execute(text: String, sender: GlobalSender, main: String, args: Array<Any?>, otherBindings: MutableMap<String, Any?>): Any? {
         if (text.isBlank())
             return null
         return try {
             if (needEval)
-                eval(text, sender)
+                eval(text, sender, arrayOf(), otherBindings)
 
             val invocable = engine as Invocable
 

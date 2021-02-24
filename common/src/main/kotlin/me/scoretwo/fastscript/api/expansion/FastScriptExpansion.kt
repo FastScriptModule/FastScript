@@ -13,10 +13,10 @@ abstract class FastScriptExpansion {
 
     abstract fun reload(): FastScriptExpansion
 
-    abstract fun eval(text: String, sender: GlobalSender, vararg args: String): Any?
-    abstract fun eval(script: Script, sender: GlobalSender, vararg args: String): Any?
-    abstract fun execute(script: Script, sender: GlobalSender, main: String = script.option.main, args: Array<Any?> = arrayOf()): Any?
-    abstract fun execute(text: String, sender: GlobalSender, main: String = "main", args: Array<Any?> = arrayOf()): Any?
+    abstract fun eval(text: String, sender: GlobalSender, args: Array<Any?> = arrayOf(), otherBindings: MutableMap<String, Any?> = mutableMapOf()): Any?
+    abstract fun eval(script: Script, sender: GlobalSender, args: Array<Any?> = arrayOf(), otherBindings: MutableMap<String, Any?> = mutableMapOf()): Any?
+    abstract fun execute(script: Script, sender: GlobalSender, main: String = script.option.main, args: Array<Any?> = arrayOf(), otherBindings: MutableMap<String, Any?> = mutableMapOf()): Any?
+    abstract fun execute(text: String, sender: GlobalSender, main: String = "main", args: Array<Any?> = arrayOf(), otherBindings: MutableMap<String, Any?> = mutableMapOf()): Any?
 
     // abstract fun eval(script: Script, sender: GlobalSender): Any?
 

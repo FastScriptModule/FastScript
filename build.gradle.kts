@@ -8,7 +8,7 @@ plugins {
 }
 
 group = "me.scoretwo"
-version = "1.0.1-SNAPSHOT"
+version = "1.0.2-SNAPSHOT"
 description = "FastScript is a Spigot plugin, which can run JavaScript-based scripts more efficiently."
 
 defaultTasks = mutableListOf("ShadowJar", "publishToMavenLocal")
