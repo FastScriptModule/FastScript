@@ -53,7 +53,7 @@ repositories {
     maven("http://repo.iroselle.com/snapshots/")
 }
 dependencies {
-    implementation("me.scoretwo:FastScript:1.0.1-SNAPSHOT")
+    implementation("me.scoretwo:FastScript-common:1.0.1-SNAPSHOT")
 }
 ```
 
