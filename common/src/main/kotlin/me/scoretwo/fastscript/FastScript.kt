@@ -10,6 +10,8 @@ import me.scoretwo.fastscript.config.SettingConfig
 import me.scoretwo.fastscript.api.script.ScriptManager
 import me.scoretwo.fastscript.api.utils.ExecType
 import me.scoretwo.fastscript.api.utils.ExecUtils
+import me.scoretwo.fastscript.api.utils.maven.MavenArtifact
+import me.scoretwo.fastscript.api.utils.process.ProcessResultType
 import me.scoretwo.fastscript.command.commands.ScriptCommand
 import me.scoretwo.fastscript.utils.Assist
 import me.scoretwo.fastscript.utils.assist
@@ -24,6 +26,20 @@ class FastScript(val plugin: ScriptPlugin) {
     lateinit var expansionManager: ExpansionManager
 
     fun setPlaceholder(player: GlobalPlayer, string: String) = plugin.setPlaceholder(player, string)
+
+    private val libs = arrayOf(
+        MavenArtifact("org.openjdk.nashorn:nashorn-core:15.2"),
+        MavenArtifact("org.ow2.asm:asm-commons:7.3.1"),
+        MavenArtifact("org.ow2.asm:asm-analysis:7.3.1"),
+        MavenArtifact("org.ow2.asm:asm:7.3.1"),
+        MavenArtifact("org.ow2.asm:asm-util:7.3.1"),
+        MavenArtifact("org.ow2.asm:asm-tree:7.3.1"),
+
+        MavenArtifact("org.scala-lang:scala-compiler:2.12.9"),
+        MavenArtifact("org.scala-lang:scala-library:2.12.9"),
+        MavenArtifact("org.scala-lang:scala-reflect:2.12.9"),
+        MavenArtifact("org.scala-lang.modules:scala-xml_2.12:1.1.0"),
+    )
 
     init {
         instance = this
@@ -51,9 +67,29 @@ class FastScript(val plugin: ScriptPlugin) {
         languages = LanguageManager()
         plugin.server.console.sendMessage(FormatHeader.TREE, "Loaded config and language system.§8(${System.currentTimeMillis() - startTime}ms)")
 
-        ExecUtils.execPeriod(ExecType.Loaded, "configs") {
+        ExecUtils.execPeriod(ExecType.Loaded, languages["EXEC-ID.CONFIGS"]) {
             reload("config")
         }
+
+        ExecUtils.execPeriod(ExecType.Loaded, languages["EXEC-ID.LIBS"]) {
+            fun download(artifact: MavenArtifact) {
+                val start = System.currentTimeMillis()
+                val processResult = artifact.download()
+                if (processResult.type == ProcessResultType.FAILED) {
+                    plugin.server.console.sendMessage(FormatHeader.ERROR, languages["DOWNLOAD-LIBS-FAILED"])
+                    throw Throwable(languages["DOWNLOAD-LIBS-FAILED"])
+                }
+                if (processResult.type == ProcessResultType.SUCCESS) {
+                    plugin.server.console.sendMessage(FormatHeader.INFO, languages["DOWNLOADED-LIB"].setPlaceholder(mapOf(
+                        "lib_name" to "${artifact.artifactId}-${artifact.version}.jar",
+                        "millisecond" to "${System.currentTimeMillis() - start}"
+                    )))
+                }
+            }
+            libs.forEach { download(it) }
+            plugin.libs.forEach { download(it) }
+        }
+
         ExecUtils.execPeriod(ExecType.Initialized, "script manager") {
             scriptManager = ScriptManager()
         }
@@ -98,6 +134,10 @@ class FastScript(val plugin: ScriptPlugin) {
                 "script" -> {
                     initInternalScripts()
                     scriptManager.loadScripts()
+                    // Try to Fix Mohist and CatServer
+                    if (::commandNexus.isInitialized) {
+                        commandNexus = FSCommandNexus()
+                    }
                     commandNexus.findSubCommand("script")?.also { (it as ScriptCommand).reload() }
                 }
                 "plugin" ->{

@@ -1,5 +1,6 @@
 package me.scoretwo.fastscript.api.plugin
 
+import me.scoretwo.fastscript.api.utils.maven.MavenArtifact
 import me.scoretwo.utils.plugin.GlobalPlugin
 import me.scoretwo.utils.plugin.PluginDescription
 import me.scoretwo.utils.plugin.logging.GlobalLogger
@@ -11,6 +12,8 @@ import java.io.File
 abstract class ScriptPlugin(plugin: GlobalPlugin): GlobalPlugin {
 
     abstract fun setPlaceholder(player: GlobalPlayer, string: String): String
+
+    open val libs: MutableList<MavenArtifact> = mutableListOf()
 
     val scriptKits = mutableMapOf<String, Any?>()
 

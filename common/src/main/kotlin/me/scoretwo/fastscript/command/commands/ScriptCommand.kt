@@ -177,8 +177,8 @@ class ScriptCommand: SimpleCommand(arrayOf("script")) {
                 sender.sendMessage(FormatHeader.INFO, languages["COMMAND-NEXUS.COMMANDS.SCRIPT.INFO.TITLE"].setPlaceholder(
                     mapOf("script_name" to script.name)))
 
-                languages.getList("COMMAND-NEXUS.COMMANDS.SCRIPT.INFO.TITLE").forEach { string ->
-                    string.setPlaceholder(mapOf(
+                languages.getList("COMMAND-NEXUS.COMMANDS.SCRIPT.INFO.TEXTS").forEach { string ->
+                    sender.sendMessage(string.setPlaceholder(mapOf(
                         "script_name" to script.name,
                         "script_version" to (script.description.version ?: "1.0"),
                         "script_authors" to (if (script.description.authors.isEmpty()) "..." else script.description.authors.joinToString(", ")),
@@ -189,10 +189,11 @@ class ScriptCommand: SimpleCommand(arrayOf("script")) {
                                 return@let "Not more..."
                             mutableListOf<String>().also { signs -> expansions.forEach { expansion -> signs.add(expansion.sign) } }.joinToString()
                         }
-                    ))
+                    )))
                 }
 
                 sender.sendMessage(TextComponent("    "), TextComponent("§7/$displayParents §fhelp").also {
+                    if (FastScript.instance.commandNexus.safeMode) return@also
                     it.hoverEvent = HoverEvent(HoverEvent.Action.SHOW_TEXT, Text(languages["COMMAND-NEXUS.HELPER.CLICK-INSERT-COMMAND"].setPlaceholder(
                         mapOf("command" to "$displayParents help")
                     )))

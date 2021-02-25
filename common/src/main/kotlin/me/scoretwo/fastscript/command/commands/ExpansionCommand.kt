@@ -98,6 +98,7 @@ class ExpansionCommand: SimpleCommand(arrayOf("expansion")) {
                     )))
                 }
                 sender.sendMessage(TextComponent("    "), TextComponent("§7/$displayParents §fhelp").also {
+                    if (FastScript.instance.commandNexus.safeMode) return@also
                     it.hoverEvent = HoverEvent(HoverEvent.Action.SHOW_TEXT, Text(languages["COMMAND-NEXUS.HELPER.CLICK-INSERT-COMMAND"].setPlaceholder(
                         mapOf("command" to "$displayParents help")
                     )))

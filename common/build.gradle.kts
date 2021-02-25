@@ -12,8 +12,10 @@ dependencies {
     compileOnly("org.slf4j:slf4j-log4j12:1.7.30")
     compileOnly("net.md-5:bungeecord-chat:1.16-R0.5-SNAPSHOT")
 
+    compileOnly("org.openjdk.nashorn:nashorn-core:15.2")
+    compileOnly("org.scala-lang:scala-compiler:2.12.9")
     compileOnly("commons-lang:commons-lang:2.6")
-    compileOnly("commons-io:commons-io:2.7")
+    compileOnly("commons-io:commons-io:2.8.0")
     compileOnly("me.scoretwo:commons-bukkit-configuration:${rootProject.extra.get("commonsVersion")}")
     compileOnly("org.jetbrains.kotlin:kotlin-script-util:${rootProject.extra.get("kotlinVersion")}")
     compileOnly("org.jetbrains.kotlin:kotlin-compiler:${rootProject.extra.get("kotlinVersion")}")
@@ -26,7 +28,7 @@ tasks.withType<com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar> {
         exclude(dependency("org.jetbrains.kotlin:kotlin-stdlib"))
         exclude(dependency("org.jetbrains.kotlin:kotlin-stdlib-common"))
 
-        exclude(dependency("commons-io:commons-io:2.7"))
+        exclude(dependency("commons-io:commons-io:2.8.0"))
         exclude(dependency("commons-lang:commons-lang:2.6"))
 
         exclude(dependency("me.scoretwo:commons-bukkit-configuration:${rootProject.extra.get("commonsVersion")}"))

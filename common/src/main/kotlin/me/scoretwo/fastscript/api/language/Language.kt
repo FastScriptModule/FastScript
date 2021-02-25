@@ -27,6 +27,15 @@ class Language(val version: String, val name: String = "en_US") {
             it["USAGE"] = "usage"
             it["EVALUATED"] = "evaluated"
         }
+        it["EXEC-ID"] = YamlConfiguration().also {
+            it["CONFIGS"] = "configs"
+            it["LIBS"] = "libs"
+            it["SCRIPT-MANAGER"] = "script manager"
+            it["EXPANSION-MANAGER"] = "expansion manager"
+            it["COMMAND-NEXUS"] = "CommandNexus"
+        }
+        it["DOWNLOADED-LIB"] = "Downloaded &b{lib_name}&7...&8({millisecond}ms)"
+        it["DOWNLOAD-LIBS-FAILED"] = "&cFailed to download the pre-library file, please check your network, FastScript failed to start."
         it["HOOKED-PLUGIN"] = "Hook to the plugin &e{plugin_name} &7successfully, now you can use the relevant functions of this plugin!"
         it["COMMAND-NEXUS"] = YamlConfiguration().also {
             it["TIPS"] = YamlConfiguration().also {

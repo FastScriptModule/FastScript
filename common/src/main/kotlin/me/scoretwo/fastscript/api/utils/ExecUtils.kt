@@ -26,9 +26,8 @@ object ExecUtils {
                         plugin.server.console.sendMessage(FormatHeader.TREE, languages["INVOKE.ASYNC-SUCCESS"].setPlaceholder(placeholders))
                     else
                         plugin.server.console.sendMessage(FormatHeader.TREE, languages["INVOKE.ASYNC-SUCCESS-HAS-DESCRIPTION"].setPlaceholder(placeholders))
-                } catch (t: Throwable) {
-                    plugin.server.console.sendMessage(FormatHeader.TREE, languages["INVOKE.ASYNC-FAILED"].setPlaceholder(placeholders.also { it["reason"] = t.stackTraceToString() }))
-                    t.printStackTrace()
+                } catch (e: Exception) {
+                    plugin.server.console.sendMessage(FormatHeader.TREE, languages["INVOKE.ASYNC-FAILED"].setPlaceholder(placeholders.also { it["reason"] = e.stackTraceToString() }))
                 }
             })
             return ProcessResult(ProcessResultType.SUCCESS)
@@ -46,8 +45,8 @@ object ExecUtils {
                 else
                     plugin.server.console.sendMessage(FormatHeader.TREE, languages["INVOKE.SUCCESS-HAS-DESCRIPTION"].setPlaceholder(placeholders))
                 ProcessResult(ProcessResultType.SUCCESS)
-            } catch (t: Throwable) {
-                plugin.server.console.sendMessage(FormatHeader.TREE, languages["INVOKE.FAILED"].setPlaceholder(placeholders.also { it["reason"] = t.stackTraceToString() }))
+            } catch (e: Exception) {
+                plugin.server.console.sendMessage(FormatHeader.TREE, languages["INVOKE.FAILED"].setPlaceholder(placeholders.also { it["reason"] = e.stackTraceToString() }))
                 ProcessResult(ProcessResultType.FAILED)
             }
         }

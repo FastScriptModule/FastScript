@@ -3,11 +3,12 @@ package me.scoretwo.fastscript.api.expansion
 import me.scoretwo.fastscript.*
 import me.scoretwo.fastscript.api.format.FormatHeader
 import me.scoretwo.fastscript.api.plugin.ScriptPluginState
-import me.scoretwo.fastscript.api.utils.ExecType
 import me.scoretwo.fastscript.api.utils.process.ProcessResult
 import me.scoretwo.fastscript.api.utils.process.ProcessResultType
 import me.scoretwo.fastscript.expansion.javascript.JavaScriptExpansion
+import me.scoretwo.fastscript.expansion.scala.ScalaExpansion
 import me.scoretwo.utils.bukkit.configuration.yaml.file.YamlConfiguration
+import me.scoretwo.utils.bukkit.configuration.yaml.patchs.getLowerCaseNode
 import java.io.File
 import java.net.URL
 import java.net.URLClassLoader
@@ -55,12 +56,15 @@ class ExpansionManager {
         var fail = 0
         var total = 1
         try {
-            register(JavaScriptExpansion().reload())
+            if (settings.getBoolean(settings.getLowerCaseNode("Options.Internal-Expansions.JavaScript")))
+                register(JavaScriptExpansion().reload())
+            if (settings.getBoolean(settings.getLowerCaseNode("Options.Internal-Expansions.Scala")))
+                register(ScalaExpansion().reload())
         } catch (t: Throwable) {
             fail++
             plugin.server.console.sendMessage(FormatHeader.ERROR, languages["EXPANSION.ERROR-BY-CAUSE.LOAD-ERROR"].setPlaceholder(
                 mapOf(
-                    "file_name" to "JavaScript",
+                    "file_name" to "InternalExpansion",
                     "reason" to t.stackTraceToString()
                 )
             ))

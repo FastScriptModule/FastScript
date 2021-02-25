@@ -4,6 +4,7 @@ import me.scoretwo.fastscript.FastScript
 import me.scoretwo.fastscript.api.format.FormatHeader
 import me.scoretwo.fastscript.api.plugin.ScriptPlugin
 import me.scoretwo.fastscript.api.utils.ExecType
+import me.scoretwo.fastscript.api.utils.maven.MavenArtifact
 import me.scoretwo.fastscript.sendMessage
 import me.scoretwo.fastscript.sponge.hook.PlaceholderAPIHook
 import me.scoretwo.utils.plugin.GlobalPlugin
@@ -15,6 +16,8 @@ import me.scoretwo.utils.sponge.command.toSpongeSender
 import org.spongepowered.api.Sponge
 
 class SpongePlugin(val plugin: GlobalPlugin): ScriptPlugin(plugin) {
+
+    override val libs = mutableListOf(MavenArtifact("net.md-5:bungeecord-api:1.16-R0.4", "https://maven.aliyun.com/repository/central"))
 
     override fun load() {
         FastScript.setBootstrap(this)

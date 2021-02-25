@@ -22,7 +22,6 @@ abstract class TypeEngineExpansion: FastScriptExpansion() {
     val engineScripts = mutableMapOf<Script, ScriptEngine>()
 
     override fun reload(): TypeEngineExpansion {
-        scriptEngineManager.getEngineFactories()
         engine.put("server", plugin.toOriginalServer())
         engine.put("globalServer", plugin.server)
         engine.put("scriptManager", FastScript.instance.scriptManager)
@@ -30,7 +29,7 @@ abstract class TypeEngineExpansion: FastScriptExpansion() {
         return this
     }
 
-    override fun eval(script: Script, sender: GlobalSender, args: Array<Any?>, otherBindings: MutableMap<String, Any?>): Any? {
+    override fun eval(script: Script, sender: GlobalSender, args: Array<Any?>, otherBindings: Map<String, Any?>): Any? {
         val newEngine = engine.factory.scriptEngine
         if (!script.texts.keys.contains(sign))
             return null
@@ -68,7 +67,7 @@ abstract class TypeEngineExpansion: FastScriptExpansion() {
         }
     }
 
-    override fun eval(text: String, sender: GlobalSender, args: Array<Any?>, otherBindings: MutableMap<String, Any?>): Any? {
+    override fun eval(text: String, sender: GlobalSender, args: Array<Any?>, otherBindings: Map<String, Any?>): Any? {
         val newEngine = engine.factory.scriptEngine
         if (text.isBlank())
             return null
@@ -101,7 +100,7 @@ abstract class TypeEngineExpansion: FastScriptExpansion() {
         }
     }
 
-    override fun execute(script: Script, sender: GlobalSender, main: String, args: Array<Any?>, otherBindings: MutableMap<String, Any?>): Any? {
+    override fun execute(script: Script, sender: GlobalSender, main: String, args: Array<Any?>, otherBindings: Map<String, Any?>): Any? {
         if (!script.texts.keys.contains(sign))
             return null
         return try {
@@ -135,7 +134,7 @@ abstract class TypeEngineExpansion: FastScriptExpansion() {
         }
     }
 
-    override fun execute(text: String, sender: GlobalSender, main: String, args: Array<Any?>, otherBindings: MutableMap<String, Any?>): Any? {
+    override fun execute(text: String, sender: GlobalSender, main: String, args: Array<Any?>, otherBindings: Map<String, Any?>): Any? {
         if (text.isBlank())
             return null
         return try {

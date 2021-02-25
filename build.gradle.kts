@@ -8,7 +8,7 @@ plugins {
 }
 
 group = "me.scoretwo"
-version = "1.0.2-SNAPSHOT"
+version = "1.0.3-SNAPSHOT"
 description = "FastScript is a Spigot plugin, which can run JavaScript-based scripts more efficiently."
 
 defaultTasks = mutableListOf("ShadowJar", "publishToMavenLocal")
@@ -23,6 +23,7 @@ allprojects {
         jcenter()
         mavenCentral()
         mavenLocal()
+        maven("https://maven.aliyun.com/nexus/content/groups/public/")
         maven("http://repo.iroselle.com/snapshots/")
         maven("http://repo.iroselle.com/public/")
         maven("https://nexus.velocitypowered.com/repository/velocity-artifacts-snapshots/")
@@ -55,13 +56,13 @@ dependencies {
     implementation("me.scoretwo:commons-bukkit-plugin:${rootProject.extra.get("commonsVersion")}")
     implementation("me.scoretwo:commons-velocity-plugin:${rootProject.extra.get("commonsVersion")}")
 
-    implementation("net.md-5:bungeecord-chat:1.16-R0.4-SNAPSHOT")
     implementation("org.bstats:bstats-bukkit:1.8")
     implementation("com.iroselle:cstats-bukkit:1.7")
     implementation("org.bstats:bstats-bungeecord:1.8")
     implementation("com.iroselle:cstats-bungeecord:1.7")
-    implementation("commons-io:commons-io:2.7")
+    implementation("commons-io:commons-io:2.8.0")
     implementation("commons-lang:commons-lang:2.6")
+    implementation("net.md-5:bungeecord-chat:1.16-R0.5-SNAPSHOT")
 
     implementation("me.scoretwo:commons-syntaxes:${rootProject.extra.get("commonsVersion")}")
     implementation("me.scoretwo:commons-server:${rootProject.extra.get("commonsVersion")}")
@@ -84,13 +85,13 @@ tasks.withType<com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar> {
         include(dependency("me.scoretwo:commons-bungee-plugin:${rootProject.extra.get("commonsVersion")}"))
         include(dependency("me.scoretwo:commons-bukkit-plugin:${rootProject.extra.get("commonsVersion")}"))
 
-        include(dependency("net.md-5:bungeecord-chat:1.16-R0.4-SNAPSHOT"))
         include(dependency("org.bstats:bstats-bukkit:1.8"))
         include(dependency("com.iroselle:cstats-bukkit:1.7"))
         include(dependency("org.bstats:bstats-bungeecord:1.8"))
         include(dependency("com.iroselle:cstats-bungeecord:1.7"))
 
-        include(dependency("commons-io:commons-io:2.7"))
+        include(dependency("net.md-5:bungeecord-chat:1.16-R0.5-SNAPSHOT"))
+        include(dependency("commons-io:commons-io:2.8.0"))
         include(dependency("commons-lang:commons-lang:2.6"))
 
         include(dependency("me.scoretwo:commons-syntaxes:${rootProject.extra.get("commonsVersion")}"))
