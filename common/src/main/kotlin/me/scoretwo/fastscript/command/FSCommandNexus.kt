@@ -24,18 +24,8 @@ class FSCommandNexus: CommandNexus(
     FastScript.instance.plugin,
     arrayOf("FastScript", "script", "fs"),
     SendLimit.ALL,
-    object : CommandLanguage {
-        override val COMMAND_NO_PERMISSION = languages["COMMAND-NEXUS.TIPS.NO-PERMISSION"]
-        override val COMMAND_ONLY_CONSOLE = languages["COMMAND-NEXUS.TIPS.ONLY-CONSOLE"]
-        override val COMMAND_ONLY_PLAYER = languages["COMMAND-NEXUS.TIPS.ONLY-PLAYER"]
-        override val COMMAND_UNKNOWN_USAGE = languages["COMMAND-NEXUS.TIPS.UNKNOWN-USAGE"]
-    },
-    try {
-        helpGenerator
-    } catch (t: Throwable) {
-        safeMode = true
-        DefaultHelpGenerator(plugin)
-    }
+    language,
+    helpGenerator
 ) {
 
     init {
@@ -51,7 +41,7 @@ class FSCommandNexus: CommandNexus(
     companion object {
         var safeMode = false
 
-        val helpGenerator =
+        val helpGenerator = try {
             object : HelpGenerator {
                 override fun translateTexts(command: SubCommand, parents: MutableList<String>, args: MutableList<String>): MutableList<MutableList<Array<TextComponent>>> {
                     val texts = mutableListOf<Array<TextComponent>>()
@@ -120,6 +110,18 @@ class FSCommandNexus: CommandNexus(
                 )
 
             }
+        } catch (t: Throwable) {
+            safeMode = true
+            DefaultHelpGenerator(plugin)
+        }
+
+
+        val language = object : CommandLanguage {
+            override val COMMAND_NO_PERMISSION = languages["COMMAND-NEXUS.TIPS.NO-PERMISSION"]
+            override val COMMAND_ONLY_CONSOLE = languages["COMMAND-NEXUS.TIPS.ONLY-CONSOLE"]
+            override val COMMAND_ONLY_PLAYER = languages["COMMAND-NEXUS.TIPS.ONLY-PLAYER"]
+            override val COMMAND_UNKNOWN_USAGE = languages["COMMAND-NEXUS.TIPS.UNKNOWN-USAGE"]
+        }
     }
 
 }
