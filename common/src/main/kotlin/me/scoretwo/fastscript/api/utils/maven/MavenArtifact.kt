@@ -61,8 +61,8 @@ class MavenArtifact {
         try {
             val url = toURL(repository)
             val folder = File(plugin.dataFolder, "lib")
-            val target = File(folder, url.substringAfterLast("/"))
-            if (target.exists()) {
+            val file = File(folder, url.substringAfterLast("/"))
+            if (file.exists()) {
                 return ProcessResult(ProcessResultType.OTHER, "exists")
             }
 
@@ -78,14 +78,14 @@ class MavenArtifact {
                 folder.mkdir()
             }
 
-            val fileOutputStream = FileOutputStream(target)
+            val fileOutputStream = FileOutputStream(file)
             fileOutputStream.write(bytes)
             fileOutputStream.close()
             inputStream.close()
 
             val method = URLClassLoader::class.java.getDeclaredMethod("addURL", URL::class.java)
             method.isAccessible = true
-            method.invoke(plugin.pluginClassLoader, target.toURI().toURL())
+            method.invoke(plugin.pluginClassLoader, file.toURI().toURL())
             return ProcessResult(ProcessResultType.SUCCESS)
         } catch (e: Throwable) {
             e.printStackTrace()

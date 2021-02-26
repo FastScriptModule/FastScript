@@ -63,6 +63,7 @@ class FastScript(val plugin: ScriptPlugin) {
             plugin.dataFolder.mkdirs()
         }
         val startTime = System.currentTimeMillis()
+        assist = Assist()
         settings = SettingConfig()
         languages = LanguageManager()
         plugin.server.console.sendMessage(FormatHeader.TREE, "Loaded config and language system.§8(${System.currentTimeMillis() - startTime}ms)")
@@ -80,7 +81,8 @@ class FastScript(val plugin: ScriptPlugin) {
                     throw Throwable(languages["DOWNLOAD-LIBS-FAILED"])
                 }
                 if (processResult.type == ProcessResultType.SUCCESS) {
-                    plugin.server.console.sendMessage(FormatHeader.INFO, languages["DOWNLOADED-LIB"].setPlaceholder(mapOf(
+                    val format = if (stats == ScriptPluginState.RUNNING) FormatHeader.INFO else FormatHeader.TREE
+                    plugin.server.console.sendMessage(format, languages["DOWNLOADED-LIB"].setPlaceholder(mapOf(
                         "lib_name" to "${artifact.artifactId}-${artifact.version}.jar",
                         "millisecond" to "${System.currentTimeMillis() - start}"
                     )))
@@ -102,7 +104,6 @@ class FastScript(val plugin: ScriptPlugin) {
         ExecUtils.execPeriod(ExecType.Initialized, "CommandNexus") {
             commandNexus = FSCommandNexus()
         }
-        assist = Assist()
     }
 
     fun reloadLanguage() {

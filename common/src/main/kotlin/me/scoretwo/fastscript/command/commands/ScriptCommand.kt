@@ -2,6 +2,7 @@ package me.scoretwo.fastscript.command.commands
 
 import me.scoretwo.fastscript.FastScript
 import me.scoretwo.fastscript.api.format.FormatHeader
+import me.scoretwo.fastscript.command.FSCommandNexus
 import me.scoretwo.fastscript.command.SimpleCommand
 import me.scoretwo.fastscript.languages
 import me.scoretwo.fastscript.sendMessage
@@ -193,7 +194,7 @@ class ScriptCommand: SimpleCommand(arrayOf("script")) {
                 }
 
                 sender.sendMessage(TextComponent("    "), TextComponent("§7/$displayParents §fhelp").also {
-                    if (FastScript.instance.commandNexus.safeMode) return@also
+                    if (FSCommandNexus.safeMode) return@also
                     it.hoverEvent = HoverEvent(HoverEvent.Action.SHOW_TEXT, Text(languages["COMMAND-NEXUS.HELPER.CLICK-INSERT-COMMAND"].setPlaceholder(
                         mapOf("command" to "$displayParents help")
                     )))
