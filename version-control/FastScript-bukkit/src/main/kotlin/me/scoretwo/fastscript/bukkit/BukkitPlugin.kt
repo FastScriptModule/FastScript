@@ -82,8 +82,6 @@ class BukkitPlugin(val plugin: GlobalPlugin): ScriptPlugin(plugin) {
 
             )
         }
-
-        FastScript.instance.commandNexus.registerBukkitCommands()
     }
 
     override fun setPlaceholder(player: GlobalPlayer, string: String): String {

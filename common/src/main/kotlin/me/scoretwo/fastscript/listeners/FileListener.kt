@@ -4,13 +4,14 @@ import org.apache.commons.io.monitor.FileAlterationListener
 import org.apache.commons.io.monitor.FileAlterationMonitor
 import org.apache.commons.io.monitor.FileAlterationObserver
 import java.io.File
+import java.util.concurrent.TimeUnit
 
 
 class FileListener: FileAlterationListener {
 
     val monitor: FileAlterationMonitor
 
-    constructor(directory: File): this(directory, 100)
+    constructor(directory: File): this(directory, 20)
 
     constructor(directory: File, interval: Long): this(interval, FileAlterationObserver(directory))
 

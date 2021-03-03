@@ -8,6 +8,7 @@ import me.scoretwo.fastscript.api.script.temp.TempScript
 import me.scoretwo.fastscript.api.utils.ExecType
 import me.scoretwo.fastscript.api.utils.process.ProcessResult
 import me.scoretwo.fastscript.api.utils.process.ProcessResultType
+import me.scoretwo.fastscript.command.commands.ScriptCommand
 import me.scoretwo.utils.bukkit.configuration.yaml.ConfigurationSection
 import me.scoretwo.utils.bukkit.configuration.yaml.patchs.getLowerCaseNode
 import me.scoretwo.utils.sender.GlobalSender

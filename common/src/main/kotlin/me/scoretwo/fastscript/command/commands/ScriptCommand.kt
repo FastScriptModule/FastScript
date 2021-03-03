@@ -7,14 +7,15 @@ import me.scoretwo.fastscript.command.SimpleCommand
 import me.scoretwo.fastscript.languages
 import me.scoretwo.fastscript.sendMessage
 import me.scoretwo.fastscript.setPlaceholder
+import me.scoretwo.utils.command.SubCommand
 import me.scoretwo.utils.command.executor.CommandExecutor
 import me.scoretwo.utils.command.executor.Executors
+import me.scoretwo.utils.sender.GlobalPlayer
 import me.scoretwo.utils.sender.GlobalSender
 import net.md_5.bungee.api.chat.ClickEvent
 import net.md_5.bungee.api.chat.HoverEvent
 import net.md_5.bungee.api.chat.TextComponent
 import net.md_5.bungee.api.chat.hover.content.Text
-import org.jetbrains.kotlin.util.capitalizeDecapitalize.capitalizeFirstWord
 
 /**
  * @author Score2
@@ -25,6 +26,10 @@ import org.jetbrains.kotlin.util.capitalizeDecapitalize.capitalizeFirstWord
 class ScriptCommand: SimpleCommand(arrayOf("script")) {
 
     override var description = languages["COMMAND-NEXUS.COMMANDS.SCRIPT.DESCRIPTION"]
+
+    init {
+        instance = this
+    }
 
     private val runCommand = nextBuilder()
         .alias("execute", "run")
@@ -40,12 +45,12 @@ class ScriptCommand: SimpleCommand(arrayOf("script")) {
                     return true
                 }
                 if (args.isEmpty()) {
-                    sender.sendMessage(FormatHeader.ERROR, "${languages["SUBSTANTIVE.USAGE"].capitalizeFirstWord()}: /${parents.joinToString(" ")} §f<${script.texts.keys.joinToString("/")}> §7<${script.option.main}> <args...> §8:s")
+                    sender.sendMessage(FormatHeader.ERROR, "${languages["SUBSTANTIVE.USAGE"]}: /${parents.joinToString(" ")} §f<${script.texts.keys.joinToString("/")}> §7<${script.option.main}> <args...> §8:s")
                     return true
                 }
                 val sign = args[0]
                 if (!script.texts.keys.contains(sign)) {
-                    sender.sendMessage(FormatHeader.ERROR, "${languages["SUBSTANTIVE.USAGE"].capitalizeFirstWord()}: /${parents.joinToString(" ")} §f<${script.texts.keys.joinToString("/")}> §7<${script.option.main}> <args...> §8:s")
+                    sender.sendMessage(FormatHeader.ERROR, "${languages["SUBSTANTIVE.USAGE"]}: /${parents.joinToString(" ")} §f<${script.texts.keys.joinToString("/")}> §7<${script.option.main}> <args...> §8:s")
                     return true
                 }
 
@@ -105,12 +110,12 @@ class ScriptCommand: SimpleCommand(arrayOf("script")) {
                     return true
                 }
                 if (args.isEmpty()) {
-                    sender.sendMessage(FormatHeader.ERROR, "${languages["SUBSTANTIVE.USAGE"].capitalizeFirstWord()}: /${parents.joinToString(" ")} §f<${script.texts.keys.joinToString("/")}> §7<args> §8:s")
+                    sender.sendMessage(FormatHeader.ERROR, "${languages["SUBSTANTIVE.USAGE"]}: /${parents.joinToString(" ")} §f<${script.texts.keys.joinToString("/")}> §7<args> §8:s")
                     return true
                 }
                 val sign = args[0]
                 if (!script.texts.keys.contains(sign)) {
-                    sender.sendMessage(FormatHeader.ERROR, "${languages["SUBSTANTIVE.USAGE"].capitalizeFirstWord()}: /${parents.joinToString(" ")} §f<${script.texts.keys.joinToString("/")}>")
+                    sender.sendMessage(FormatHeader.ERROR, "${languages["SUBSTANTIVE.USAGE"]}: /${parents.joinToString(" ")} §f<${script.texts.keys.joinToString("/")}>")
                     return true
                 }
                 val args0: Array<String> = when {
@@ -207,11 +212,27 @@ class ScriptCommand: SimpleCommand(arrayOf("script")) {
         })
         .build()
 
+    override fun execute(sender: GlobalSender, parents: Array<String>, args: Array<String>): Boolean {
+        if (sender !is GlobalPlayer && args.isNotEmpty()) {
+            when (args[0].toLowerCase()) {
+                ":reload" -> {
+                    reload()
+                }
+                ":clear" -> {
+                    subCommands.clear()
+                }
+            }
+            return true
+        }
+        return super.execute(sender, parents, args)
+    }
+
+    @Synchronized
     fun reload() {
         subCommands.clear()
         FastScript.instance.scriptManager.scripts.forEach {
             val subCommand = nextBuilder()
-                .alias(it.value.description.name)
+                .alias(it.value.name)
                 .description(languages["COMMAND-NEXUS.COMMANDS.SCRIPT.SUB-SCRIPT-DESCRIPTION"].setPlaceholder(mapOf("script_name" to it.key)))
                 .execute(object : CommandExecutor {
                     override fun execute(sender: GlobalSender, parents: Array<String>, args: Array<String>): Boolean {
@@ -227,9 +248,13 @@ class ScriptCommand: SimpleCommand(arrayOf("script")) {
                 .subCommand(reloadCommand)
                 .subCommand(infoCommand)
                 .build()
-            subCommands.add(subCommand)
+            register(subCommand)
         }
     }
 
+    companion object {
+        lateinit var instance: ScriptCommand
+
+    }
 
 }

@@ -126,6 +126,11 @@ class FastScript(val plugin: ScriptPlugin) {
         if (!plugin.dataFolder.exists()) {
             plugin.dataFolder.mkdirs()
         }
+        try {
+            commandNexus.register()
+        } catch (t: Throwable) {
+
+        }
         modes.forEach {mode ->
             when (mode) {
                 "config" -> {
@@ -139,9 +144,9 @@ class FastScript(val plugin: ScriptPlugin) {
                     if (::commandNexus.isInitialized) {
                         commandNexus = FSCommandNexus()
                     }
-                    commandNexus.findSubCommand("script")?.also { (it as ScriptCommand).reload() }
+                    plugin.server.dispatchCommand(plugin.server.console, "fs script :reload")
                 }
-                "plugin" ->{
+                "plugin" -> {
                     plugin.reload()
                 }
             }

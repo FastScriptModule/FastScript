@@ -61,7 +61,7 @@ class MavenArtifact {
         try {
             val url = toURL(repository)
             val folder = File(plugin.dataFolder, "lib")
-            val file = File(folder, url.substringAfterLast("/"))
+            val file = File(folder, "$artifactId-$version.jar")
             if (file.exists()) {
                 return ProcessResult(ProcessResultType.OTHER, "exists")
             }

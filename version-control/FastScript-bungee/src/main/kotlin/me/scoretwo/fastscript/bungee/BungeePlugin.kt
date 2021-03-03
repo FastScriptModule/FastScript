@@ -19,8 +19,6 @@ class BungeePlugin(val plugin: GlobalPlugin): ScriptPlugin(plugin) {
 
     override fun enable() {
         FastScript.instance.reload("script", "plugin")
-
-        FastScript.instance.commandNexus.registerBungeeCommands()
     }
 
     override fun setPlaceholder(player: GlobalPlayer, string: String): String {
