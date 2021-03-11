@@ -13,11 +13,14 @@ import me.scoretwo.utils.bukkit.configuration.yaml.ConfigurationSection
 import me.scoretwo.utils.bukkit.configuration.yaml.patchs.getLowerCaseNode
 import me.scoretwo.utils.sender.GlobalSender
 import me.scoretwo.utils.syntaxes.save
+import org.apache.commons.io.monitor.FileAlterationListener
+import org.apache.commons.io.monitor.FileAlterationMonitor
+import org.apache.commons.io.monitor.FileAlterationObserver
 import java.io.File
 
 class ScriptManager {
 
-    val folders = mutableListOf(File(plugin.dataFolder, "scripts"))
+    private val folders = mutableMapOf<File, FileAlterationListener>()
 
     val scripts = mutableMapOf<String, CustomScript>()
 
@@ -27,10 +30,36 @@ class ScriptManager {
 
     var operationCount = 0
 
+    val defaultFolder: File get() {
+        folders.forEach {
+            return it.key
+        }
+        return File("")
+    }
+
+    private fun addFolder(folder: File) {
+        folders[folder] = object : FileAlterationListener {
+            override fun onStart(observer: FileAlterationObserver) {}
+            override fun onDirectoryCreate(file: File) {}
+            override fun onDirectoryChange(file: File) {}
+            override fun onDirectoryDelete(file: File) {}
+            override fun onFileCreate(file: File) {}
+            override fun onFileDelete(file: File) {}
+            override fun onStop(observer: FileAlterationObserver) {}
+            override fun onFileChange(file: File) {
+                println(file.name + " changed.")
+
+
+
+            }
+        }
+    }
+
     init {
-        if (!folders[0].exists()) {
-            folders[0].mkdirs()
-            File(folders[0], "example.js").writeText(
+        addFolder(File(plugin.dataFolder, "scripts"))
+        if (!defaultFolder.exists()) {
+            defaultFolder.mkdirs()
+            File(defaultFolder, "example.js").writeText(
                 """
                 function main() {
                     sender.sendMessage("§athis is demo.")
@@ -163,9 +192,11 @@ class ScriptManager {
         var fail = 0
         scripts.clear()
 
-        folders.addAll(mutableListOf<File>().also { files -> settings.getStringList(settings.getLowerCaseNode("load-script-files")).forEach { files.add(File(it)) } })
+        settings.getStringList(settings.getLowerCaseNode("load-script-files")).forEach {
+            addFolder(File(it))
+        }
 
-        folders.forEach { file ->
+        folders.keys.forEach { file ->
             if (file.isDirectory && file.exists()) file.listFiles()?.forEach {
                 loadScript(it).also {
                     total++
@@ -178,6 +209,15 @@ class ScriptManager {
                     else if (it.second.type == ProcessResultType.SUCCESS)
                         success++
                 }
+            }
+        }
+
+        if (settings.getBoolean(settings.getLowerCaseNode("options.file-listener"))) {
+            folders.forEach {
+                val observer = FileAlterationObserver(it.key)
+                observer.addListener(it.value)
+                val monitor = FileAlterationMonitor(100L, observer)
+                monitor.start()
             }
         }
 

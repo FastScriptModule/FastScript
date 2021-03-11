@@ -7,19 +7,7 @@ import java.io.File
 import java.util.concurrent.TimeUnit
 
 
-class FileListener: FileAlterationListener {
-
-    val monitor: FileAlterationMonitor
-
-    constructor(directory: File): this(directory, 20)
-
-    constructor(directory: File, interval: Long): this(interval, FileAlterationObserver(directory))
-
-    constructor(interval: Long, observer: FileAlterationObserver) {
-        observer.addListener(this)
-        monitor = FileAlterationMonitor(interval, observer)
-        monitor.start()
-    }
+class FileListener(): FileAlterationListener {
 
     override fun onStart(observer: FileAlterationObserver) {
 

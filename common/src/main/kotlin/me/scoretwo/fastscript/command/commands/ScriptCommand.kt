@@ -217,12 +217,13 @@ class ScriptCommand: SimpleCommand(arrayOf("script")) {
             when (args[0].toLowerCase()) {
                 ":reload" -> {
                     reload()
+                    return true
                 }
                 ":clear" -> {
                     subCommands.clear()
+                    return true
                 }
             }
-            return true
         }
         return super.execute(sender, parents, args)
     }
