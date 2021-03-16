@@ -34,7 +34,7 @@ class ScriptManager {
         folders.forEach {
             return it.key
         }
-        return File("")
+        return null!!
     }
 
     private fun addFolder(folder: File) {
@@ -48,8 +48,13 @@ class ScriptManager {
             override fun onStop(observer: FileAlterationObserver) {}
             override fun onFileChange(file: File) {
                 println(file.name + " changed.")
+                if (file.name.endsWith(".yml", true)) {
 
+                }
 
+                if (file.parentFile == folder) {
+
+                }
 
             }
         }
