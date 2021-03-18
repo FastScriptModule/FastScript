@@ -136,10 +136,11 @@ class FastScript(val plugin: ScriptPlugin) {
             when (mode) {
                 "config" -> {
                     settings.reload()
-                    if (settings.getBoolean(settings.ignoreCase("options.debug")))
-                        plugin.server.dispatchCommand(plugin.server.console, "fs ::enable_debug")
-                    else
-                        plugin.server.dispatchCommand(plugin.server.console, "fs ::disable_debug")
+                    if (stats == ScriptPluginState.RUNNING)
+                        if (settings.getBoolean(settings.ignoreCase("options.debug")))
+                            plugin.server.dispatchCommand(plugin.server.console, "fs ::enable_debug")
+                        else
+                            plugin.server.dispatchCommand(plugin.server.console, "fs ::disable_debug")
                     reloadLanguage()
                 }
                 "script" -> {
