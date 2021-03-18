@@ -4,7 +4,7 @@ import me.scoretwo.fastscript.FastScript
 import me.scoretwo.fastscript.api.format.FormatHeader
 import me.scoretwo.fastscript.config.SettingConfig
 import me.scoretwo.fastscript.plugin
-import me.scoretwo.utils.bukkit.configuration.yaml.patchs.getLowerCaseNode
+import me.scoretwo.utils.bukkit.configuration.yaml.patchs.ignoreCase
 import me.scoretwo.utils.command.CommandBuilder
 import me.scoretwo.utils.command.CommandNexus
 import me.scoretwo.utils.sender.GlobalPlayer

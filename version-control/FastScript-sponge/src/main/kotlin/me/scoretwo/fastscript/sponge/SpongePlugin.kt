@@ -15,7 +15,7 @@ import me.scoretwo.utils.sponge.command.toSpongePlayer
 import me.scoretwo.utils.sponge.command.toSpongeSender
 import org.spongepowered.api.Sponge
 
-class SpongePlugin(val plugin: GlobalPlugin): ScriptPlugin(plugin) {
+class SpongePlugin(plugin: GlobalPlugin): ScriptPlugin(plugin) {
 
     override val libs = mutableListOf(MavenArtifact("net.md-5:bungeecord-api:1.16-R0.4", "https://maven.aliyun.com/repository/central"))
 

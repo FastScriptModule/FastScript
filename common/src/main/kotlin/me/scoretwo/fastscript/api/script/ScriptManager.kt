@@ -5,14 +5,12 @@ import me.scoretwo.fastscript.api.format.FormatHeader
 import me.scoretwo.fastscript.api.script.custom.ConfigScriptOption
 import me.scoretwo.fastscript.api.script.custom.CustomScript
 import me.scoretwo.fastscript.api.script.temp.TempScript
-import me.scoretwo.fastscript.api.utils.ExecType
 import me.scoretwo.fastscript.api.utils.process.ProcessResult
 import me.scoretwo.fastscript.api.utils.process.ProcessResultType
-import me.scoretwo.fastscript.command.commands.ScriptCommand
 import me.scoretwo.utils.bukkit.configuration.yaml.ConfigurationSection
-import me.scoretwo.utils.bukkit.configuration.yaml.patchs.getLowerCaseNode
+import me.scoretwo.utils.bukkit.configuration.yaml.patchs.ignoreCase
 import me.scoretwo.utils.sender.GlobalSender
-import me.scoretwo.utils.syntaxes.save
+import me.scoretwo.utils.server.task.TaskType
 import org.apache.commons.io.monitor.FileAlterationListener
 import org.apache.commons.io.monitor.FileAlterationMonitor
 import org.apache.commons.io.monitor.FileAlterationObserver
@@ -39,6 +37,7 @@ class ScriptManager {
 
     private fun addFolder(folder: File) {
         folders[folder] = object : FileAlterationListener {
+            val fails = mutableListOf<CustomScript>()
             override fun onStart(observer: FileAlterationObserver) {}
             override fun onDirectoryCreate(file: File) {}
             override fun onDirectoryChange(file: File) {}
@@ -47,14 +46,36 @@ class ScriptManager {
             override fun onFileDelete(file: File) {}
             override fun onStop(observer: FileAlterationObserver) {}
             override fun onFileChange(file: File) {
-                println(file.name + " changed.")
-                if (file.name.endsWith(".yml", true)) {
-
-                }
-
-                if (file.parentFile == folder) {
-
-                }
+                plugin.server.schedule.task(plugin, TaskType.ASYNC, Runnable {
+                    val start = System.currentTimeMillis()
+                    scripts.forEach {
+                        when {
+                            it.value.configOption.file == file -> {
+                                it.value.configOption.reload()
+                                plugin.server.console.sendMessage(FormatHeader.INFO, languages["FILE-LISTENER.SCRIPT.LOADED"].setPlaceholder(
+                                    mapOf(
+                                        "file_name" to file.name,
+                                        "script_name" to it.key,
+                                        "millisecond" to "${System.currentTimeMillis() - start}"
+                                    )
+                                ))
+                                return@Runnable
+                            }
+                            it.value.scriptFiles.contains(file) -> {
+                                if (it.value.init.protected) return@Runnable
+                                it.value.reload()
+                                plugin.server.console.sendMessage(FormatHeader.INFO, languages["FILE-LISTENER.SCRIPT.LOADED"].setPlaceholder(
+                                    mapOf(
+                                        "file_name" to file.name,
+                                        "script_name" to it.key,
+                                        "millisecond" to "${System.currentTimeMillis() - start}"
+                                    )
+                                ))
+                                return@Runnable
+                            }
+                        }
+                    }
+                })
 
             }
         }
@@ -96,14 +117,15 @@ class ScriptManager {
             return Pair(null, ProcessResult(ProcessResultType.FAILED, languages["SCRIPT.PROCESS-RESULT.SCRIPT-TYPE-NOT-SUPPORTED"], "file" to scriptFile.name))
         }
         val script = CustomScript(
-            object : ScriptDescription {
+/*            object : ScriptDescription {
                 override val name: String = scriptName
                 override val main: String = "main"
                 override val version: String? = null
                 override val description: String? = null
                 override val authors: Array<String> = arrayOf()
 
-            },
+            },*/
+            scriptName,
             ConfigScriptOption(),
             mutableListOf(file)
         ).reload()
@@ -126,8 +148,8 @@ class ScriptManager {
         else
             return loadGeneralScript(file)
 
-        val options = ConfigScriptOption(file)
-        val script = CustomScript(ScriptDescription.fromSection(options.config), options).reload()
+        val option = ConfigScriptOption(file)
+        val script = CustomScript(option.getString("name") ?: scriptName, option).reload()
 
         script.scriptFiles = mutableListOf<File>().also { files ->
             FastScript.instance.expansionManager.expansions.forEach { expansion ->
@@ -162,8 +184,8 @@ class ScriptManager {
 
             return Pair(null, ProcessResult(ProcessResultType.FAILED, "Option file not found in ${folder.name}."))
         }
-        val options = ConfigScriptOption(optionsFile)
-        val script = CustomScript(ScriptDescription.fromSection(options.config), options).reload()
+        val option = ConfigScriptOption(optionsFile)
+        val script = CustomScript(option.getString("name") ?: folder.name, option).reload()
 
         script.scriptFiles = mutableListOf<File>().also { files ->
             folder.listFiles()?.forEach { file ->
@@ -186,18 +208,22 @@ class ScriptManager {
         return Pair(script, ProcessResult(ProcessResultType.SUCCESS))
     }
 
-    /**
-    * 暂时同步, 异步以后写
-    */
-    @Synchronized
     fun loadScripts() {
         val startTime = System.currentTimeMillis()
         var total = 0
         var success = 0
         var fail = 0
-        scripts.clear()
 
-        settings.getStringList(settings.getLowerCaseNode("load-script-files")).forEach {
+        val protects = mutableMapOf<String, CustomScript>()
+        scripts.forEach {
+            if (it.value.init.protected && it.value.configOption.file?.exists() == true) {
+                protects[it.key] = it.value
+            }
+        }
+        scripts.clear()
+        total += protects.size
+
+        settings.getStringList(settings.ignoreCase("load-script-files")).forEach {
             addFolder(File(it))
         }
 
@@ -217,7 +243,7 @@ class ScriptManager {
             }
         }
 
-        if (settings.getBoolean(settings.getLowerCaseNode("options.file-listener"))) {
+        if (settings.getBoolean(settings.ignoreCase("options.file-listener"))) {
             folders.forEach {
                 val observer = FileAlterationObserver(it.key)
                 observer.addListener(it.value)
@@ -240,9 +266,9 @@ class ScriptManager {
     }
 
     fun isConfigScriptOption(section: ConfigurationSection) =
-        section.isString(section.getLowerCaseNode("name")) &&
-        (section.isString(section.getLowerCaseNode("version")) || section.isInt(section.getLowerCaseNode("version"))) &&
-        section.isString(section.getLowerCaseNode("main"))
+        section.isString(section.ignoreCase("name")) &&
+        (section.isString(section.ignoreCase("version")) || section.isInt(section.ignoreCase("version"))) &&
+        section.isString(section.ignoreCase("main"))
 
 
     fun eval(script: CustomScript, sign: String, sender: GlobalSender, vararg args: String) =

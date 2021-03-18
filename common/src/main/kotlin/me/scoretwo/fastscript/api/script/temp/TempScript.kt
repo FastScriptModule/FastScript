@@ -3,6 +3,7 @@ package me.scoretwo.fastscript.api.script.temp
 import me.scoretwo.fastscript.FastScript
 import me.scoretwo.fastscript.api.script.Script
 import me.scoretwo.utils.sender.GlobalSender
+import java.util.*
 
 /**
  * @author Score2
@@ -10,7 +11,7 @@ import me.scoretwo.utils.sender.GlobalSender
  *
  * @project FastScript
  */
-class TempScript(texts : MutableMap<String, String> = mutableMapOf()): Script(TempScriptDescription(), TempScriptOption(), texts) {
+class TempScript(texts : MutableMap<String, String> = mutableMapOf()): Script("temp-${UUID.randomUUID()}", TempScriptOption(), texts) {
 
     override fun eval(sign: String, sender: GlobalSender, vararg args: String): Any? {
         for (expansion in FastScript.instance.expansionManager.expansions) {

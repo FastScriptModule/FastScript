@@ -19,7 +19,8 @@ abstract class TypeEngineExpansion: FastScriptExpansion() {
 
     val scriptEngineManager = ScriptEngineManager(plugin.pluginClassLoader)
 
-    val engineScripts = mutableMapOf<Script, ScriptEngine>()
+    private val engineTexts = mutableMapOf<String, ScriptEngine>()
+    private val engineScripts = mutableMapOf<Script, ScriptEngine>()
 
     override fun reload(): TypeEngineExpansion {
         engine.put("server", plugin.toOriginalServer())
@@ -86,6 +87,8 @@ abstract class TypeEngineExpansion: FastScriptExpansion() {
         newEngine.put("utils", assist)
         newEngine.put("util", assist)
         otherBindings.forEach { newEngine.put(it.key, it.value) }
+
+        engineTexts[text] = newEngine
         return let {
             try {
                 newEngine.eval(text).also {
@@ -104,7 +107,7 @@ abstract class TypeEngineExpansion: FastScriptExpansion() {
         if (!script.texts.keys.contains(sign))
             return null
         return try {
-            if (needEval)
+            if (engineScripts[script] !is Invocable)
                 eval(script, sender, arrayOf(), otherBindings)
 
             val invocable = engineScripts[script] as Invocable
@@ -138,10 +141,10 @@ abstract class TypeEngineExpansion: FastScriptExpansion() {
         if (text.isBlank())
             return null
         return try {
-            if (needEval)
+            if (engineTexts[text] !is Invocable)
                 eval(text, sender, arrayOf(), otherBindings)
 
-            val invocable = engine as Invocable
+            val invocable = engineTexts[text] as Invocable
 
             invocable.invokeFunction(main, *args)
         } catch (e: ScriptException) {

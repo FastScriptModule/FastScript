@@ -15,6 +15,7 @@ import me.scoretwo.fastscript.api.utils.process.ProcessResultType
 import me.scoretwo.fastscript.command.commands.ScriptCommand
 import me.scoretwo.fastscript.utils.Assist
 import me.scoretwo.fastscript.utils.assist
+import me.scoretwo.utils.bukkit.configuration.yaml.patchs.ignoreCase
 import me.scoretwo.utils.sender.GlobalPlayer
 import me.scoretwo.utils.sender.GlobalSender
 import net.md_5.bungee.api.ChatColor
@@ -135,6 +136,10 @@ class FastScript(val plugin: ScriptPlugin) {
             when (mode) {
                 "config" -> {
                     settings.reload()
+                    if (settings.getBoolean(settings.ignoreCase("options.debug")))
+                        plugin.server.dispatchCommand(plugin.server.console, "fs ::enable_debug")
+                    else
+                        plugin.server.dispatchCommand(plugin.server.console, "fs ::disable_debug")
                     reloadLanguage()
                 }
                 "script" -> {

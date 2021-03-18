@@ -8,13 +8,13 @@ plugins {
 }
 
 group = "me.scoretwo"
-version = "1.0.4-SNAPSHOT"
+version = "1.1.0-SNAPSHOT"
 description = "FastScript is a Spigot plugin, which can run JavaScript-based scripts more efficiently."
 
 defaultTasks = mutableListOf("ShadowJar", "publishToMavenLocal")
 
 extra.apply {
-    set("commonsVersion", "2.0.11-SNAPSHOT")
+    set("commonsVersion", "2.0.12-SNAPSHOT")
     set("kotlinVersion", "1.4.30")
 }
 
@@ -33,6 +33,7 @@ allprojects {
         maven("https://repo.codemc.io/repository/maven-snapshots/")
         maven("https://repo.codemc.io/repository/maven-public/")
         maven("https://hub.spigotmc.org/nexus/content/repositories/snapshots/")
+        maven("https://repo.opencollab.dev/maven-snapshots/")
     }
 
     group = rootProject.group
@@ -50,11 +51,13 @@ dependencies {
     implementation(project(":version-control:FastScript-bungee"))
     implementation(project(":version-control:FastScript-sponge"))
     implementation(project(":version-control:FastScript-velocity"))
+    implementation(project(":version-control:FastScript-nukkit"))
 
     implementation("me.scoretwo:commons-sponge-plugin:${rootProject.extra.get("commonsVersion")}")
     implementation("me.scoretwo:commons-bungee-plugin:${rootProject.extra.get("commonsVersion")}")
     implementation("me.scoretwo:commons-bukkit-plugin:${rootProject.extra.get("commonsVersion")}")
     implementation("me.scoretwo:commons-velocity-plugin:${rootProject.extra.get("commonsVersion")}")
+    implementation("me.scoretwo:commons-nukkit-plugin:${rootProject.extra.get("commonsVersion")}")
 
     implementation("org.bstats:bstats-bukkit:1.8")
     implementation("com.iroselle:cstats-bukkit:1.7")
@@ -79,11 +82,13 @@ tasks.withType<com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar> {
         include(dependency(":FastScript-bungee"))
         include(dependency(":FastScript-sponge"))
         include(dependency(":FastScript-velocity"))
+        include(dependency(":FastScript-nukkit"))
 
         include(dependency("me.scoretwo:commons-velocity-plugin:${rootProject.extra.get("commonsVersion")}"))
         include(dependency("me.scoretwo:commons-sponge-plugin:${rootProject.extra.get("commonsVersion")}"))
         include(dependency("me.scoretwo:commons-bungee-plugin:${rootProject.extra.get("commonsVersion")}"))
         include(dependency("me.scoretwo:commons-bukkit-plugin:${rootProject.extra.get("commonsVersion")}"))
+        include(dependency("me.scoretwo:commons-nukkit-plugin:${rootProject.extra.get("commonsVersion")}"))
 
         include(dependency("org.bstats:bstats-bukkit:1.8"))
         include(dependency("com.iroselle:cstats-bukkit:1.7"))
@@ -145,6 +150,16 @@ tasks.processResources {
             "name" to rootProject.name,
             "version" to project.version,
             "main" to "${rootProject.group}.${rootProject.name.toLowerCase()}.velocity.VelocityBootStrap",
+            "description" to project.description
+        ))
+    }
+    from("src/main/resources") {
+        include("nukkit.yml")
+        expand(mapOf(
+            "id" to rootProject.name.toLowerCase(),
+            "name" to rootProject.name,
+            "version" to project.version,
+            "main" to "${rootProject.group}.${rootProject.name.toLowerCase()}.nukkit.NukkitBootStrap",
             "description" to project.description
         ))
     }

@@ -8,10 +8,10 @@ import me.scoretwo.fastscript.plugin
 import me.scoretwo.fastscript.sendMessage
 import me.scoretwo.fastscript.expansion.typeengine.ScriptIncludeType.*
 import me.scoretwo.utils.bukkit.configuration.yaml.ConfigurationSection
-import me.scoretwo.utils.bukkit.configuration.yaml.patchs.getLowerCaseNode
+import me.scoretwo.utils.bukkit.configuration.yaml.patchs.ignoreCase
 import java.lang.reflect.Method
 
-// 已弃用该类, 现有更好的方法代替它: js: Java.type("xxxx.xxxx")
+@Deprecated("已弃用该类, 现有更好的方法代替它: js: Java.type(\"xxxx.xxxx\")")
 class ScriptInclude(
     type: ScriptIncludeType?,
     val obj: Pair<String, List<Any?>?>?,
@@ -50,7 +50,7 @@ class ScriptInclude(
                     constructor.isAccessible = true
                     constructor.newInstance(*obj.second!!.toTypedArray())
                 } catch (e: Exception) {
-                    plugin.server.console.sendMessage(FormatHeader.ERROR, "脚本 §c${script.description.name} §7执行初始化时发生错误, 错误如下:\n§8${e.stackTraceToString()}")
+                    plugin.server.console.sendMessage(FormatHeader.ERROR, "脚本 §c${script.name} §7执行初始化时发生错误, 错误如下:\n§8${e.stackTraceToString()}")
                     null
                 }
             }
@@ -71,29 +71,29 @@ class ScriptInclude(
     fun findClass(script: CustomScript, target: String) = try {
         Class.forName(target)
     } catch (e: ClassNotFoundException) {
-        plugin.server.console.sendMessage(FormatHeader.ERROR, "脚本 §c${script.description.name} §7没有找到类 §c${target}§7, 错误如下:\n§8${e.stackTraceToString()}")
+        plugin.server.console.sendMessage(FormatHeader.ERROR, "脚本 §c${script.name} §7没有找到类 §c${target}§7, 错误如下:\n§8${e.stackTraceToString()}")
         null
     }
 
     fun accessMethod(script: CustomScript, `object`: Any?, method: Method) = try {
         method.invoke(`object`, obj!!.second)
     } catch (e: Exception) {
-        plugin.server.console.sendMessage(FormatHeader.ERROR, "脚本 §c${script.description.name} §7访问方法 §c${method.name} §7时发生错误, 错误如下:\n§8${e.stackTraceToString()}")
+        plugin.server.console.sendMessage(FormatHeader.ERROR, "脚本 §c${script.name} §7访问方法 §c${method.name} §7时发生错误, 错误如下:\n§8${e.stackTraceToString()}")
         null
     }
 
     companion object {
 
         fun fromSection(section: ConfigurationSection): ScriptInclude {
-            val type = ScriptIncludeType.valueOf(section.getString(section.getLowerCaseNode("type")))
+            val type = ScriptIncludeType.valueOf(section.getString(section.ignoreCase("type")))
 
             val obj: Pair<String, List<Any?>?>?
-            section.getConfigurationSection(section.getLowerCaseNode("object")).also {
-                obj = Pair(it.getString(it.getLowerCaseNode("class")), it.getList(it.getLowerCaseNode("args")))
+            section.getConfigurationSection(section.ignoreCase("object")).also {
+                obj = Pair(it.getString(it.ignoreCase("class")), it.getList(it.ignoreCase("args")))
             }
             val met: Pair<String, List<Any?>?>?
-            section.getConfigurationSection(section.getLowerCaseNode("method")).also {
-                met = Pair(it.getString(it.getLowerCaseNode("name")), it.getList(it.getLowerCaseNode("args")))
+            section.getConfigurationSection(section.ignoreCase("method")).also {
+                met = Pair(it.getString(it.ignoreCase("name")), it.getList(it.ignoreCase("args")))
             }
             return ScriptInclude(type, obj, met)
         }

@@ -87,8 +87,8 @@ class MavenArtifact {
             method.isAccessible = true
             method.invoke(plugin.pluginClassLoader, file.toURI().toURL())
             return ProcessResult(ProcessResultType.SUCCESS)
-        } catch (e: Throwable) {
-            e.printStackTrace()
+        } catch (t: Throwable) {
+            t.printStackTrace()
             return ProcessResult(ProcessResultType.FAILED)
         }
     }

@@ -9,6 +9,7 @@ abstract class FastScriptExpansion {
     abstract val sign: String
     abstract val fileSuffix: String
 
+    @Deprecated("已不需要该 boolean 进行判断, 脚本不应该在每次 execute 时进行 evaluate")
     abstract val needEval: Boolean
 
     abstract fun reload(): FastScriptExpansion

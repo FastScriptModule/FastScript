@@ -18,15 +18,13 @@ import org.bukkit.Bukkit
 import org.bukkit.Sound
 import org.bukkit.entity.Player
 
-class BukkitPlugin(val plugin: GlobalPlugin): ScriptPlugin(plugin) {
+class BukkitPlugin(plugin: GlobalPlugin): ScriptPlugin(plugin) {
 
     override fun load() {
         FastScript.setBootstrap(this)
     }
 
     override fun enable() {
-        FastScript.instance.reload("script", "plugin")
-
         FastScript.instance.commandNexus.findSubCommand("tools")?.also { toolsCommand ->
             toolsCommand.register(
                 toolsCommand.nextBuilder().alias("sounds", "sound")
@@ -82,6 +80,8 @@ class BukkitPlugin(val plugin: GlobalPlugin): ScriptPlugin(plugin) {
 
             )
         }
+
+        FastScript.instance.reload("script", "plugin")
     }
 
     override fun setPlaceholder(player: GlobalPlayer, string: String): String {

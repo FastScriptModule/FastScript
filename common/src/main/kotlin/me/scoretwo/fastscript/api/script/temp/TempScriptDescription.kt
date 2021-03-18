@@ -9,6 +9,7 @@ import java.util.*
  *
  * @project FastScript
  */
+@Deprecated("现可使用 Script 中的 meta 进行获取, 且 Script 已内置这些其中的基本变量.")
 class TempScriptDescription: ScriptDescription {
     override val name: String = "temp-${UUID.randomUUID()}"
     override val main: String = "main"

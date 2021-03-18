@@ -11,7 +11,7 @@ import me.scoretwo.utils.sender.GlobalPlayer
 import me.scoretwo.utils.sender.GlobalSender
 import net.md_5.bungee.api.ProxyServer
 
-class BungeePlugin(val plugin: GlobalPlugin): ScriptPlugin(plugin) {
+class BungeePlugin(plugin: GlobalPlugin): ScriptPlugin(plugin) {
 
     override fun load() {
         FastScript.setBootstrap(this)

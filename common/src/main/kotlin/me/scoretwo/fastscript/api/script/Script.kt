@@ -11,13 +11,22 @@ import me.scoretwo.utils.sender.GlobalSender
  * @project FastScript
  */
 abstract class Script(
-    val description: ScriptDescription,
+    val name: String,
     val option: ScriptOption,
     // sign, text
     var texts : MutableMap<String, String> = mutableMapOf()
 ) {
 
-    val name = description.name
+    val main = option.getString("main") ?: "main"
+    val version = option.getString("version") ?: "1.0-default"
+    val description = option.getString("description") ?: "Not more..."
+    val authors = option.getStringList("authors") ?: listOf()
+
+    class Init(option: ScriptOption) {
+        val useAsync = option.getBoolean("init.use-async")
+        val protected = option.getBoolean("init.protected")
+    }
+    val init = Init(option)
 
     fun bindExpansions() =
         mutableListOf<FastScriptExpansion>().also { expansions ->

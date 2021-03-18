@@ -64,4 +64,5 @@ MergeBuilder("version-control").also {
     it.add("FastScript-bungee")
     it.add("FastScript-sponge")
     it.add("FastScript-velocity")
+    it.add("FastScript-nukkit")
 }

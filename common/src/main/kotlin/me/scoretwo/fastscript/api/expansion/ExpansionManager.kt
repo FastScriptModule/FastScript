@@ -8,7 +8,7 @@ import me.scoretwo.fastscript.api.utils.process.ProcessResultType
 import me.scoretwo.fastscript.expansion.javascript.JavaScriptExpansion
 import me.scoretwo.fastscript.expansion.scala.ScalaExpansion
 import me.scoretwo.utils.bukkit.configuration.yaml.file.YamlConfiguration
-import me.scoretwo.utils.bukkit.configuration.yaml.patchs.getLowerCaseNode
+import me.scoretwo.utils.bukkit.configuration.yaml.patchs.ignoreCase
 import java.io.File
 import java.net.URL
 import java.net.URLClassLoader
@@ -56,9 +56,9 @@ class ExpansionManager {
         var fail = 0
         var total = 1
         try {
-            if (settings.getBoolean(settings.getLowerCaseNode("Options.Internal-Expansions.JavaScript")))
+            if (settings.getBoolean(settings.ignoreCase("Options.Internal-Expansions.JavaScript")))
                 register(JavaScriptExpansion().reload())
-            if (settings.getBoolean(settings.getLowerCaseNode("Options.Internal-Expansions.Scala")))
+            if (settings.getBoolean(settings.ignoreCase("Options.Internal-Expansions.Scala")))
                 register(ScalaExpansion().reload())
         } catch (t: Throwable) {
             fail++
@@ -86,9 +86,9 @@ class ExpansionManager {
             try {
                 expansions.add(rawExpansion.second!!.reload())
                 success++
-            } catch (e: Throwable) {
+            } catch (t: Throwable) {
                 fail++
-//                plugin.server.console.sendMessage(FormatHeader.ERROR, "An exception occurred while loading expansion ${file.name}, reason:\n§8${e.stackTraceToString()}")
+//                plugin.server.console.sendMessage(FormatHeader.ERROR, "An exception occurred while loading expansion ${file.name}, reason:\n§8${t.stackTraceToString()}")
             }
         }
         val format = if (FastScript.stats == ScriptPluginState.RUNNING) FormatHeader.INFO else FormatHeader.TREE
@@ -117,23 +117,23 @@ class ExpansionManager {
             val jarFile = JarFile(file)
             description = try {
                 ExpansionDescription.readConfig(YamlConfiguration().also { it.load(jarFile.getInputStream(jarFile.getJarEntry("expansion.yml")).reader()) })
-            } catch (e: Throwable) {
+            } catch (t: Throwable) {
                 plugin.server.console.sendMessage(FormatHeader.ERROR, languages["EXPANSION.ERROR-BY-CAUSE.LOAD-DESCRIPTION-FILE-ERROR"].setPlaceholder(
                     mapOf(
                         "file_name" to file.name,
-                        "reason" to e.stackTraceToString()
+                        "reason" to t.stackTraceToString()
                     )
                 ))
                 return Pair(ProcessResult(ProcessResultType.FAILED), null)
             }
             val clazz = try {
                 Class.forName(description.main)
-            } catch (e: Throwable) {
+            } catch (t: Throwable) {
                 plugin.server.console.sendMessage(FormatHeader.ERROR, languages["EXPANSION.ERROR-BY-CAUSE.LOAD-MAIN-CLASS-ERROR"].setPlaceholder(
                     mapOf(
                         "file_name" to file.name,
                         "description_main" to description.main,
-                        "reason" to e.stackTraceToString()
+                        "reason" to t.stackTraceToString()
                     )
                 ))
                 return Pair(ProcessResult(ProcessResultType.FAILED), null)
@@ -141,12 +141,12 @@ class ExpansionManager {
 
             val instance = try {
                 clazz.newInstance()
-            } catch (e: Throwable) {
+            } catch (t: Throwable) {
                 plugin.server.console.sendMessage(FormatHeader.ERROR, languages["EXPANSION.ERROR-BY-CAUSE.LOAD-MAIN-CLASS-ERROR"].setPlaceholder(
                     mapOf(
                         "file_name" to file.name,
                         "description_main" to description.main,
-                        "reason" to e.stackTraceToString()
+                        "reason" to t.stackTraceToString()
                     )
                 ))
                 return Pair(ProcessResult(ProcessResultType.FAILED), null)
@@ -163,11 +163,11 @@ class ExpansionManager {
             }
 
             clazz.asSubclass(FastScriptExpansion::class.java)
-        } catch (e: Throwable) {
+        } catch (t: Throwable) {
             plugin.server.console.sendMessage(FormatHeader.ERROR, languages["EXPANSION.ERROR-BY-CAUSE.LOAD-ERROR"].setPlaceholder(
                 mapOf(
                     "file_name" to file.name,
-                    "reason" to e.stackTraceToString()
+                    "reason" to t.stackTraceToString()
                 )
             ))
             return Pair(ProcessResult(ProcessResultType.FAILED), null)

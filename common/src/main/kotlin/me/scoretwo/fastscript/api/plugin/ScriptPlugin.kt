@@ -9,7 +9,7 @@ import me.scoretwo.utils.sender.GlobalSender
 import me.scoretwo.utils.server.GlobalServer
 import java.io.File
 
-abstract class ScriptPlugin(plugin: GlobalPlugin): GlobalPlugin {
+abstract class ScriptPlugin(val plugin: GlobalPlugin): GlobalPlugin {
 
     abstract fun setPlaceholder(player: GlobalPlayer, string: String): String
 
@@ -27,7 +27,7 @@ abstract class ScriptPlugin(plugin: GlobalPlugin): GlobalPlugin {
     open fun disable() {}
 
     override val dataFolder: File = plugin.dataFolder
-    override val description: PluginDescription = plugin.description
+    override val description: PluginDescription get() = plugin.description
     override val logger: GlobalLogger = plugin.logger
     override val pluginClassLoader: ClassLoader = plugin.pluginClassLoader
     override val server: GlobalServer = plugin.server

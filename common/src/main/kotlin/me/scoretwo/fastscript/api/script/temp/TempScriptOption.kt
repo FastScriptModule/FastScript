@@ -9,6 +9,6 @@ import me.scoretwo.fastscript.api.script.ScriptOption
  * @project FastScript
  */
 class TempScriptOption: ScriptOption {
-    override val main: String = "execute"
-    override val meta: MutableMap<String, String> = mutableMapOf()
+    override var main: String = "execute"
+    override var meta: MutableMap<String, Any?> = mutableMapOf()
 }

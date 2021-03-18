@@ -1,11 +1,9 @@
 package me.scoretwo.fastscript.command
 
-import me.scoretwo.fastscript.FastScript
+import me.scoretwo.fastscript.*
 import me.scoretwo.fastscript.command.commands.*
-import me.scoretwo.fastscript.languages
-import me.scoretwo.fastscript.plugin
-import me.scoretwo.fastscript.setPlaceholder
 import me.scoretwo.fastscript.utils.assist
+import me.scoretwo.utils.bukkit.configuration.yaml.patchs.ignoreCase
 import me.scoretwo.utils.command.CommandBuilder
 import me.scoretwo.utils.command.CommandNexus
 import me.scoretwo.utils.command.SendLimit
@@ -14,6 +12,7 @@ import me.scoretwo.utils.command.executor.Executors
 import me.scoretwo.utils.command.helper.DefaultHelpGenerator
 import me.scoretwo.utils.command.helper.HelpGenerator
 import me.scoretwo.utils.command.language.CommandLanguage
+import me.scoretwo.utils.sender.GlobalPlayer
 import me.scoretwo.utils.sender.GlobalSender
 import net.md_5.bungee.api.chat.ClickEvent
 import net.md_5.bungee.api.chat.HoverEvent
@@ -28,15 +27,34 @@ class FSCommandNexus: CommandNexus(
     helpGenerator
 ) {
 
+    val debugCommand = DebugCommand()
+
     init {
         register(ScriptCommand())
         register(ExpansionCommand())
         register(MigrateCommand())
         register(ToolsCommand())
         register(ReloadCommand())
-        register(DebugCommand())
+        if (settings.getBoolean(settings.ignoreCase("options.debug")))
+            plugin.server.dispatchCommand(plugin.server.console, "fs ::enable_debug")
     }
 
+    override fun execute(sender: GlobalSender, parents: Array<String>, args: Array<String>): Boolean {
+        if (sender !is GlobalPlayer && args.isNotEmpty()) {
+            when (args[0].toLowerCase()) {
+                "::enable_debug" -> {
+                    if (!isRegistered(debugCommand))
+                        register(debugCommand)
+                    return true
+                }
+                "::disable_debug" -> {
+                    unregister(debugCommand)
+                    return true
+                }
+            }
+        }
+        return super.execute(sender, parents, args)
+    }
 
     companion object {
         var safeMode = false

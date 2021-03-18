@@ -1,9 +1,10 @@
 package me.scoretwo.fastscript.api.script
 
 import me.scoretwo.utils.bukkit.configuration.yaml.ConfigurationSection
-import me.scoretwo.utils.bukkit.configuration.yaml.patchs.getLowerCaseNode
+import me.scoretwo.utils.bukkit.configuration.yaml.patchs.ignoreCase
 import javax.security.auth.login.Configuration
 
+@Deprecated("现可使用 Script 中的 meta 进行获取, 且 Script 已内置这些其中的基本变量.")
 interface ScriptDescription {
 
     val name: String
@@ -18,14 +19,14 @@ interface ScriptDescription {
     companion object {
 
         fun fromSection(section: ConfigurationSection) = parseDescription(
-            section.getString(section.getLowerCaseNode("name")),
-            section.getString(section.getLowerCaseNode("main")),
-            section.getString(section.getLowerCaseNode("version")),
-            section.getString(section.getLowerCaseNode("description")),
-            if (section.isList(section.getLowerCaseNode("authors")))
-                section.getStringList(section.getLowerCaseNode("authors"))
+            section.getString(section.ignoreCase("name")),
+            section.getString(section.ignoreCase("main")),
+            section.getString(section.ignoreCase("version")),
+            section.getString(section.ignoreCase("description")),
+            if (section.isList(section.ignoreCase("authors")))
+                section.getStringList(section.ignoreCase("authors"))
             else
-                mutableListOf(section.getString(section.getLowerCaseNode("authors")))
+                mutableListOf(section.getString(section.ignoreCase("authors")))
         )
 
         fun parseDescription(

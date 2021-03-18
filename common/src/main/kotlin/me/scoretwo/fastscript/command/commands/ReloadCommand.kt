@@ -6,6 +6,7 @@ import me.scoretwo.fastscript.api.format.FormatHeader
 import me.scoretwo.fastscript.command.SimpleCommand
 import me.scoretwo.fastscript.languages
 import me.scoretwo.utils.sender.GlobalSender
+import me.scoretwo.utils.server.task.TaskType
 
 /**
  * @author Score2
@@ -30,6 +31,25 @@ class ReloadCommand: SimpleCommand(arrayOf("reload")) {
             mode = args[0].toLowerCase()
         }
 
+        if (args.size > 1 && args[1] == ":async") {
+            plugin.server.schedule.task(plugin, TaskType.ASYNC, Runnable {
+                if (mode == "all") {
+                    FastScript.instance.reloadAll()
+                    sender.sendMessage(FormatHeader.INFO, languages["COMMAND-NEXUS.COMMANDS.RELOAD.ASYNC-LOADED-ALL"])
+                    return@Runnable
+                }
+                FastScript.instance.reload(mode)
+                when (mode) {
+                    "config" -> sender.sendMessage(FormatHeader.INFO, languages["COMMAND-NEXUS.COMMANDS.RELOAD.ASYNC-LOADED-CONFIG"])
+                    "script" -> sender.sendMessage(FormatHeader.INFO, languages["COMMAND-NEXUS.COMMANDS.RELOAD.ASYNC-LOADED-SCRIPT"])
+                    "plugin" -> sender.sendMessage(FormatHeader.INFO, languages["COMMAND-NEXUS.COMMANDS.RELOAD.ASYNC-LOADED-PLUGIN"])
+                }
+            })
+
+            return true
+        }
+
+
         if (mode == "all") {
             FastScript.instance.reloadAll()
             sender.sendMessage(FormatHeader.INFO, languages["COMMAND-NEXUS.COMMANDS.RELOAD.LOADED-ALL"])
@@ -46,7 +66,11 @@ class ReloadCommand: SimpleCommand(arrayOf("reload")) {
     }
 
     override fun tabComplete(sender: GlobalSender, parents: Array<String>, args: Array<String>) =
-        if (args.size < 2) mutableListOf("config", "script", "plugin", "all") else null
+        when {
+            args.size < 2 -> mutableListOf("config", "script", "plugin", "all")
+            args.size < 3 -> mutableListOf(":async")
+            else -> null
+        }
 
 
 }

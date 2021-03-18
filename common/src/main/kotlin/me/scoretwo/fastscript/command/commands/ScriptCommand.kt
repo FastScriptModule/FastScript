@@ -174,7 +174,8 @@ class ScriptCommand: SimpleCommand(arrayOf("script")) {
                 val script = FastScript.instance.scriptManager.scripts[parents[parents.size - 2]] ?: let {
                     // 似乎不会发生?
                     sender.sendMessage(FormatHeader.WARN, languages["COMMAND-NEXUS.COMMANDS.SCRIPT.NOT-FOUND-SCRIPT"].setPlaceholder(
-                        mapOf("script_name" to parents[parents.size - 2])))
+                        "script_name" to parents[parents.size - 2])
+                    )
                     return true
                 }
 
@@ -186,10 +187,10 @@ class ScriptCommand: SimpleCommand(arrayOf("script")) {
                 languages.getList("COMMAND-NEXUS.COMMANDS.SCRIPT.INFO.TEXTS").forEach { string ->
                     sender.sendMessage(string.setPlaceholder(mapOf(
                         "script_name" to script.name,
-                        "script_version" to (script.description.version ?: "1.0"),
-                        "script_authors" to (if (script.description.authors.isEmpty()) "..." else script.description.authors.joinToString(", ")),
-                        "script_description" to (script.description.description ?: "Not more..."),
-                        "script_main" to script.description.main,
+                        "script_version" to script.version,
+                        "script_authors" to (if (script.authors.isEmpty()) "..." else script.authors.joinToString(", ")),
+                        "script_description" to script.description,
+                        "script_main" to script.main,
                         "script_bind_expansions" to script.bindExpansions().let { expansions ->
                             if (expansions.isEmpty())
                                 return@let "Not more..."
