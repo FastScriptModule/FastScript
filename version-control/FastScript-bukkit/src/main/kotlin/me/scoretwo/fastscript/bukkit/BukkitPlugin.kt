@@ -32,7 +32,7 @@ class BukkitPlugin(plugin: GlobalPlugin): ScriptPlugin(plugin) {
                     .customCommand("<player>", arrayOf("[sound]", "[volume]", "[pitch]"), languages["COMMAND-NEXUS.COMMANDS.TOOLS.BUKKIT.SOUNDS.DESCRIPTION"])
                     .executor(object : Executors {
                         override fun execute(sender: GlobalSender, parents: Array<String>, args: Array<String>): Boolean {
-                            if (args.size < 3) {
+                            if (args.size < 2) {
                                 return false
                             }
                             val sound = try { Sound.valueOf(args[1]) } catch (t: Throwable) {
