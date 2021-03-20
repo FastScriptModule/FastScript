@@ -23,10 +23,6 @@ abstract class TypeEngineExpansion: FastScriptExpansion() {
     private val engineScripts = mutableMapOf<Script, ScriptEngine>()
 
     override fun reload(): TypeEngineExpansion {
-        engine.put("server", plugin.toOriginalServer())
-        engine.put("globalServer", plugin.server)
-        engine.put("scriptManager", FastScript.instance.scriptManager)
-        engine.put("expansionManager", FastScript.instance.expansionManager)
         return this
     }
 
@@ -34,6 +30,14 @@ abstract class TypeEngineExpansion: FastScriptExpansion() {
         val newEngine = engine.factory.scriptEngine
         if (!script.texts.keys.contains(sign))
             return null
+
+        newEngine.put("meta", HashMap<String, Any?>())
+        newEngine.put("plugin", plugin.toOriginalPlugin())
+        newEngine.put("server", plugin.toOriginalServer())
+        newEngine.put("globalServer", plugin.server)
+        newEngine.put("scriptManager", FastScript.instance.scriptManager)
+        newEngine.put("expansionManager", FastScript.instance.expansionManager)
+
         if (sender.isPlayer()) {
             sender.toPlayer().let {
                 newEngine.put("globalPlayer", it)
@@ -48,6 +52,8 @@ abstract class TypeEngineExpansion: FastScriptExpansion() {
         newEngine.put("args", args)
         newEngine.put("utils", assist)
         newEngine.put("util", assist)
+        newEngine.put("registerListener", script::registerListener)
+        newEngine.put("unregisterListener", script::unregisterListener)
         otherBindings.forEach { newEngine.put(it.key, it.value) }
 
         engineScripts[script] = newEngine
@@ -72,6 +78,15 @@ abstract class TypeEngineExpansion: FastScriptExpansion() {
         val newEngine = engine.factory.scriptEngine
         if (text.isBlank())
             return null
+
+        newEngine.put("meta", HashMap<String, Any?>())
+        newEngine.put("plugin", plugin.toOriginalPlugin())
+        newEngine.put("server", plugin.toOriginalServer())
+        newEngine.put("globalServer", plugin.server)
+        newEngine.put("globalPlugin", plugin)
+        newEngine.put("scriptManager", FastScript.instance.scriptManager)
+        newEngine.put("expansionManager", FastScript.instance.expansionManager)
+
         if (sender.isPlayer()) {
             sender.toPlayer().let {
                 newEngine.put("globalPlayer", it)
@@ -114,16 +129,21 @@ abstract class TypeEngineExpansion: FastScriptExpansion() {
 
             invocable.invokeFunction(main, *args)
         } catch (e: ScriptException) {
-            plugin.server.console.sendMessage(FormatHeader.ERROR, languages["EXPANSION.TYPE-ENGINE.EXECUTE-SCRIPT-ERROR"].setPlaceholder(
-                mapOf(
-                    "script_name" to script.name,
-                    "execute_main" to main,
-                    "reason" to e.stackTraceToString()
-                ))
-            )
-            null
+            if (main == "load" || main == "unload") {
+                null
+            } else {
+                plugin.server.console.sendMessage(FormatHeader.ERROR, languages["EXPANSION.TYPE-ENGINE.EXECUTE-SCRIPT-ERROR"].setPlaceholder(
+                    mapOf(
+                        "script_name" to script.name,
+                        "execute_main" to main,
+                        "reason" to e.stackTraceToString()
+                    ))
+                )
+                null
+            }
+
         } catch (e: NoSuchMethodException) {
-            if (main == "init") {
+            if (main == "load" || main == "unload") {
                 null
             } else {
                 plugin.server.console.sendMessage(FormatHeader.ERROR, languages["EXPANSION.TYPE-ENGINE.EXECUTE-SCRIPT-FUNCTION-NOT-FOUND-ERROR"].setPlaceholder(
@@ -148,15 +168,19 @@ abstract class TypeEngineExpansion: FastScriptExpansion() {
 
             invocable.invokeFunction(main, *args)
         } catch (e: ScriptException) {
-            plugin.server.console.sendMessage(FormatHeader.ERROR, languages["EXPANSION.TYPE-ENGINE.EXECUTE-TEMP-SCRIPT-ERROR"].setPlaceholder(
-                mapOf(
-                    "execute_main" to main,
-                    "reason" to e.stackTraceToString()
-                ))
-            )
-            null
+            if (main == "load" || main == "unload") {
+                null
+            } else {
+                plugin.server.console.sendMessage(FormatHeader.ERROR, languages["EXPANSION.TYPE-ENGINE.EXECUTE-TEMP-SCRIPT-ERROR"].setPlaceholder(
+                    mapOf(
+                        "execute_main" to main,
+                        "reason" to e.stackTraceToString()
+                    ))
+                )
+                null
+            }
         } catch (e: NoSuchMethodException) {
-            if (main == "init") {
+            if (main == "load" || main == "unload") {
                 null
             } else {
                 plugin.server.console.sendMessage(FormatHeader.ERROR, languages["EXPANSION.TYPE-ENGINE.EXECUTE-TEMP-SCRIPT-FUNCTION-NOT-FOUND-ERROR"].setPlaceholder(

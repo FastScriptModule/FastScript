@@ -13,7 +13,7 @@ class LanguageManager {
         }
 
         it["en_US"] = defaultLanguage
-        it["zh_CN"] = Language(version, "zh_CN")
+        it["zh_CN"] = Language(version, "zh_CN").also { it.defaultConfig = zh_CN }
     }
 
     init {

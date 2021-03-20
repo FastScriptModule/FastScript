@@ -13,6 +13,7 @@ import me.scoretwo.utils.sender.GlobalSender
 import me.scoretwo.utils.sponge.command.registerSpongeCommands
 import me.scoretwo.utils.sponge.command.toSpongePlayer
 import me.scoretwo.utils.sponge.command.toSpongeSender
+import me.scoretwo.utils.sponge.plugin.toSpongePlugin
 import org.spongepowered.api.Sponge
 
 class SpongePlugin(plugin: GlobalPlugin): ScriptPlugin(plugin) {
@@ -32,11 +33,27 @@ class SpongePlugin(plugin: GlobalPlugin): ScriptPlugin(plugin) {
         return PlaceholderAPIHook.parsePlaceholder(string, player.toSpongePlayer())
     }
 
+    override fun toOriginalPlugin() = toSpongePlugin()
+
     override fun toOriginalSender(sender: GlobalSender) = sender.toSpongeSender()
 
     override fun toOriginalPlayer(player: GlobalPlayer) = player.toSpongePlayer()
 
     override fun toOriginalServer(): Any? = Sponge.getServer()
+
+    override fun registerListener(any: Any) = try {
+        Sponge.getEventManager().registerListeners(toSpongePlugin(), any)
+        true
+    } catch (t: Throwable) {
+        false
+    }
+
+    override fun unregisterListener(any: Any) = try {
+        Sponge.getEventManager().unregisterListeners(any)
+        true
+    } catch (t: Throwable) {
+        false
+    }
 
     override fun reload() {
         if (PlaceholderAPIHook.initializePlaceholder()) {

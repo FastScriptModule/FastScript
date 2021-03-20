@@ -1,7 +1,8 @@
 package me.scoretwo.fastscript.api.script
 
-import me.scoretwo.fastscript.FastScript
+import me.scoretwo.fastscript.*
 import me.scoretwo.fastscript.api.expansion.FastScriptExpansion
+import me.scoretwo.fastscript.api.format.FormatHeader
 import me.scoretwo.utils.sender.GlobalSender
 
 /**
@@ -28,6 +29,8 @@ abstract class Script(
     }
     val init = Init(option)
 
+    val listeners = mutableListOf<Any>()
+
     fun bindExpansions() =
         mutableListOf<FastScriptExpansion>().also { expansions ->
             texts.keys.forEach {
@@ -46,4 +49,28 @@ abstract class Script(
 
     fun execute(expansion: FastScriptExpansion?, sender: GlobalSender, main: String = option.main, args: Array<Any?> = arrayOf()): Any? =
         expansion?.execute(this, sender, main, args)
+
+    fun registerListener(any: Any) {
+        if (!plugin.registerListener(any))
+            plugin.server.console.sendMessage(
+                FormatHeader.WARN,
+                languages["SCRIPT.LISTENERS.FAILED-REGISTER"].setPlaceholder("script_name" to name)
+            )
+        else
+            listeners.add(any)
+    }
+
+    fun unregisterListener(any: Any) {
+        if (!plugin.unregisterListener(any))
+            plugin.server.console.sendMessage(
+                FormatHeader.WARN,
+                languages["SCRIPT.LISTENERS.FAILED-UNREGISTER"].setPlaceholder("script_name" to name)
+            )
+        else
+            listeners.add(any)
+    }
+
+    fun unregisterListeners() {
+        listeners.forEach { unregisterListener(it) }
+    }
 }

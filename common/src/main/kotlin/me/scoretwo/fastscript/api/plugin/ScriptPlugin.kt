@@ -17,9 +17,13 @@ abstract class ScriptPlugin(val plugin: GlobalPlugin): GlobalPlugin {
 
     val scriptKits = mutableMapOf<String, Any?>()
 
+    abstract fun toOriginalPlugin(): Any?
     abstract fun toOriginalSender(sender: GlobalSender): Any?
     abstract fun toOriginalPlayer(player: GlobalPlayer): Any?
     abstract fun toOriginalServer(): Any?
+
+    abstract fun registerListener(any: Any): Boolean
+    abstract fun unregisterListener(any: Any): Boolean
 
     open fun load() {}
     open fun reload() {}

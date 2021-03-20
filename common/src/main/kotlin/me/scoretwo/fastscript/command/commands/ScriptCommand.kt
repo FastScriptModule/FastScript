@@ -7,6 +7,7 @@ import me.scoretwo.fastscript.command.SimpleCommand
 import me.scoretwo.fastscript.languages
 import me.scoretwo.fastscript.sendMessage
 import me.scoretwo.fastscript.setPlaceholder
+import me.scoretwo.fastscript.utils.toText
 import me.scoretwo.utils.command.SubCommand
 import me.scoretwo.utils.command.executor.CommandExecutor
 import me.scoretwo.utils.command.executor.Executors
@@ -159,6 +160,10 @@ class ScriptCommand: SimpleCommand(arrayOf("script")) {
                     return true
                 }
 
+                script.bindExpansions().forEach { expansion ->
+                    script.execute(expansion, plugin.server.console, "unload")
+                }
+                script.unregisterListeners()
                 script.reload()
                 sender.sendMessage(FormatHeader.INFO, languages["COMMAND-NEXUS.COMMANDS.SCRIPT.RELOAD.RELOADED-SCRIPT"].setPlaceholder("script_name" to script.name))
                 return true
@@ -190,6 +195,8 @@ class ScriptCommand: SimpleCommand(arrayOf("script")) {
                         "script_version" to script.version,
                         "script_authors" to (if (script.authors.isEmpty()) "..." else script.authors.joinToString(", ")),
                         "script_description" to script.description,
+                        "script_init_protected" to script.init.protected.toText(),
+                        "script_init_use_async" to script.init.useAsync.toText(),
                         "script_main" to script.main,
                         "script_bind_expansions" to script.bindExpansions().let { expansions ->
                             if (expansions.isEmpty())
@@ -247,8 +254,11 @@ class ScriptCommand: SimpleCommand(arrayOf("script")) {
                 })
                 .subCommand(runCommand)
                 .subCommand(evaluateCommand)
-                .subCommand(reloadCommand)
                 .subCommand(infoCommand)
+                .also { builder ->
+                    if (!it.value.init.protected)
+                        builder.subCommand(reloadCommand)
+                }
                 .build()
             register(subCommand)
         }

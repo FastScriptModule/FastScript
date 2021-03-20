@@ -3,6 +3,7 @@ package me.scoretwo.fastscript.utils
 import me.scoretwo.fastscript.FastScript
 import me.scoretwo.fastscript.api.format.FormatHeader
 import me.scoretwo.fastscript.config.SettingConfig
+import me.scoretwo.fastscript.languages
 import me.scoretwo.fastscript.plugin
 import me.scoretwo.utils.bukkit.configuration.yaml.patchs.ignoreCase
 import me.scoretwo.utils.command.CommandBuilder
@@ -92,3 +93,5 @@ fun String.protectedSplit(index: Char, protector: Pair<Char, Char>): ArrayList<S
         list.add(subStringWithEscape(startIndex, len, escapes))
     return list
 }
+
+fun Boolean.toText() = if (this) "§a${languages["SUBSTANTIVE.ENABLED"]}" else "§c${languages["SUBSTANTIVE.DISABLED"]}"

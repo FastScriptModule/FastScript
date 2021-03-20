@@ -10,6 +10,7 @@ import me.scoretwo.utils.sender.GlobalSender
 import me.scoretwo.utils.velocity.command.registerVelocityCommands
 import me.scoretwo.utils.velocity.command.toVelocityPlayer
 import me.scoretwo.utils.velocity.command.toVelocitySender
+import me.scoretwo.utils.velocity.plugin.toVelocityPlugin
 import me.scoretwo.utils.velocity.server.proxyServer
 
 class VelocityPlugin(plugin: GlobalPlugin): ScriptPlugin(plugin) {
@@ -28,11 +29,27 @@ class VelocityPlugin(plugin: GlobalPlugin): ScriptPlugin(plugin) {
         return string
     }
 
+    override fun toOriginalPlugin() = toVelocityPlugin()
+
     override fun toOriginalSender(sender: GlobalSender) = sender.toVelocitySender()
 
     override fun toOriginalPlayer(player: GlobalPlayer) = player.toVelocityPlayer()
 
     override fun toOriginalServer() = proxyServer
+
+    override fun registerListener(any: Any) = try {
+        proxyServer.eventManager.register(toVelocityPlugin(), any)
+        true
+    } catch (t: Throwable) {
+        false
+    }
+
+    override fun unregisterListener(any: Any) = try {
+        proxyServer.eventManager.unregisterListener(toVelocityPlugin(), any)
+        true
+    } catch (t: Throwable) {
+        false
+    }
 
     override fun reload() {
 

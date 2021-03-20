@@ -17,6 +17,8 @@ import org.apache.commons.lang.StringUtils
 import org.bukkit.Bukkit
 import org.bukkit.Sound
 import org.bukkit.entity.Player
+import org.bukkit.event.HandlerList
+import org.bukkit.event.Listener
 
 class BukkitPlugin(plugin: GlobalPlugin): ScriptPlugin(plugin) {
 
@@ -93,11 +95,29 @@ class BukkitPlugin(plugin: GlobalPlugin): ScriptPlugin(plugin) {
         return text
     }
 
+    override fun toOriginalPlugin() = toBukkitPlugin()
+
     override fun toOriginalSender(sender: GlobalSender) = sender.toBukkitSender()
 
     override fun toOriginalPlayer(player: GlobalPlayer) = player.toBukkitPlayer()
 
     override fun toOriginalServer() = Bukkit.getServer()
+
+    override fun registerListener(any: Any): Boolean {
+        if (any !is Listener) {
+            return false
+        }
+        Bukkit.getPluginManager().registerEvents(any, toBukkitPlugin())
+        return true
+    }
+
+    override fun unregisterListener(any: Any): Boolean {
+        if (any !is Listener) {
+            return false
+        }
+        HandlerList.unregisterAll(any)
+        return true
+    }
 
     override fun reload() {
         if (PAPIHook == null) {

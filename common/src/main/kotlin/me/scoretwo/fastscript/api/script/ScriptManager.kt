@@ -7,6 +7,7 @@ import me.scoretwo.fastscript.api.script.custom.CustomScript
 import me.scoretwo.fastscript.api.script.temp.TempScript
 import me.scoretwo.fastscript.api.utils.process.ProcessResult
 import me.scoretwo.fastscript.api.utils.process.ProcessResultType
+import me.scoretwo.fastscript.listeners.ScriptFileListener
 import me.scoretwo.utils.bukkit.configuration.yaml.ConfigurationSection
 import me.scoretwo.utils.bukkit.configuration.yaml.patchs.ignoreCase
 import me.scoretwo.utils.sender.GlobalSender
@@ -18,7 +19,7 @@ import java.io.File
 
 class ScriptManager {
 
-    private val folders = mutableMapOf<File, FileAlterationListener>()
+    private val folders = mutableMapOf<File, ScriptFileListener>()
 
     val scripts = mutableMapOf<String, CustomScript>()
 
@@ -36,49 +37,7 @@ class ScriptManager {
     }
 
     private fun addFolder(folder: File) {
-        folders[folder] = object : FileAlterationListener {
-            val fails = mutableListOf<CustomScript>()
-            override fun onStart(observer: FileAlterationObserver) {}
-            override fun onDirectoryCreate(file: File) {}
-            override fun onDirectoryChange(file: File) {}
-            override fun onDirectoryDelete(file: File) {}
-            override fun onFileCreate(file: File) {}
-            override fun onFileDelete(file: File) {}
-            override fun onStop(observer: FileAlterationObserver) {}
-            override fun onFileChange(file: File) {
-                plugin.server.schedule.task(plugin, TaskType.ASYNC, Runnable {
-                    val start = System.currentTimeMillis()
-                    scripts.forEach {
-                        when {
-                            it.value.configOption.file == file -> {
-                                it.value.configOption.reload()
-                                plugin.server.console.sendMessage(FormatHeader.INFO, languages["FILE-LISTENER.SCRIPT.LOADED"].setPlaceholder(
-                                    mapOf(
-                                        "file_name" to file.name,
-                                        "script_name" to it.key,
-                                        "millisecond" to "${System.currentTimeMillis() - start}"
-                                    )
-                                ))
-                                return@Runnable
-                            }
-                            it.value.scriptFiles.contains(file) -> {
-                                if (it.value.init.protected) return@Runnable
-                                it.value.reload()
-                                plugin.server.console.sendMessage(FormatHeader.INFO, languages["FILE-LISTENER.SCRIPT.LOADED"].setPlaceholder(
-                                    mapOf(
-                                        "file_name" to file.name,
-                                        "script_name" to it.key,
-                                        "millisecond" to "${System.currentTimeMillis() - start}"
-                                    )
-                                ))
-                                return@Runnable
-                            }
-                        }
-                    }
-                })
-
-            }
-        }
+        folders[folder] = ScriptFileListener()
     }
 
     init {
@@ -214,11 +173,21 @@ class ScriptManager {
         var success = 0
         var fail = 0
 
+        // unload fileListener
+        folders.forEach {
+            it.value.monitor?.stop()
+        }
+
         val protects = mutableMapOf<String, CustomScript>()
         scripts.forEach {
             if (it.value.init.protected && it.value.configOption.file?.exists() == true) {
                 protects[it.key] = it.value
+                return@forEach
             }
+            it.value.bindExpansions().forEach { expansion ->
+                it.value.execute(expansion, plugin.server.console, "unload")
+            }
+            it.value.unregisterListeners()
         }
         scripts.clear()
         total += protects.size
@@ -248,6 +217,8 @@ class ScriptManager {
                 val observer = FileAlterationObserver(it.key)
                 observer.addListener(it.value)
                 val monitor = FileAlterationMonitor(100L, observer)
+                it.value.observer = observer
+                it.value.monitor = monitor
                 monitor.start()
             }
         }
