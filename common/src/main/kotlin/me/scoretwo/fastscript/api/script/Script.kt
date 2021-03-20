@@ -29,7 +29,7 @@ abstract class Script(
     }
     val init = Init(option)
 
-    val listeners = mutableListOf<Any>()
+    val listeners = mutableListOf<Any?>()
 
     fun bindExpansions() =
         mutableListOf<FastScriptExpansion>().also { expansions ->
@@ -50,7 +50,7 @@ abstract class Script(
     fun execute(expansion: FastScriptExpansion?, sender: GlobalSender, main: String = option.main, args: Array<Any?> = arrayOf()): Any? =
         expansion?.execute(this, sender, main, args)
 
-    fun registerListener(any: Any) {
+    fun registerListener(any: Any?) {
         if (!plugin.registerListener(any))
             plugin.server.console.sendMessage(
                 FormatHeader.WARN,
@@ -60,17 +60,17 @@ abstract class Script(
             listeners.add(any)
     }
 
-    fun unregisterListener(any: Any) {
+    fun unregisterListener(any: Any?) {
         if (!plugin.unregisterListener(any))
             plugin.server.console.sendMessage(
                 FormatHeader.WARN,
                 languages["SCRIPT.LISTENERS.FAILED-UNREGISTER"].setPlaceholder("script_name" to name)
             )
         else
-            listeners.add(any)
+            listeners.remove(any)
     }
 
     fun unregisterListeners() {
-        listeners.forEach { unregisterListener(it) }
+        listeners.toMutableList().forEach { unregisterListener(it) }
     }
 }

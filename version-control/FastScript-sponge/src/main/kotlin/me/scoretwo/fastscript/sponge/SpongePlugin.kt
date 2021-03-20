@@ -41,15 +41,15 @@ class SpongePlugin(plugin: GlobalPlugin): ScriptPlugin(plugin) {
 
     override fun toOriginalServer(): Any? = Sponge.getServer()
 
-    override fun registerListener(any: Any) = try {
-        Sponge.getEventManager().registerListeners(toSpongePlugin(), any)
+    override fun registerListener(any: Any?): Boolean = try {
+        Sponge.getEventManager().registerListeners(toSpongePlugin(), any ?: false)
         true
     } catch (t: Throwable) {
         false
     }
 
-    override fun unregisterListener(any: Any) = try {
-        Sponge.getEventManager().unregisterListeners(any)
+    override fun unregisterListener(any: Any?): Boolean = try {
+        Sponge.getEventManager().unregisterListeners(any ?: false)
         true
     } catch (t: Throwable) {
         false

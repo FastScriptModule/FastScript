@@ -35,7 +35,7 @@ class BungeePlugin(plugin: GlobalPlugin): ScriptPlugin(plugin) {
 
     override fun toOriginalServer(): Any? = ProxyServer.getInstance()
 
-    override fun registerListener(any: Any): Boolean {
+    override fun registerListener(any: Any?): Boolean {
         if (any !is Listener) {
             return false
         }
@@ -44,7 +44,7 @@ class BungeePlugin(plugin: GlobalPlugin): ScriptPlugin(plugin) {
         return true
     }
 
-    override fun unregisterListener(any: Any): Boolean {
+    override fun unregisterListener(any: Any?): Boolean {
         if (any !is Listener) {
             return false
         }

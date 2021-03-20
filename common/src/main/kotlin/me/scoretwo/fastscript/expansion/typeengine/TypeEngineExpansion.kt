@@ -33,6 +33,7 @@ abstract class TypeEngineExpansion: FastScriptExpansion() {
 
         newEngine.put("meta", HashMap<String, Any?>())
         newEngine.put("plugin", plugin.toOriginalPlugin())
+        newEngine.put("script", script)
         newEngine.put("server", plugin.toOriginalServer())
         newEngine.put("globalServer", plugin.server)
         newEngine.put("scriptManager", FastScript.instance.scriptManager)
@@ -52,8 +53,6 @@ abstract class TypeEngineExpansion: FastScriptExpansion() {
         newEngine.put("args", args)
         newEngine.put("utils", assist)
         newEngine.put("util", assist)
-        newEngine.put("registerListener", script::registerListener)
-        newEngine.put("unregisterListener", script::unregisterListener)
         otherBindings.forEach { newEngine.put(it.key, it.value) }
 
         engineScripts[script] = newEngine

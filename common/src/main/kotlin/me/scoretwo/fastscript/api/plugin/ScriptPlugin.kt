@@ -22,8 +22,8 @@ abstract class ScriptPlugin(val plugin: GlobalPlugin): GlobalPlugin {
     abstract fun toOriginalPlayer(player: GlobalPlayer): Any?
     abstract fun toOriginalServer(): Any?
 
-    abstract fun registerListener(any: Any): Boolean
-    abstract fun unregisterListener(any: Any): Boolean
+    abstract fun registerListener(any: Any?): Boolean
+    abstract fun unregisterListener(any: Any?): Boolean
 
     open fun load() {}
     open fun reload() {}

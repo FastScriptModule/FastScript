@@ -2,7 +2,6 @@ package me.scoretwo.fastscript.command
 
 import me.scoretwo.fastscript.*
 import me.scoretwo.fastscript.command.commands.*
-import me.scoretwo.fastscript.utils.assist
 import me.scoretwo.utils.bukkit.configuration.yaml.patchs.ignoreCase
 import me.scoretwo.utils.command.CommandBuilder
 import me.scoretwo.utils.command.CommandNexus

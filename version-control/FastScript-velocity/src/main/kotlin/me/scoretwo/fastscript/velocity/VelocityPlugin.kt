@@ -37,15 +37,15 @@ class VelocityPlugin(plugin: GlobalPlugin): ScriptPlugin(plugin) {
 
     override fun toOriginalServer() = proxyServer
 
-    override fun registerListener(any: Any) = try {
-        proxyServer.eventManager.register(toVelocityPlugin(), any)
+    override fun registerListener(any: Any?): Boolean = try {
+        proxyServer.eventManager.register(toVelocityPlugin(), any ?: false)
         true
     } catch (t: Throwable) {
         false
     }
 
-    override fun unregisterListener(any: Any) = try {
-        proxyServer.eventManager.unregisterListener(toVelocityPlugin(), any)
+    override fun unregisterListener(any: Any?): Boolean = try {
+        proxyServer.eventManager.unregisterListener(toVelocityPlugin(), any ?: false)
         true
     } catch (t: Throwable) {
         false
