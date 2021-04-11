@@ -137,7 +137,7 @@ class ScriptManager {
 
         val optionsFile: File = optionsFiles.let {
             for (fileName in it) {
-                val file = File(fileName)
+                val file = File(folder, fileName)
                 if (file.exists()) return@let file
             }
 
@@ -148,7 +148,7 @@ class ScriptManager {
 
         script.scriptFiles = mutableListOf<File>().also { files ->
             folder.listFiles()?.forEach { file ->
-                script.bindExpansions().forEach {
+                FastScript.instance.expansionManager.expansions.forEach {
                     if (file.name.endsWith(it.fileSuffix))
                         files.add(file)
                 }

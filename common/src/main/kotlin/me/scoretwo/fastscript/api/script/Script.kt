@@ -18,14 +18,14 @@ abstract class Script(
     var texts : MutableMap<String, String> = mutableMapOf()
 ) {
 
-    val main = option.getString("main") ?: "main"
-    val version = option.getString("version") ?: "1.0-default"
-    val description = option.getString("description") ?: "Not more..."
-    val authors = option.getStringList("authors") ?: listOf()
+    val main get() = option.getString("main") ?: "main"
+    val version get() = option.getString("version") ?: "1.0-default"
+    val description get() = option.getString("description") ?: "Not more..."
+    val authors get() = option.getStringList("authors") ?: listOf()
 
-    class Init(option: ScriptOption) {
-        val useAsync = option.getBoolean("init.use-async")
-        val protected = option.getBoolean("init.protected")
+    class Init(val option: ScriptOption) {
+        val useAsync get() = option.getBoolean("init.use-async")
+        val protected get() = option.getBoolean("init.protected")
     }
     val init = Init(option)
 

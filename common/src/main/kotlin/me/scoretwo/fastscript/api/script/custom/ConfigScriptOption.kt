@@ -10,7 +10,7 @@ import me.scoretwo.utils.bukkit.configuration.yaml.patchs.loadConfiguration
 import java.io.File
 
 open class ConfigScriptOption(val file: File? = null, val config: YamlConfiguration = file?.loadConfiguration() ?: YamlConfiguration().also { it.set("main", "main") }): ScriptOption {
-    override var main: String = config.getString(config.ignoreCase("main"))
+    override var main: String = config.getString(config.ignoreCase("main")) ?: "main"
     override var meta = mutableMapOf<String, Any?>().also { map ->
         config.getStringList(config.ignoreCase("meta"))?.forEach {
             map[it.substringBefore(":")] = it.substringAfter(":")
@@ -22,7 +22,7 @@ open class ConfigScriptOption(val file: File? = null, val config: YamlConfigurat
     }
 
     fun reload() {
-        main = config.getString(config.ignoreCase("main"))
+        main = config.getString(config.ignoreCase("main")) ?: "main"
         meta = mutableMapOf<String, Any?>().also { map ->
             config.getStringList(config.ignoreCase("meta"))?.forEach {
                 map[it.substringBefore(":")] = it.substringAfter(":")
