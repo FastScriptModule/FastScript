@@ -5,6 +5,7 @@
 [<img src="https://img.shields.io/github/license/Score2/FastScript?style=for-the-badge"/>](https://github.com/Score2/FastScript/blob/master/LICENSE)
 [<img src="https://img.shields.io/github/last-commit/Score2/FastScript?style=for-the-badge"/>](https://github.com/Score2/FastScript/commits/master)
 [<img src="https://img.shields.io/bstats/servers/9014?label=BSTATS-SERVERS&style=for-the-badge"/>](https://bstats.org/plugin/bukkit/FastScript/9014)
+> Because the structure of the project is too confusing, the project will stop updating until major errors are discovered. Reset the project when [Insinuate](https://github.com/InsinuateProjects/Insinuate) completes development and testing.
 ***
 ### About
 Support multiple scripting languages, use scripts to change Minecraft!
