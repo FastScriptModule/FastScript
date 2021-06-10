@@ -10,6 +10,7 @@ import me.scoretwo.fastscript.api.utils.process.ProcessResultType
 import me.scoretwo.fastscript.listeners.ScriptFileListener
 import me.scoretwo.utils.bukkit.configuration.yaml.ConfigurationSection
 import me.scoretwo.utils.bukkit.configuration.yaml.patchs.ignoreCase
+import me.scoretwo.utils.sender.GlobalPlayer
 import me.scoretwo.utils.sender.GlobalSender
 import me.scoretwo.utils.server.task.TaskType
 import org.apache.commons.io.monitor.FileAlterationListener
@@ -242,10 +243,23 @@ class ScriptManager {
         section.isString(section.ignoreCase("main"))
 
 
+
     fun eval(script: CustomScript, sign: String, sender: GlobalSender, vararg args: String) =
         script.eval(sign, sender, *args).also { evaluateCount += 1; operationCount += 1 }
 
     fun execute(script: CustomScript, sign: String, sender: GlobalSender, main: String = script.configOption.main, args: Array<Any?> = arrayOf()) =
         script.execute(sign, sender, main, args).also { executeCount += 1; operationCount += 1 }
 
+
+    fun eval(script: String, sign: String, sender: GlobalSender, vararg args: String) = let {
+        eval(getScript(script) ?: return@let null, sign, sender, *args)
+    }
+
+    fun execute(script: String, sign: String, sender: GlobalSender, main: String = getScript(script)?.configOption?.main ?: "main", args: Array<Any?> = arrayOf()) = let {
+        execute(getScript(script) ?: return@let null, sign, sender, main, args)
+    }
+
+    fun setPlaceholder(player: GlobalPlayer, text: String) = plugin.setPlaceholder(player, text)
+
+    fun setPlaceholder(sender: Any, text: String) = plugin.setPlaceholder(plugin.toGlobalPlayer(sender), text)
 }

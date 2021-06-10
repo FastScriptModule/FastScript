@@ -33,6 +33,7 @@ abstract class TypeEngineExpansion: FastScriptExpansion() {
         newEngine.put("plugin", plugin.toOriginalPlugin())
         newEngine.put("script", script)
         newEngine.put("server", plugin.toOriginalServer())
+        newEngine.put("setPlaceholder", FastScript.instance.scriptManager::setPlaceholder)
         newEngine.put("globalServer", plugin.server)
         newEngine.put("scriptManager", FastScript.instance.scriptManager)
         newEngine.put("expansionManager", FastScript.instance.expansionManager)

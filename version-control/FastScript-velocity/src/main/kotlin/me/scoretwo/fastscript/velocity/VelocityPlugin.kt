@@ -1,5 +1,6 @@
 package me.scoretwo.fastscript.velocity
 
+import com.velocitypowered.api.proxy.Player
 import me.scoretwo.fastscript.FastScript
 import me.scoretwo.fastscript.api.plugin.ScriptPlugin
 import me.scoretwo.fastscript.api.utils.ExecType
@@ -8,6 +9,7 @@ import me.scoretwo.utils.plugin.GlobalPlugin
 import me.scoretwo.utils.sender.GlobalPlayer
 import me.scoretwo.utils.sender.GlobalSender
 import me.scoretwo.utils.velocity.command.registerVelocityCommands
+import me.scoretwo.utils.velocity.command.toGlobalPlayer
 import me.scoretwo.utils.velocity.command.toVelocityPlayer
 import me.scoretwo.utils.velocity.command.toVelocitySender
 import me.scoretwo.utils.velocity.plugin.toVelocityPlugin
@@ -36,6 +38,20 @@ class VelocityPlugin(plugin: GlobalPlugin): ScriptPlugin(plugin) {
     override fun toOriginalPlayer(player: GlobalPlayer) = player.toVelocityPlayer()
 
     override fun toOriginalServer() = proxyServer
+
+    override fun toGlobalPlayer(any: Any?): GlobalPlayer {
+        if (any !is Player) {
+            throw Exception("$any not a player!")
+        }
+        return any.toGlobalPlayer()
+    }
+
+    override fun toGlobalSender(any: Any?): GlobalSender {
+        if (any !is Player) {
+            throw Exception("$any not a player!")
+        }
+        return any.toGlobalPlayer()
+    }
 
     override fun registerListener(any: Any?): Boolean = try {
         proxyServer.eventManager.register(toVelocityPlugin(), any ?: false)

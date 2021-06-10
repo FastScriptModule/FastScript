@@ -50,6 +50,14 @@ abstract class Script(
     fun execute(expansion: FastScriptExpansion?, sender: GlobalSender, main: String = option.main, args: Array<Any?> = arrayOf()): Any? =
         expansion?.execute(this, sender, main, args)
 
+    fun eval(script: String, sign: String, sender: GlobalSender, vararg args: String) = let {
+        FastScript.instance.scriptManager.eval(FastScript.instance.scriptManager.getScript(script) ?: return@let null, sign, sender, *args)
+    }
+
+    fun execute(script: String, sign: String, sender: GlobalSender, main: String = FastScript.instance.scriptManager.getScript(script)?.configOption?.main ?: "main", args: Array<Any?> = arrayOf()) = let {
+        FastScript.instance.scriptManager.execute(FastScript.instance.scriptManager.getScript(script) ?: return@let null, sign, sender, main, args)
+    }
+
     fun registerListener(any: Any?) {
         if (!plugin.registerListener(any))
             plugin.server.console.sendMessage(

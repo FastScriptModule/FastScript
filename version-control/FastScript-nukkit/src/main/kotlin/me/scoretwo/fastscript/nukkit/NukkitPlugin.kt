@@ -1,10 +1,12 @@
 package me.scoretwo.fastscript.nukkit
 
+import cn.nukkit.Player
 import cn.nukkit.Server
 import cn.nukkit.event.HandlerList
 import cn.nukkit.event.Listener
 import me.scoretwo.fastscript.FastScript
 import me.scoretwo.fastscript.api.plugin.ScriptPlugin
+import me.scoretwo.utils.nukkit.command.toGlobalPlayer
 import me.scoretwo.utils.nukkit.command.toNukkitSender
 import me.scoretwo.utils.nukkit.plugin.toNukkitPlugin
 import me.scoretwo.utils.plugin.GlobalPlugin
@@ -38,6 +40,20 @@ class NukkitPlugin(plugin: GlobalPlugin): ScriptPlugin(plugin) {
     override fun toOriginalPlayer(player: GlobalPlayer): Any = player.toNukkitSender()
 
     override fun toOriginalServer(): Any = Server.getInstance()
+
+    override fun toGlobalPlayer(any: Any?): GlobalPlayer {
+        if (any !is Player) {
+            throw Exception("$any not a player!")
+        }
+        return any.toGlobalPlayer()
+    }
+
+    override fun toGlobalSender(any: Any?): GlobalSender {
+        if (any !is Player) {
+            throw Exception("$any not a player!")
+        }
+        return any.toGlobalPlayer()
+    }
 
     override fun registerListener(any: Any?): Boolean {
         if (any !is Listener) {

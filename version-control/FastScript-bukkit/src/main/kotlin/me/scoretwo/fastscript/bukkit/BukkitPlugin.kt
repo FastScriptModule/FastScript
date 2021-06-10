@@ -19,6 +19,7 @@ import org.bukkit.Sound
 import org.bukkit.entity.Player
 import org.bukkit.event.HandlerList
 import org.bukkit.event.Listener
+import org.omg.CORBA.portable.UnknownException
 
 class BukkitPlugin(plugin: GlobalPlugin): ScriptPlugin(plugin) {
 
@@ -102,6 +103,20 @@ class BukkitPlugin(plugin: GlobalPlugin): ScriptPlugin(plugin) {
     override fun toOriginalPlayer(player: GlobalPlayer) = player.toBukkitPlayer()
 
     override fun toOriginalServer() = Bukkit.getServer()
+
+    override fun toGlobalPlayer(any: Any?): GlobalPlayer {
+        if (any !is Player) {
+            throw Exception("$any not a player!")
+        }
+        return any.toGlobalPlayer()
+    }
+
+    override fun toGlobalSender(any: Any?): GlobalSender {
+        if (any !is Player) {
+            throw Exception("$any not a player!")
+        }
+        return any.toGlobalPlayer()
+    }
 
     override fun registerListener(any: Any?): Boolean {
         if (any !is Listener) {

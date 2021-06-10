@@ -11,10 +11,12 @@ import me.scoretwo.utils.plugin.GlobalPlugin
 import me.scoretwo.utils.sender.GlobalPlayer
 import me.scoretwo.utils.sender.GlobalSender
 import me.scoretwo.utils.sponge.command.registerSpongeCommands
+import me.scoretwo.utils.sponge.command.toGlobalPlayer
 import me.scoretwo.utils.sponge.command.toSpongePlayer
 import me.scoretwo.utils.sponge.command.toSpongeSender
 import me.scoretwo.utils.sponge.plugin.toSpongePlugin
 import org.spongepowered.api.Sponge
+import org.spongepowered.api.entity.living.player.Player
 
 class SpongePlugin(plugin: GlobalPlugin): ScriptPlugin(plugin) {
 
@@ -40,6 +42,19 @@ class SpongePlugin(plugin: GlobalPlugin): ScriptPlugin(plugin) {
     override fun toOriginalPlayer(player: GlobalPlayer) = player.toSpongePlayer()
 
     override fun toOriginalServer(): Any? = Sponge.getServer()
+    override fun toGlobalPlayer(any: Any?): GlobalPlayer {
+        if (any !is Player) {
+            throw Exception("$any not a player!")
+        }
+        return any.toGlobalPlayer()
+    }
+
+    override fun toGlobalSender(any: Any?): GlobalSender {
+        if (any !is Player) {
+            throw Exception("$any not a player!")
+        }
+        return any.toGlobalPlayer()
+    }
 
     override fun registerListener(any: Any?): Boolean = try {
         Sponge.getEventManager().registerListeners(toSpongePlugin(), any ?: false)

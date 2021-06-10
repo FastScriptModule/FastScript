@@ -19,7 +19,9 @@ abstract class ScriptPlugin(val plugin: GlobalPlugin): GlobalPlugin {
 
     abstract fun toOriginalPlugin(): Any?
     abstract fun toOriginalSender(sender: GlobalSender): Any?
+    abstract fun toGlobalSender(any: Any?): GlobalSender
     abstract fun toOriginalPlayer(player: GlobalPlayer): Any?
+    abstract fun toGlobalPlayer(any: Any?): GlobalPlayer
     abstract fun toOriginalServer(): Any?
 
     abstract fun registerListener(any: Any?): Boolean
