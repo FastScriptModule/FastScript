@@ -12,7 +12,7 @@ object Placeholders {
         val args = params.replace("@", "%").setPlaceholder(player).protectedSplit('_', Pair('[', ']'))
         if (args.isEmpty()) return ""
 
-        when (args[0].toLowerCase()) {
+        when (args[0].lowercase()) {
             // %fastscript_script_[name]_evaluate(eval)_expansion_<args...>%
             // %fastscript_script_[name]_execute(run)_expansion_<main>_<args...>%
             "script" -> {

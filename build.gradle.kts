@@ -1,5 +1,5 @@
 plugins {
-    kotlin("jvm") version "1.4.30"
+    kotlin("jvm") version "1.5.0"
     id("org.jetbrains.dokka") version "1.4.10.2"
     id("org.jlleitschuh.gradle.ktlint") version "9.4.1"
     id("com.github.johnrengelman.shadow") version "6.1.0"
@@ -8,14 +8,14 @@ plugins {
 }
 
 group = "me.scoretwo"
-version = "1.1.1-SNAPSHOT"
+version = "1.1.3-SNAPSHOT"
 description = "FastScript is a Spigot plugin, which can run JavaScript-based scripts more efficiently."
 
 defaultTasks = mutableListOf("ShadowJar", "publishToMavenLocal")
 
 extra.apply {
-    set("commonsVersion", "2.0.12-SNAPSHOT")
-    set("kotlinVersion", "1.4.30")
+    set("commonsVersion", "2.0.15-SNAPSHOT")
+    set("kotlinVersion", "1.5.0")
 }
 
 allprojects {
@@ -23,9 +23,9 @@ allprojects {
         jcenter()
         mavenCentral()
         mavenLocal()
+        maven("http://repo.iroselle.com/repository/maven-snapshots/")
+        maven("http://repo.iroselle.com/repository/maven-public/")
         maven("https://maven.aliyun.com/nexus/content/groups/public/")
-        maven("http://repo.iroselle.com/snapshots/")
-        maven("http://repo.iroselle.com/public/")
         maven("https://nexus.velocitypowered.com/repository/velocity-artifacts-snapshots/")
         maven("https://repo.spongepowered.org/maven")
         maven("https://jitpack.io")

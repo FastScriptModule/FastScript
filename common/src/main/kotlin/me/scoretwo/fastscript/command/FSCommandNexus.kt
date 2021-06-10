@@ -13,6 +13,7 @@ import me.scoretwo.utils.command.helper.HelpGenerator
 import me.scoretwo.utils.command.language.CommandLanguage
 import me.scoretwo.utils.sender.GlobalPlayer
 import me.scoretwo.utils.sender.GlobalSender
+import me.scoretwo.utils.server.globalServer
 import net.md_5.bungee.api.chat.ClickEvent
 import net.md_5.bungee.api.chat.HoverEvent
 import net.md_5.bungee.api.chat.TextComponent
@@ -20,7 +21,7 @@ import net.md_5.bungee.api.chat.hover.content.Text
 
 class FSCommandNexus: CommandNexus(
     FastScript.instance.plugin,
-    arrayOf("FastScript", "script", "fs"),
+    arrayOf("FastScript", "script", "fs", "fs${globalServer.brand.name.lowercase()}"),
     SendLimit.ALL,
     language,
     helpGenerator

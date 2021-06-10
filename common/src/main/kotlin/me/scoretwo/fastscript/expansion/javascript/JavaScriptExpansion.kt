@@ -1,7 +1,7 @@
 package me.scoretwo.fastscript.expansion.javascript
 
-import jdk.nashorn.api.scripting.NashornScriptEngineFactory
 import me.scoretwo.fastscript.expansion.typeengine.TypeEngineExpansion
+import org.openjdk.nashorn.api.scripting.NashornScriptEngineFactory
 import javax.script.ScriptEngine
 
 class JavaScriptExpansion: TypeEngineExpansion() {

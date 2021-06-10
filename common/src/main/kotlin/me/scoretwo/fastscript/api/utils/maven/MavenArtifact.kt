@@ -1,12 +1,19 @@
 package me.scoretwo.fastscript.api.utils.maven
 
+import sun.misc.Unsafe;
+import me.scoretwo.fastscript.FastScript
 import me.scoretwo.fastscript.api.utils.process.ProcessResult
 import me.scoretwo.fastscript.api.utils.process.ProcessResultType
 import me.scoretwo.fastscript.plugin
+import me.scoretwo.fastscript.utils.Utils
 import java.io.File
-import java.io.InputStream
 import java.io.FileOutputStream
-import java.lang.StringBuilder
+import java.io.InputStream
+import java.lang.invoke.MethodHandle
+import java.lang.invoke.MethodHandles
+import java.lang.invoke.MethodType
+import java.lang.reflect.Field
+import java.lang.reflect.Method
 import java.net.HttpURLConnection
 import java.net.URL
 import java.net.URLClassLoader
@@ -83,15 +90,17 @@ class MavenArtifact {
             fileOutputStream.close()
             inputStream.close()
 
-            val method = URLClassLoader::class.java.getDeclaredMethod("addURL", URL::class.java)
+            Utils.addPath(file)
+            /*val method = URLClassLoader::class.java.getDeclaredMethod("addURL", URL::class.java)
             method.isAccessible = true
-            method.invoke(plugin.pluginClassLoader, file.toURI().toURL())
+            method.invoke(plugin.pluginClassLoader, file.toURI().toURL())*/
             return ProcessResult(ProcessResultType.SUCCESS)
         } catch (t: Throwable) {
             t.printStackTrace()
             return ProcessResult(ProcessResultType.FAILED)
         }
     }
+
 
     override fun toString() = "$groupId:$artifactId:$version"
 

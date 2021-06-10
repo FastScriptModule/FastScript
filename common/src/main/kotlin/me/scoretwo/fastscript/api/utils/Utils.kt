@@ -12,9 +12,15 @@ import me.scoretwo.utils.sender.GlobalPlayer
 import me.scoretwo.utils.sender.GlobalSender
 import me.scoretwo.utils.syntaxes.FileUtils
 import net.md_5.bungee.api.ChatColor
+import sun.misc.Unsafe
 import java.io.File
 import java.io.InputStream
+import java.lang.invoke.MethodHandle
+import java.lang.invoke.MethodHandles
+import java.lang.invoke.MethodType
+import java.lang.reflect.Field
 import java.lang.reflect.Method
+import java.net.URL
 
 object Utils {
 
@@ -30,6 +36,57 @@ object Utils {
         FileUtils.save(target, inputStream)
     }
 
+
+    // Copy in https://github.com/TabooLib/TabooLib-Loader
+    val unsafe: Unsafe = let {
+        val field = Unsafe::class.java.getDeclaredField("theUnsafe")
+        field.isAccessible = true
+        field[null] as Unsafe
+    }
+    // Copy in https://github.com/TabooLib/TabooLib-Loader
+    val lookup: MethodHandles.Lookup = let {
+        val lookupField = MethodHandles.Lookup::class.java.getDeclaredField("IMPL_LOOKUP")
+        val lookupBase = unsafe.staticFieldBase(lookupField)
+        val lookupOffset = unsafe.staticFieldOffset(lookupField)
+        unsafe.getObject(lookupBase, lookupOffset) as MethodHandles.Lookup
+    }
+
+    // Copy in https://github.com/TabooLib/TabooLib-Loader
+    fun addPath(file: File): Boolean {
+        try {
+            val loader: ClassLoader = FastScript.instance.plugin.pluginClassLoader
+            if (loader.javaClass.simpleName == "LaunchClassLoader") {
+                val methodHandle: MethodHandle = lookup.findVirtual(
+                    loader.javaClass, "addURL", MethodType.methodType(
+                        Void.TYPE,
+                        URL::class.java
+                    )
+                )
+                methodHandle.invoke(loader, file.toURI().toURL())
+            } else {
+                val ucpField: Field? = try {
+                    loader.javaClass.getDeclaredField("ucp")
+                } catch (e: NoSuchFieldError) {
+                    loader.javaClass.superclass.getDeclaredField("ucp")
+                } catch (e: NoSuchFieldException) {
+                    loader.javaClass.superclass.getDeclaredField("ucp")
+                }
+                val ucpOffset: Long = unsafe.objectFieldOffset(ucpField)
+                val ucp: Any = unsafe.getObject(loader, ucpOffset)
+                val methodHandle: MethodHandle = lookup.findVirtual(
+                    ucp.javaClass, "addURL", MethodType.methodType(
+                        Void.TYPE,
+                        URL::class.java
+                    )
+                )
+                methodHandle.invoke(ucp, file.toURI().toURL())
+            }
+            return true
+        } catch (t: Throwable) {
+            t.printStackTrace()
+        }
+        return false
+    }
 }
 
 class Assist {
@@ -37,6 +94,8 @@ class Assist {
     fun createCommandNexus(vararg alias: String) = CommandNexus(plugin, arrayOf(*alias))
 
     fun createCommandBuilder() = CommandBuilder()
+
+    fun setPlaceholder(player: GlobalPlayer, text: String) = plugin.setPlaceholder(player, text)
 
 }
 lateinit var assist: Assist
@@ -61,6 +120,7 @@ fun String.subStringWithEscape(from: Int, to: Int, escapes: List<Int>): String {
     return builder.toString()
 }
 
+// 可能存在问题
 fun String.protectedSplit(index: Char, protector: Pair<Char, Char>): ArrayList<String> {
     val list = ArrayList<String>()
     var inner = false

@@ -7,6 +7,7 @@ import me.scoretwo.fastscript.api.utils.process.ProcessResult
 import me.scoretwo.fastscript.api.utils.process.ProcessResultType
 import me.scoretwo.fastscript.expansion.javascript.JavaScriptExpansion
 import me.scoretwo.fastscript.expansion.scala.ScalaExpansion
+import me.scoretwo.fastscript.utils.Utils
 import me.scoretwo.utils.bukkit.configuration.yaml.file.YamlConfiguration
 import me.scoretwo.utils.bukkit.configuration.yaml.patchs.ignoreCase
 import java.io.File
@@ -109,10 +110,7 @@ class ExpansionManager {
     private fun fromFileExpansion(file: File): Pair<ProcessResult, FastScriptExpansion?> {
         val description: ExpansionDescription
         val expansionClass = try {
-            val url = file.toURI().toURL()
-            val method = URLClassLoader::class.java.getDeclaredMethod("addURL", URL::class.java)
-            method.isAccessible = true
-            method.invoke(plugin.pluginClassLoader, url)
+            Utils.addPath(file)
 
             val jarFile = JarFile(file)
             description = try {

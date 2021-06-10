@@ -18,7 +18,7 @@ class PlaceholderAPIHook(val plugin: Plugin): PlaceholderExpansion() {
     }
 
     override fun getIdentifier(): String {
-        return plugin.description.name.toLowerCase()
+        return plugin.description.name.lowercase()
     }
 
     override fun getAuthor(): String {
