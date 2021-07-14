@@ -8,7 +8,7 @@ plugins {
 }
 
 group = "me.scoretwo"
-version = "1.1.4-SNAPSHOT"
+version = "1.1.5-SNAPSHOT"
 description = "FastScript is a Spigot plugin, which can run JavaScript-based scripts more efficiently."
 
 defaultTasks = mutableListOf("ShadowJar", "publishToMavenLocal")
@@ -23,8 +23,8 @@ allprojects {
         jcenter()
         mavenCentral()
         mavenLocal()
-        maven("http://repo.iroselle.com/repository/maven-snapshots/")
-        maven("http://repo.iroselle.com/repository/maven-public/")
+        maven("http://mc3.roselle.vip:609/repository/maven-snapshots/")
+        maven("http://mc3.roselle.vip:609/repository/maven-public/")
         maven("https://maven.aliyun.com/nexus/content/groups/public/")
         maven("https://nexus.velocitypowered.com/repository/velocity-artifacts-snapshots/")
         maven("https://repo.spongepowered.org/maven")

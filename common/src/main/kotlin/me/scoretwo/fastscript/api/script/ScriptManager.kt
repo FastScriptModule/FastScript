@@ -176,7 +176,11 @@ class ScriptManager {
 
         // unload fileListener
         folders.forEach {
-            it.value.monitor?.stop()
+            try {
+                it.value.monitor?.stop()
+            } catch (t: Throwable) {
+
+            }
         }
 
         val protects = mutableMapOf<String, CustomScript>()

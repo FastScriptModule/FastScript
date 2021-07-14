@@ -8,6 +8,6 @@ class JavaScriptExpansion: TypeEngineExpansion() {
     override val name = "JavaScript"
     override val sign = "nashorn"
     override val fileSuffix = "js"
-    override val engine: ScriptEngine = NashornScriptEngineFactory().scriptEngine
+    override val engine: ScriptEngine = scriptEngineManager.getEngineByName("nashorn") ?: NashornScriptEngineFactory().scriptEngine
 
 }

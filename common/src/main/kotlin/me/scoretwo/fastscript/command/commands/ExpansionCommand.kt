@@ -48,7 +48,7 @@ class ExpansionCommand: SimpleCommand(arrayOf("expansion")) {
                     return true
                 }
 
-                val text = args.sliceArray(0..(if (!noReturn) args.size - 1 else args.size - 2)).joinToString("")
+                val text = args.sliceArray(0..(if (!noReturn) args.size - 1 else args.size - 2)).joinToString(" ")
 
                 val result = expansion.eval(text, sender)
 
